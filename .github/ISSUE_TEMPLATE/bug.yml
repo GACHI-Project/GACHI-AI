@@ -1,0 +1,40 @@
+name: Bug
+description: 버그 제보/수정
+title: "[BUG] "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: current
+    attributes:
+      label: 🚨 현재 동작
+      placeholder: 실제로 발생한 문제
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✨ 기대 동작
+      placeholder: 원래 기대한 동작
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 👣 재현 방법
+      description: 버그를 다시 확인하기 위한 순서
+      value: |
+        1. 
+        2. 
+        3.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 📸 로그 / 스크린샷
+      placeholder: 에러 로그나 화면 캡처를 첨부
+    validations:
+      required: false # 로그가 없는 단순 UI 버그일 수도 있으니 필수는 해제
