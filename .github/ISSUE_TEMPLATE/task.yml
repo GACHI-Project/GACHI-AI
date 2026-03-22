@@ -1,0 +1,44 @@
+name: Task
+description: 기능/리팩토링/디자인/설정 작업
+title: "[TASK] "
+labels: ["task"]
+body:
+  - type: dropdown
+    id: branch_type
+    attributes:
+      label: 🌿 브랜치 타입
+      options:
+        - feat
+        - refac
+        - hotfix
+        - chore
+        - design
+        - bugfix
+    validations:
+      required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: 📝 작업 요약
+      placeholder: 무엇을 왜 하는지 간결하게 작성
+    validations:
+      required: true
+
+  - type: textarea
+    id: todo
+    attributes:
+      label: ✅ 작업 항목
+      value: |
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+
+  - type: textarea
+    id: done
+    attributes:
+      label: 🚩 완료 조건
+      placeholder: 완료 기준을 작성
+    validations:
+      required: true
