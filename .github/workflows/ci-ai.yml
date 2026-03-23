@@ -1,0 +1,22 @@
+name: AI CI
+
+on:
+  pull_request:
+    branches: [ "develop", "main" ]
+  push:
+    branches: [ "develop" ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - name: Import check
+        run: python -m py_compile app/main.py
+      - name: Docker build
+        run: docker build -t gachi-ai:ci .
