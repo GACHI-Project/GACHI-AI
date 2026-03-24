@@ -1,7 +1,13 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
 
-app = FastAPI(title="GACHI-AI", version="0.1.0")
+app = FastAPI(
+    title="GACHI-AI",
+    version="0.1.0",
+    docs_url="/ai/docs",
+    redoc_url="/ai/redoc",
+    openapi_url="/ai/openapi.json",
+)
 
 
 class EchoRequest(BaseModel):
