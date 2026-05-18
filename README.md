@@ -33,7 +33,7 @@ Windows PowerShell에서는 다음처럼 가상환경을 활성화합니다.
 ## 작업 규칙
 
 - 기본 브랜치: `develop`
-- 브랜치 예시: `feat/issue-1-feature-name`, `chore-issue-1-ai-server-ci-cd-setup`
+- 브랜치 예시: `feat/#1-feature-name`, `chore/#1-ci-cd-setup`
 - 커밋 타입: `feat`, `fix`, `refactor`, `docs`, `style`, `chore`
 - `main`, `develop` 직접 커밋은 피하고 PR로 병합합니다.
 

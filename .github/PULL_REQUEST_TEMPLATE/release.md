@@ -18,7 +18,7 @@
 
 ## 🧪 테스트 결과
 
-- GitHub Actions `deploy-ec2` 실행 확인 (`workflow_dispatch`, ref: `main`)
+- GitHub Actions `Deploy AI to EC2` 실행 확인 (`workflow_dispatch`, ref: `main`)
   - 결과:
   - 스크린샷: ![ssm-send-step]()
 
