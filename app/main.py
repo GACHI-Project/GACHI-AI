@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
+
+from app.routers import health, newsletters
 
 app = FastAPI(
     title="GACHI-AI",
@@ -9,21 +10,5 @@ app = FastAPI(
     openapi_url="/ai/openapi.json",
 )
 
-
-class EchoRequest(BaseModel):
-    text: str
-
-
-@app.get("/ai/health")
-def health() -> dict:
-    return {"status": "ok"}
-
-
-@app.get("/ai/ping")
-def ping() -> dict:
-    return {"message": "pong"}
-
-
-@app.post("/ai/echo")
-def echo(req: EchoRequest) -> dict:
-    return {"text": req.text}
+app.include_router(health.router)
+app.include_router(newsletters.router)

@@ -1,0 +1,203 @@
+name: Deploy AI to EC2
+
+"on":
+  workflow_run:
+    workflows: ["AI Docker CI"]
+    types: [completed]
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  deploy:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-ai-ec2-ssm
+      cancel-in-progress: false
+
+    steps:
+      - name: Resolve deploy path
+        id: deploy-path
+        env:
+          EC2_DEPLOY_PATH_SECRET: ${{ secrets.EC2_DEPLOY_PATH }}
+        run: |
+          VALUE="${EC2_DEPLOY_PATH_SECRET:-}"
+          VALUE="${VALUE%$'\r'}"
+          VALUE="$(printf '%s' "$VALUE" | sed 's/[[:space:]]*$//')"
+          if [ -n "$VALUE" ]; then
+            echo "value=$VALUE" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=/home/ubuntu/GACHI-BE/deploy" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Resolve AWS region
+        id: aws-region
+        env:
+          AWS_REGION_SECRET: ${{ secrets.AWS_REGION }}
+        run: |
+          VALUE="${AWS_REGION_SECRET:-}"
+          VALUE="${VALUE%$'\r'}"
+          VALUE="$(printf '%s' "$VALUE" | sed 's/[[:space:]]*$//')"
+          if [ -n "$VALUE" ]; then
+            echo "value=$VALUE" >> "$GITHUB_OUTPUT"
+          else
+            echo "value=ap-northeast-2" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Validate deploy inputs
+        id: auth-check
+        env:
+          EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+          AWS_OIDC_ROLE_ARN: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          set -Eeuo pipefail
+          if [ -z "${EC2_INSTANCE_ID:-}" ]; then
+            echo "::error::EC2_INSTANCE_ID secret is required."
+            exit 1
+          fi
+          if [ -z "${DOCKERHUB_USERNAME:-}" ]; then
+            echo "::error::DOCKERHUB_USERNAME secret is required."
+            exit 1
+          fi
+          if [ -n "${AWS_OIDC_ROLE_ARN:-}" ]; then
+            echo "auth_mode=oidc" >> "$GITHUB_OUTPUT"
+            echo "has_session_token=false" >> "$GITHUB_OUTPUT"
+          else
+            if [ -z "${AWS_ACCESS_KEY_ID:-}" ] || [ -z "${AWS_SECRET_ACCESS_KEY:-}" ]; then
+              echo "::error::Set AWS_OIDC_ROLE_ARN or AWS_ACCESS_KEY_ID/AWS_SECRET_ACCESS_KEY."
+              exit 1
+            fi
+            echo "auth_mode=access_key" >> "$GITHUB_OUTPUT"
+            if [ -n "${AWS_SESSION_TOKEN:-}" ]; then
+              echo "has_session_token=true" >> "$GITHUB_OUTPUT"
+            else
+              echo "has_session_token=false" >> "$GITHUB_OUTPUT"
+            fi
+          fi
+
+      - name: Configure AWS credentials with OIDC
+        if: ${{ steps.auth-check.outputs.auth_mode == 'oidc' }}
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ steps.aws-region.outputs.value }}
+          role-to-assume: ${{ secrets.AWS_OIDC_ROLE_ARN }}
+          role-session-name: gachi-ai-deploy-ssm
+
+      - name: Configure AWS credentials with access key
+        if: ${{ steps.auth-check.outputs.auth_mode == 'access_key' && steps.auth-check.outputs.has_session_token != 'true' }}
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ steps.aws-region.outputs.value }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Configure AWS credentials with access key session
+        if: ${{ steps.auth-check.outputs.auth_mode == 'access_key' && steps.auth-check.outputs.has_session_token == 'true' }}
+        uses: aws-actions/configure-aws-credentials@v6
+        with:
+          aws-region: ${{ steps.aws-region.outputs.value }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+
+      - name: Send AI deploy command via SSM
+        id: ssm-send
+        env:
+          AWS_REGION: ${{ steps.aws-region.outputs.value }}
+          EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+          EC2_DEPLOY_PATH: ${{ steps.deploy-path.outputs.value }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        run: |
+          set -Eeuo pipefail
+          COMMANDS="$(jq -cn \
+            --arg deployPath "$EC2_DEPLOY_PATH" \
+            --arg image "$DOCKERHUB_USERNAME/gachi-ai:latest" \
+            '{
+              commands: [[
+                "set -Eeuo pipefail",
+                "cd " + ($deployPath | @sh),
+                "test -f .env",
+                "if grep -q ^AI_IMAGE= .env; then sed -i " + ("s|^AI_IMAGE=.*|AI_IMAGE=" + $image + "|" | @sh) + " .env; else echo " + ("AI_IMAGE=" + $image | @sh) + " >> .env; fi",
+                "docker compose --env-file .env pull ai",
+                "docker compose --env-file .env up -d --remove-orphans --force-recreate ai",
+                "AI_CID=$(docker compose --env-file .env ps -q ai)",
+                "test -n \"$AI_CID\"",
+                "for i in $(seq 1 24); do AI_HEALTH=$(docker inspect --format '\''{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}'\'' \"$AI_CID\" 2>/dev/null || echo missing); echo \"ai health: $AI_HEALTH\"; [ \"$AI_HEALTH\" = healthy ] && break; sleep 5; done",
+                "test \"$AI_HEALTH\" = healthy",
+                "docker compose --env-file .env up -d --remove-orphans --force-recreate --no-deps nginx",
+                "docker compose --env-file .env ps",
+                "docker compose --env-file .env logs --tail=80 ai nginx || true"
+              ] | join(" && ")],
+              executionTimeout: ["900"]
+            }')"
+          COMMAND_ID="$(aws ssm send-command \
+            --region "$AWS_REGION" \
+            --document-name "AWS-RunShellScript" \
+            --instance-ids "$EC2_INSTANCE_ID" \
+            --comment "deploy gachi-ai (run=${GITHUB_RUN_ID})" \
+            --max-concurrency "1" \
+            --max-errors "0" \
+            --parameters "$COMMANDS" \
+            --query "Command.CommandId" \
+            --output text)"
+          echo "command_id=$COMMAND_ID" >> "$GITHUB_OUTPUT"
+
+      - name: Wait for SSM command completion
+        env:
+          AWS_REGION: ${{ steps.aws-region.outputs.value }}
+          EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+          COMMAND_ID: ${{ steps.ssm-send.outputs.command_id }}
+        run: |
+          set -Eeuo pipefail
+          for attempt in $(seq 1 90); do
+            STATUS="$(aws ssm get-command-invocation \
+              --region "$AWS_REGION" \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$EC2_INSTANCE_ID" \
+              --query "Status" \
+              --output text 2>/dev/null || true)"
+            echo "[$attempt/90] status: ${STATUS:-not-ready}"
+            case "$STATUS" in
+              Success|Failed|TimedOut|Cancelled|Cancelling)
+                break
+                ;;
+              *)
+                sleep 10
+                ;;
+            esac
+          done
+
+          INVOCATION_JSON="$(aws ssm get-command-invocation \
+            --region "$AWS_REGION" \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$EC2_INSTANCE_ID" \
+            --output json)"
+          FINAL_STATUS="$(printf '%s' "$INVOCATION_JSON" | jq -r '.Status // "Unknown"')"
+          STDOUT_CONTENT="$(printf '%s' "$INVOCATION_JSON" | jq -r '.StandardOutputContent // ""')"
+          STDERR_CONTENT="$(printf '%s' "$INVOCATION_JSON" | jq -r '.StandardErrorContent // ""')"
+
+          echo "::group::SSM stdout"
+          printf '%s\n' "$STDOUT_CONTENT"
+          echo "::endgroup::"
+
+          if [ -n "$STDERR_CONTENT" ]; then
+            echo "::group::SSM stderr"
+            printf '%s\n' "$STDERR_CONTENT"
+            echo "::endgroup::"
+          fi
+
+          if [ "$FINAL_STATUS" != "Success" ]; then
+            echo "::error::SSM command failed. status=$FINAL_STATUS"
+            exit 1
+          fi
