@@ -35,7 +35,7 @@ class DateCandidate(BaseModel):
         return self
 
 
-class NewsletterExtractionRequest(BaseModel):
+class NewsletterAnalysisRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     original_text: str = Field(alias="originalText")
@@ -44,6 +44,10 @@ class NewsletterExtractionRequest(BaseModel):
     reference_date: date | None = Field(default=None, alias="referenceDate")
     timezone: str = "Asia/Seoul"
     date_candidates: list[DateCandidate] = Field(default_factory=list, alias="dateCandidates")
+
+
+class NewsletterExtractionRequest(NewsletterAnalysisRequest):
+    pass
 
 
 class SelectedDateCandidate(BaseModel):
@@ -73,6 +77,13 @@ class ExtractedItem(BaseModel):
 
 
 class NewsletterExtractionResponse(BaseModel):
+    items: list[ExtractedItem]
+    meta: dict[str, Any] = Field(default_factory=dict)
+
+
+class NewsletterAnalysisResponse(BaseModel):
+    title: str
+    summary: str
     items: list[ExtractedItem]
     meta: dict[str, Any] = Field(default_factory=dict)
 

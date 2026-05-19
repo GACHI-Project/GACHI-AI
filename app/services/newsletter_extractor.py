@@ -6,6 +6,8 @@ from app.schemas import (
     DateStatus,
     ExtractedItem,
     ExtractedItemType,
+    NewsletterAnalysisRequest,
+    NewsletterAnalysisResponse,
     NewsletterExtractionRequest,
     NewsletterExtractionResponse,
     SelectedDateCandidate,
@@ -50,22 +52,47 @@ CHECKLIST_KEYWORDS = (
 def extract_newsletter_items(
     request: NewsletterExtractionRequest,
 ) -> NewsletterExtractionResponse:
+    items = _extract_items(request)
+    return NewsletterExtractionResponse(
+        items=items,
+        meta=_build_meta(request),
+    )
+
+
+def analyze_newsletter(
+    request: NewsletterAnalysisRequest,
+) -> NewsletterAnalysisResponse:
+    items = _extract_items(request)
+    return NewsletterAnalysisResponse(
+        title=_extract_document_title(request),
+        summary=_summarize_document(request, items),
+        items=items,
+        meta=_build_meta(request),
+    )
+
+
+def _extract_items(
+    request: NewsletterAnalysisRequest,
+) -> list[ExtractedItem]:
     text = request.original_text or ""
     items = _extract_candidate_backed_items(text, request)
     items.extend(_extract_missing_date_checklists(text, request))
-    return NewsletterExtractionResponse(
-        items=_dedupe_items(items),
-        meta={
-            "mode": "rule_based_baseline",
-            "dateCandidateCount": len(request.date_candidates),
-            "requiresLLMReview": True,
-        },
-    )
+    return _dedupe_items(items)
+
+
+def _build_meta(request: NewsletterAnalysisRequest) -> dict[str, object]:
+    return {
+        "mode": "rule_based_baseline",
+        "dateCandidateCount": len(request.date_candidates),
+        "requiresLLMReview": True,
+        "retainedDateCandidateInput": True,
+        "retainedItemResponse": True,
+    }
 
 
 def _extract_candidate_backed_items(
     text: str,
-    request: NewsletterExtractionRequest,
+    request: NewsletterAnalysisRequest,
 ) -> list[ExtractedItem]:
     items = []
     for index, candidate in enumerate(request.date_candidates):
@@ -96,7 +123,7 @@ def _extract_candidate_backed_items(
 
 def _extract_missing_date_checklists(
     text: str,
-    request: NewsletterExtractionRequest,
+    request: NewsletterAnalysisRequest,
 ) -> list[ExtractedItem]:
     items = []
     for sentence in _split_sentences(text):
@@ -193,3 +220,27 @@ def _dedupe_items(items: list[ExtractedItem]) -> list[ExtractedItem]:
         seen.add(key)
         result.append(item)
     return result
+
+
+def _extract_document_title(request: NewsletterAnalysisRequest) -> str:
+    for line in request.original_text.splitlines():
+        title = re.sub(r"\s+", " ", line).strip(" -:\t")
+        if title:
+            return title[:80].rstrip()
+    return "가정통신문"
+
+
+def _summarize_document(
+    request: NewsletterAnalysisRequest,
+    items: list[ExtractedItem],
+) -> str:
+    text = request.translated_text or request.original_text
+    sentences = list(_split_sentences(text))
+    if sentences:
+        summary = " ".join(sentences[:2])
+        if len(summary) > 180:
+            return summary[:179].rstrip() + "..."
+        return summary
+    if items:
+        return f"추출된 주요 항목 {len(items)}건을 확인해야 합니다."
+    return "분석할 본문 내용이 충분하지 않습니다."
