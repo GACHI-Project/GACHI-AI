@@ -234,7 +234,8 @@ def _summarize_document(
     request: NewsletterAnalysisRequest,
     items: list[ExtractedItem],
 ) -> str:
-    text = request.translated_text or request.original_text
+    translated = (request.translated_text or "").strip()
+    text = translated or request.original_text
     sentences = list(_split_sentences(text))
     if sentences:
         summary = " ".join(sentences[:2])

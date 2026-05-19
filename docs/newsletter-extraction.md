@@ -22,7 +22,7 @@ LLM 호출 전 system/user prompt와 최종 분석 응답 JSON schema를 확인�
 
 ## Analyze 요청 스키마
 
-`/ai/newsletters/analyze`는 기존 `extract-items` 입력 형식을 그대로 사용한다.
+`/ai/newsletters/analyze`는 기존 `extract-items` 입력 계약을 그대로 사용한다. 따라서 `dateCandidates`의 `startOffset`, `endOffset`도 기존과 동일하게 필수다.
 
 | 필드 | 타입 | 필수 | 설명 |
 | --- | --- | --- | --- |
@@ -133,6 +133,7 @@ LLM 호출 전 system/user prompt와 최종 분석 응답 JSON schema를 확인�
 ## 유지 여부 검토
 
 - `dateCandidates` 입력 형식은 유지한다. 날짜 정규화 책임을 BE 또는 전처리 단계에 두고, AI 서버는 후보 중 하나를 선택한다.
+- `startOffset`, `endOffset`은 기존 `extract-items` 입력 계약과 동일하게 필수다. AI 서버가 원문 근거 범위를 안정적으로 찾기 위해 사용한다.
 - `items` 응답 형식은 유지한다. 기존 `extract-items` 소비 코드가 항목 구조를 그대로 검증할 수 있어야 한다.
 - `items[].title`은 항목 제목이고, top-level `title`은 문서 제목이다. BE 매핑 시 두 필드를 구분해야 한다.
 - `meta`는 저장 모델과 직접 매핑하지 않는다. 디버깅, 분석 모드 표시, 후보 개수 확인용이다.
