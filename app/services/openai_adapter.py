@@ -69,9 +69,9 @@ class OpenAINewsletterAdapter:
         except urllib.error.HTTPError as exc:
             error_body = exc.read().decode("utf-8", errors="replace")
             logger.warning(
-                "[OpenAIAdapter] OpenAI 호출 실패. status=%s, body=%s",
+                "[OpenAIAdapter] OpenAI 호출 실패. status=%s, body_length=%s",
                 exc.code,
-                error_body[:1000],
+                len(error_body),
             )
             raise OpenAIAdapterError(f"OpenAI 호출 실패. status={exc.code}") from exc
         except urllib.error.URLError as exc:
@@ -92,8 +92,19 @@ class OpenAINewsletterAdapter:
         if isinstance(output_text, str) and output_text.strip():
             return self._loads_model_json(output_text)
 
-        for output in response_body.get("output", []):
-            for content in output.get("content", []):
+        outputs = response_body.get("output", [])
+        if not isinstance(outputs, list):
+            raise OpenAIAdapterError("OpenAI 응답의 output 형식이 올바르지 않습니다.")
+
+        for output in outputs:
+            if not isinstance(output, dict):
+                continue
+            contents = output.get("content", [])
+            if not isinstance(contents, list):
+                continue
+            for content in contents:
+                if not isinstance(content, dict):
+                    continue
                 text = content.get("text")
                 if isinstance(text, str) and text.strip():
                     return self._loads_model_json(text)
@@ -104,7 +115,10 @@ class OpenAINewsletterAdapter:
         try:
             parsed = json.loads(value)
         except json.JSONDecodeError as exc:
-            logger.warning("[OpenAIAdapter] 모델 출력 JSON 파싱 실패. output=%s", value[:1000])
+            logger.warning(
+                "[OpenAIAdapter] 모델 출력 JSON 파싱 실패. output_length=%s",
+                len(value),
+            )
             raise OpenAIAdapterError("OpenAI 모델 출력이 JSON 형식이 아닙니다.") from exc
 
         if not isinstance(parsed, dict):
