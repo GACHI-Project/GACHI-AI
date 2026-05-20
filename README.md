@@ -6,7 +6,8 @@ GACHI 프로젝트의 AI 서버입니다. BE와 분리된 FastAPI 애플리케�
 
 - 가정통신문 원문과 날짜 후보를 기반으로 제목, 요약, 일정/마감/체크리스트 항목을 분석합니다.
 - AI 서버는 분석 결과 JSON만 반환하고, DB 저장은 BE가 담당합니다.
-- OpenAI API 연결 전에도 검증할 수 있도록 비용 없는 rule-based baseline과 prompt-preview API를 제공합니다.
+- `OPENAI_ENABLED=true`일 때 OpenAI API를 호출하고, 기본값에서는 비용 없는 rule-based baseline으로 응답합니다.
+- 기존 baseline API와 prompt-preview API를 유지합니다.
 
 ## 로컬 실행
 
@@ -42,5 +43,5 @@ Windows PowerShell에서는 다음처럼 가상환경을 활성화합니다.
 
 - `docs/env.md`: 환경변수
 - `docs/deploy.md`: Docker image와 EC2 배포 방식
-- `docs/newsletter-extraction.md`: 가정통신문 분석 API 스펙과 프롬프트 흐름
+- `docs/newsletter-extraction.md`: 가정통신문 분석 구현 경계와 유지 결정
 - `docs/newsletter-labeling-guide.md`: 정답 데이터 라벨링 기준
