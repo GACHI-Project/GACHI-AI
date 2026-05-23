@@ -1,4 +1,4 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 
 from app.schemas import (
     NewsletterAnalysisRequest,
@@ -9,13 +9,25 @@ from app.schemas import (
 )
 from app.services.newsletter_extractor import analyze_newsletter, extract_newsletter_items
 from app.services.newsletter_prompt import ANALYSIS_RESPONSE_SCHEMA, build_prompt_messages
+from app.services.openai_adapter import OpenAIAdapterError, OpenAIConfigurationError
 
 router = APIRouter(prefix="/ai/newsletters", tags=["newsletters"])
 
 
 @router.post("/analyze", response_model=NewsletterAnalysisResponse)
 def analyze(req: NewsletterAnalysisRequest) -> NewsletterAnalysisResponse:
-    return analyze_newsletter(req)
+    try:
+        return analyze_newsletter(req)
+    except OpenAIConfigurationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(exc),
+        ) from exc
+    except OpenAIAdapterError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=str(exc),
+        ) from exc
 
 
 @router.post("/extract-items", response_model=NewsletterExtractionResponse)
