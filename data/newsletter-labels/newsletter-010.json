@@ -1,0 +1,71 @@
+{
+    "documentId": "doc_010",
+    "documentTitle": "2026년 교육급여 및 교육비 집중신청 기간 동시 신청 안내",
+    "documentDate": "2026-03-13",
+    "school": "서울삼성초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_011_1",
+            "raw": "2026.3.3.(화) ~ 3.20.(금)",
+            "resolved": "2026-03-20",
+            "note": "집중신청기간 마감일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "교육급여·교육비 지원 제도 안내",
+            "evidenceText": "우리 학교에서는 지원 대상 자격을 갖춘 희망하는 가정에 교육급여, 교육비를 지원하고 있으니",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 정부는 저소득 가정 학생에게 교육급여(학용품·교육활동비)와 교육비(급식비·방과후 수강료 등)를 지원합니다. 기초생활수급자, 한부모가정, 차상위계층 등이 주요 대상입니다. 해당될 경우 꼭 신청하세요."
+        },
+        {
+            "type": "deadline",
+            "title": "교육급여·교육비 집중신청 기간 신청",
+            "evidenceText": "집중신청 기간: 2026.3.3.(화) ~ 3.20.(금) / 집중신청기간 외에도 연중 언제든지 신청이 가능합니다. 다만 신청일이 속한 달(月)부터 지원합니다.",
+            "selectedDateCandidateId": "dc_011_1",
+            "dateStatus": "confirmed",
+            "date": "2026-03-20",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "집중신청 기간에 신청해야 학기 초부터 지원받을 수 있습니다. 기간이 지나도 신청은 가능하지만, 신청한 달부터만 지원되므로 빠를수록 유리합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "교육급여 지원 항목 및 금액",
+            "evidenceText": "교육급여 / 초등학생: 교육활동지원비(502,000원)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "교육급여는 학용품, 교재비 등 교육활동에 사용할 수 있는 바우처(포인트)로 지급됩니다. 초등학생은 연간 502,000원을 받을 수 있습니다. 선정 후 온라인(e-voucher.kosaf.go.kr)에서 별도로 신청해야 사용 가능합니다."
+        },
+        {
+            "type": "checklist",
+            "title": "신청 방법 선택 및 서류 준비",
+            "evidenceText": "신청 방법(택1): ① 방문신청 - 부모 주민등록주소지 동 주민센터 / ② 온라인 신청 - 복지로 또는 교육비 원클릭 신청시스템 / 제출 서류: 신청서, 소득재산신고서, 금융정보등 제공 동의서, 각종 증빙자료",
+            "selectedDateCandidateId": "dc_011_1",
+            "dateStatus": "confirmed",
+            "date": "2026-03-20",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "주민센터(동사무소)는 주민등록주소지 기준으로 방문해야 합니다. 온라인 신청은 복지로(www.bokjiro.go.kr) 또는 교육비 원클릭 시스템(oneclick.neis.go.kr)에서 가능합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "법정자격 대상자 교육비 납부유예 안내",
+            "evidenceText": "교육비 납부유예: 법정자격 대상자(기초, 한부모, 차상위)의 경우 교무실로 증명서를 제출하면 납부유예 가능합니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "기초생활수급자, 한부모가정, 차상위계층에 해당하면 급식비 등 교육비를 심사 결과가 나올 때까지 납부하지 않아도 됩니다. 교무실에 증명서(수급자 증명서 등)를 제출하면 됩니다."
+        }
+    ]
+}

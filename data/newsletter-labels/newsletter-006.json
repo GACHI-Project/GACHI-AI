@@ -1,0 +1,55 @@
+{
+    "documentId": "doc_006",
+    "documentTitle": "2026 고교학점제 학부모 설명회",
+    "documentDate": "2026-05-15",
+    "school": "경기도안양과천교육지원청",
+    "dateCandidates": [
+        {
+            "id": "dc_005_1",
+            "raw": "2026. 6. 13.(토) 10:00 ~ 12:00",
+            "resolved": "2026-06-13T10:00",
+            "note": "설명회 일시"
+        },
+        {
+            "id": "dc_005_2",
+            "raw": "2026. 5. 20.(수) 09:00부터",
+            "resolved": "2026-05-20T09:00",
+            "note": "신청 시작 일시 (선착순 마감)"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "고교학점제 제도 안내",
+            "evidenceText": "고교학점제 및 대입 변화에 대해 이해를 돕고자 설명회를 개최하고자 하오니 많은 관심과 참여 부탁드립니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "고교학점제는 2025년부터 한국 전체 고등학교에 도입된 새로운 교육 제도입니다. 학생이 대학처럼 원하는 과목을 선택해 수업을 듣고 학점을 이수하는 방식이며, 대학 입시 방식도 이에 따라 변화하고 있습니다. 초등학생 자녀를 둔 학부모도 미리 알아두면 도움이 됩니다."
+        },
+        {
+            "type": "deadline",
+            "title": "고교학점제 설명회 신청",
+            "evidenceText": "신청 일정: 2026. 5. 20.(수) 09:00부터 (※ 선착순 마감)",
+            "selectedDateCandidateId": "dc_005_2",
+            "dateStatus": "confirmed",
+            "date": "2026-05-20",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "선착순 마감이므로 정원이 차면 신청이 불가합니다. 신청 시작일(5월 20일) 오전 9시에 바로 신청하는 것을 권장합니다. 신청 방법: http://anyanggwacheon.joongboo.com/"
+        },
+        {
+            "type": "schedule",
+            "title": "고교학점제 학부모 설명회 참석",
+            "evidenceText": "일시: 2026. 6. 13.(토) 10:00 ~ 12:00 / 장소: 동안고등학교 체육관(안양시 동안구 부림로 71)",
+            "selectedDateCandidateId": "dc_005_1",
+            "dateStatus": "confirmed",
+            "date": "2026-06-13",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": null
+        }
+    ]
+}

@@ -191,6 +191,13 @@ cython_debug/
 # Ruff stuff:
 .ruff_cache/
 
+# Newsletter evaluation
+reports/
+data/newsletter-labels/*.pdf
+data/newsletter-labels/*.jpg
+data/newsletter-labels/*.jpeg
+data/newsletter-labels/*.png
+
 # PyPI configuration file
 .pypirc
 
@@ -205,3 +212,5 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+.idea/

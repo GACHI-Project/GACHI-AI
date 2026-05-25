@@ -1,0 +1,60 @@
+{
+    "documentId": "doc_008",
+    "documentTitle": "2026학년도 1학기 방과후[맞춤형, 수익자 방과후] 공개의 날 참관 안내",
+    "documentDate": "2026-04-30",
+    "school": "석수초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_013_1",
+            "raw": "2026년 5월 18일(월) ~ 2026년 5월 22일(금)",
+            "resolved": "2026-05-22",
+            "note": "방과후 공개의 날 운영 기간 마감일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "방과후 공개의 날 제도 안내",
+            "evidenceText": "방과후 운영의 활성화와 질적 향상을 위하여 방과후 공개의 날을 아래와 같이 실시하고자 하오니, 보호자님께서는 바쁘시더라도 참관하시어 학생들이 활동하는 모습을 보시고 격려해 주시면 감사하겠습니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "방과후 공개의 날은 학부모가 자녀의 방과후 수업을 직접 참관할 수 있는 날입니다. 한국 학교에서는 수업 참관 기회를 학기마다 제공하며, 참관록을 작성하고 등록부에 서명해야 합니다."
+        },
+        {
+            "type": "schedule",
+            "title": "방과후 공개의 날 참관",
+            "evidenceText": "운영 기간: 2026년 5월 18일(월) ~ 2026년 5월 22일(금), 5일간",
+            "selectedDateCandidateId": "dc_013_1",
+            "dateStatus": "confirmed",
+            "date": "2026-05-22",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "자녀의 프로그램 요일과 공개시간을 표에서 확인한 뒤 해당 요일에 방문하면 됩니다. 사전 신청은 별도로 요구하지 않으나, 방문 시 등록부 서명이 필요합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "수업 중 사진 촬영 및 공유 금지",
+            "evidenceText": "강사 및 학생의 개인정보 보호를 위해 수업 중 사진 촬영 및 공유는 자제해 주시기 바랍니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국에서는 다른 학생의 얼굴이 찍힌 사진을 무단으로 공유하는 것이 개인정보보호법 위반이 될 수 있습니다. 수업 참관 중 사진이나 동영상 촬영은 삼가주세요."
+        },
+        {
+            "type": "reminder",
+            "title": "맞춤형 vs 수익자 방과후 프로그램 구분",
+            "evidenceText": "운영 대상: 맞춤형 5개, 방과후 10개 프로그램",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "맞춤형 프로그램은 저학년(1~2학년) 학생을 위한 돌봄 중심 프로그램이며, 수익자 방과후는 학부모가 수강료를 내고 신청하는 선택 활동 수업입니다. 두 가지는 운영 시간과 장소가 다릅니다."
+        }
+    ]
+}

@@ -1,0 +1,86 @@
+{
+    "documentId": "doc_001",
+    "documentTitle": "2026학년도 1학기 학습준비물 안내",
+    "documentDate": "2026-03-24",
+    "school": "서울세륜초등학교",
+    "dateCandidates": [],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학교 지원 vs 가정 구매 준비물 구분 안내",
+            "evidenceText": "학부모님의 부담을 경감하고자 학생들에게 학습준비물을 지원하고 있습니다. / 학년 공통으로 지원되는 학습준비물 / 가정에서 직접 구매가 필요한 학습준비물",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 초등학교는 일부 학용품을 학교 예산으로 무료 제공합니다. '학교 지원' 목록에 있는 것은 구매하지 않아도 됩니다. '가정 구매' 목록에 있는 것만 직접 준비하면 됩니다."
+        },
+        {
+            "type": "checklist",
+            "title": "1학년 가정 구매 준비물 준비",
+            "evidenceText": "가정에서 직접 구매가 필요한 학습준비물 / 1학년: A4 클리어파일(미술작품보관용)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": null
+        },
+        {
+            "type": "checklist",
+            "title": "2학년 가정 구매 준비물 준비",
+            "evidenceText": "2학년: 가위, 풀, 색연필, 사인펜, 투명 테이프, 15cm 자, 줄노트, 연필 등",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": null
+        },
+        {
+            "type": "checklist",
+            "title": "3학년 가정 구매 준비물 준비",
+            "evidenceText": "3학년: 자, 네임펜, 공책, 연필, 지우개 등",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": null
+        },
+        {
+            "type": "checklist",
+            "title": "4학년 가정 구매 준비물 준비",
+            "evidenceText": "4학년: 리코더, 삼각자(작년에 나눠준 리코더, 컴퍼스 세트 없는 사람 준비), 풀, 테이프, 공책류 등",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "리코더는 한국 초등학교 음악 수업에서 자주 사용하는 부는 악기입니다. 문서에 “작년에 나눠준 리코더, 컴퍼스 세트 없는 사람 준비”라고 되어 있으므로, 이미 학교에서 받은 물품이 있으면 다시 사지 않아도 되고 없는 경우에만 준비하면 됩니다."
+        },
+        {
+            "type": "checklist",
+            "title": "5학년 가정 구매 준비물 준비",
+            "evidenceText": "5학년: 필기도구(천으로 된 필통, 연필 3자루 이상, 지우개, 플라스틱 15cm 자), 가위, 풀, 스카치테이프, 검정색 네임펜, 색연필(12색), 싸인펜(12색), L자 파일(가정통신문 배부용), 줄노트, 줄넘기",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "L자 파일은 학교에서 가정으로 보내는 종이 공지문(가정통신문)을 보관하는 용도입니다. 한국 학교는 공지사항을 종이로 인쇄해 학생 편에 보내는 문화가 있습니다. 문구점에서 쉽게 구매할 수 있습니다."
+        },
+        {
+            "type": "checklist",
+            "title": "6학년 가정 구매 준비물 준비",
+            "evidenceText": "6학년: 필기도구(천으로 된 필통, 연필 3자루 이상, 지우개, 플라스틱 15cm 자), 가위, 풀, 스카치테이프, 검정색 네임펜, 색연필(12색), 싸인펜(12색), L자 파일(가정통신문 배부용), 줄노트, 부는 악기류(음악시간 안내)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "L자 파일은 학교에서 가정으로 보내는 종이 공지문(가정통신문)을 보관하는 용도입니다. '부는 악기류'는 음악 수업 시작 시 담임 선생님이 별도로 안내합니다."
+        }
+    ]
+}

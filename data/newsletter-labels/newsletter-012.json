@@ -1,0 +1,94 @@
+{
+    "documentId": "doc_012",
+    "documentTitle": "2026년도 학부모 수업 공개 및 학교설명회 안내",
+    "documentDate": "2026-03-10",
+    "school": "서울삼성초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_014_1",
+            "raw": "3월 18일(수) 5교시 12:50~13:30",
+            "resolved": "2026-03-18T12:50",
+            "note": "학부모 수업 공개 시간"
+        },
+        {
+            "id": "dc_014_2",
+            "raw": "3월 18일(수) 13:50~16:00",
+            "resolved": "2026-03-18T13:50",
+            "note": "학교·학급 설명회 시간"
+        },
+        {
+            "id": "dc_014_3",
+            "raw": "6월 중 별도 실시(6월 2주 예정)",
+            "resolved": null,
+            "note": "개별반 수업 공개 — 날짜 미확정"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학부모 수업 공개 제도 안내",
+            "evidenceText": "본교에서는 2026학년도 학부모 수업 공개와 학교 교육활동 및 학급 운영을 안내하는 학교 설명회를 아래와 같이 실시하고자 합니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 초등학교는 학기 초에 학부모가 자녀의 수업을 직접 참관하고, 담임 선생님과 학교 운영 방향을 공유하는 '수업 공개 및 학교설명회'를 운영합니다. 자녀의 수업 모습을 직접 볼 수 있는 중요한 행사입니다."
+        },
+        {
+            "type": "schedule",
+            "title": "학부모 수업 공개",
+            "evidenceText": "1~6학년 학급 담임 교사 / 3월 18일(수) 5교시 12:50~13:30 / 해당 교실",
+            "selectedDateCandidateId": "dc_014_1",
+            "dateStatus": "confirmed",
+            "date": "2026-03-18",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "5교시는 오후 12시 50분에 시작합니다. 한국 초등학교는 수업을 '교시' 단위로 운영하며, 1교시는 보통 오전 9시에 시작하고 한 교시는 40분입니다."
+        },
+        {
+            "type": "schedule",
+            "title": "학교설명회 및 학급설명회",
+            "evidenceText": "일시: 3월 18일 (수) 13:50~16:00 / 내용: 2부 학교 설명회 / 3부 학급 설명회",
+            "selectedDateCandidateId": "dc_014_2",
+            "dateStatus": "confirmed",
+            "date": "2026-03-18",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "학교설명회에서는 학교장의 교육 방향과 연간 교육활동을 안내받습니다. 학급설명회에서는 담임 선생님이 학급 운영 방식, 평가 방법, 생활지도 방향 등을 설명합니다. 학부모회 임원 선출도 이 자리에서 이루어집니다."
+        },
+        {
+            "type": "checklist",
+            "title": "e알리미 수업 참관 신청 및 당일 신청 화면 제시",
+            "evidenceText": "수업 참관을 희망하시는 학부모님께서는 e알리미로 신청해 주세요. e알리미 미회신 시 수업 참관이 불가합니다. / 당일 학교 출입 시 e알리미 참관 신청 화면을 보안관실에 제시해 주시기 바랍니다.",
+            "selectedDateCandidateId": "dc_014_1",
+            "dateStatus": "confirmed",
+            "date": "2026-03-18",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "수업 참관은 사전 신청이 필수입니다. e알리미 앱에서 신청하고, 당일 학교 입구 보안관실에서 신청 화면을 보여줘야 입장이 가능합니다. 신청하지 않으면 참관이 불가합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "수업 장면 촬영·공유 금지",
+            "evidenceText": "다음 사항은 법에 위반되므로 주의해 주세요! - 수업 장면 촬영(사진, 동영상 등) / - 수업 장면 무단 공유/공개(문자, 카카오톡, 블로그, 카페 등)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국에서는 수업 중 다른 학생이 포함된 사진·영상을 무단으로 SNS나 메시지로 공유하면 개인정보보호법 위반이 될 수 있습니다. 수업 참관 중 촬영은 금지됩니다."
+        },
+        {
+            "type": "reminder",
+            "title": "학부모회 임원 선출 안내",
+            "evidenceText": "학부모회 총회 13:50~14:00 / 학부모회 임원 선출 / 총회 안건 투표 결과 안내",
+            "selectedDateCandidateId": "dc_014_2",
+            "dateStatus": "confirmed",
+            "date": "2026-03-18",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "학부모회는 학교 교육활동을 지원하고 학부모 의견을 학교에 전달하는 공식 조직입니다. 학기 초 설명회에서 학부모 투표를 통해 회장, 부회장 등 임원을 선출합니다."
+        }
+    ]
+}

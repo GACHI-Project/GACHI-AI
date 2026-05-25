@@ -1,0 +1,139 @@
+{
+    "documentId": "doc_003",
+    "documentTitle": "2026학년도 서울세륜초등학교 영재학급 영재교육대상자 선발 요강",
+    "documentDate": "2026-03-13",
+    "school": "서울세륜초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_004_1",
+            "raw": "3.30.(월)~4.3.(금) 16:00까지",
+            "resolved": "2026-04-03",
+            "note": "원서 접수 마감일"
+        },
+        {
+            "id": "dc_004_2",
+            "raw": "4.6.(월)~4.7.(화)",
+            "resolved": "2026-04-06",
+            "note": "관찰추천 기간"
+        },
+        {
+            "id": "dc_004_3",
+            "raw": "4.7.(화) 14:40~16:00",
+            "resolved": "2026-04-07T14:40",
+            "note": "지필평가 일시"
+        },
+        {
+            "id": "dc_004_4",
+            "raw": "4.10.(금) 16:00",
+            "resolved": "2026-04-10T16:00",
+            "note": "최종 합격자 발표"
+        },
+        {
+            "id": "dc_004_5",
+            "raw": "4.17.(금)",
+            "resolved": "2026-04-17",
+            "note": "입급식 날짜"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "영재학급 제도 안내",
+            "evidenceText": "서울세륜초등학교 영재학급의 설치를 서울시교육청으로부터 정식 인가받아 운영하고 있습니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "영재학급은 수학·과학 등 특정 분야에서 뛰어난 능력을 보이는 학생을 선발해 심화 교육을 제공하는 한국의 공식 교육 제도입니다. 일반 수업과 별도로 운영되며, 서울시교육청의 공식 인가를 받은 프로그램입니다."
+        },
+        {
+            "type": "checklist",
+            "title": "담임 선생님께 추천 의향 확인",
+            "evidenceText": "2026년 3월 현재, 우리 학교의 4~5학년 재학생으로 담임교사의 추천을 받은 학생",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "한국 영재교육 지원은 학부모가 단독으로 신청할 수 없습니다. 반드시 담임 선생님의 추천이 있어야 지원 자격이 생깁니다. 원서 접수 전에 먼저 담임 선생님과 상담하세요."
+        },
+        {
+            "type": "deadline",
+            "title": "영재학급 원서 접수",
+            "evidenceText": "접수 기간: 2026년 3월 30일(월) ~ 4월 3일(금) 16:00까지 (기한엄수) / 접수 장소: (4층) 교과교육실",
+            "selectedDateCandidateId": "dc_004_1",
+            "dateStatus": "confirmed",
+            "date": "2026-04-03",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": null
+        },
+        {
+            "type": "schedule",
+            "title": "창의적 문제해결력 평가 (지필평가)",
+            "evidenceText": "4.7.(화) 14:40~16:00 창의적 문제해결력 평가 응시 / 평가 시작 10분 전에 입실을 완료해야 평가에 응시할 수 있음",
+            "selectedDateCandidateId": "dc_004_3",
+            "dateStatus": "confirmed",
+            "date": "2026-04-07",
+            "target": "both",
+            "actionRequired": true,
+            "schoolContext": "한국 영재학급 선발에는 창의적 문제해결력을 평가하는 지필시험이 포함됩니다. 시험 10분 전까지 입실해야 응시 가능하며, 준비물은 학생이 직접 챙겨야 합니다."
+        },
+        {
+            "type": "schedule",
+            "title": "최종 합격자 발표",
+            "evidenceText": "최종 합격자 이알리미 개별 공지 / 4.10.(금) 16:00 예정",
+            "selectedDateCandidateId": "dc_004_4",
+            "dateStatus": "confirmed",
+            "date": "2026-04-10",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "이알리미는 한국 학교에서 공지사항을 학부모 스마트폰으로 전송하는 알림 서비스입니다. 앱을 설치하지 않은 경우 알림을 받지 못할 수 있으니 확인하세요."
+        },
+        {
+            "type": "reminder",
+            "title": "다문화가정 자녀 사회다양성전형 우선 선발 안내",
+            "evidenceText": "다문화가정 자녀 - 사회다양성전형 1순위",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 영재교육에는 다문화가정 자녀를 위한 별도 전형(사회다양성전형)이 있습니다. 일반 경쟁 없이 우선 선발 대상이 되며, 소득 기준(중위소득 160% 이하)을 충족하면 지원할 수 있습니다."
+        },
+        {
+            "type": "checklist",
+            "title": "다문화가정 전형 증빙 서류 준비",
+            "evidenceText": "다문화가정 자녀: 본인 기본증명서 1부, 부모 혼인관계 증명서 1부, 외국인 등록증명서(해당자) 1부 또는 귀화 증명서(해당자) 1부",
+            "selectedDateCandidateId": "dc_004_1",
+            "dateStatus": "confirmed",
+            "date": "2026-04-03",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "사회다양성전형으로 지원하는 다문화가정은 위 서류를 원서 접수 시 함께 제출해야 합니다. 서류가 없으면 일반전형으로 전환됩니다."
+        },
+        {
+            "type": "reminder",
+            "title": "영재학급 이수 시 학교생활기록부 기재",
+            "evidenceText": "학교생활기록부에 영재교육 이수 실적이 기재됨",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "학교생활기록부(생기부)는 한국 학생의 학교 생활 전반이 기록되는 공식 문서로, 중학교·고등학교 진학 시 중요하게 활용됩니다. 영재학급 이수 기록이 여기에 남으면 진학에 도움이 될 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "수강료 및 저소득 가정 지원 안내",
+            "evidenceText": "학생 1인당 수강료: 금 600,000원 / 기회균등전형은 자유수강권을 활용하여 수강이 가능",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "영재학급은 공식 교육 제도이지만 수강료(연 60만원)가 부과됩니다. 단, 기초생활수급자 등 저소득 가정은 자유수강권(정부 지원금)으로 수강료를 면제받을 수 있습니다. 해당 여부는 학교에 문의하세요."
+        }
+    ]
+}

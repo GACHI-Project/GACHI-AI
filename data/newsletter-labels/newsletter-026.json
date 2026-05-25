@@ -1,0 +1,94 @@
+{
+    "documentId": "doc_026",
+    "documentTitle": "학교안전공제회 보상시스템 및 학부모 직접청구 절차 안내",
+    "documentDate": "2025-03-24",
+    "school": "덕성초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_026_1",
+            "raw": "사고 발생일로부터 3년 이내",
+            "resolved": null,
+            "note": "청구권 소멸시효 — 절대 날짜 아님"
+        },
+        {
+            "id": "dc_026_2",
+            "raw": "14일 이내",
+            "resolved": null,
+            "note": "공제급여 지급 결정 기간 — 절대 날짜 아님"
+        },
+        {
+            "id": "dc_026_3",
+            "raw": "사고 후 최대한 빨리 2~3일 이내",
+            "resolved": null,
+            "note": "사고통지 권장 기간 — 절대 날짜 아님"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학교안전공제회 제도 안내",
+            "evidenceText": "본교에서는 학교 교육활동 중 발생한 학생의 안전사고에 대비하여 「학교안전사고예방 및 보상에 관한 법률」에 의거 학교안전공제회에 가입하고 교육활동 중 안전사고가 발생하면 안전공제회에 사고통지를 하고 있습니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국의 학교안전공제회는 학생이 학교 교육활동 중 다쳤을 때 치료비를 보상해주는 공적 보험 제도입니다. 별도 가입 없이 모든 재학생이 자동으로 적용되며, 국민건강보험으로 부담한 본인부담금 전액과 비급여 항목 일부를 지원받을 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "학교안전공제회 보상 범위 안내",
+            "evidenceText": "국민건강보험 적용 급여 항목의 본인부담금은 전액 보상하며, 비급여 항목 진료비는 학교안전교제회에서 심사 후 결정하여 지급합니다. 공제급여의 청구 횟수 제한은 없으며, 치료가 종료된 경우는 물론, 치료 중인 경우에도 청구 가능합니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "국민건강보험이 적용되는 치료비 중 학부모가 부담한 금액(본인부담금)은 전액 돌려받을 수 있습니다. MRI 등 비급여 항목도 일부 보상이 가능합니다. 치료가 끝나지 않아도 중간에 청구할 수 있으며, 여러 번 나눠서 청구도 가능합니다."
+        },
+        {
+            "type": "checklist",
+            "title": "학교 안전사고 발생 시 즉시 담임 선생님께 사고통지",
+            "evidenceText": "치료비 청구 의사가 있으신 학부모님께서는 사고 발생 후 최대한 빨리(2~3일 이내) 담임선생님께 알려주세요. (학교를 통해 사고통지가 접수되지 않는 경우 청구가 불가하니 청구 의사가 있으신 경우 반드시 알려주시기 바랍니다)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "치료비를 청구하려면 반드시 학교를 통해 먼저 사고통지가 접수되어야 합니다. 학교에 알리지 않고 직접 공제회에 청구하면 거부될 수 있습니다. 사고 후 2~3일 이내에 담임 선생님에게 연락하는 것이 중요합니다."
+        },
+        {
+            "type": "checklist",
+            "title": "공제급여 청구에 필요한 서류 준비",
+            "evidenceText": "공제급여청구서 / 진료비(치료비) 계산서 영수증 또는 납부확인서 원본 (카드매출전표, 간이영수증, 현금영수증 등은 불인정) / 청구인(보호자) 통장 사본 / 진료비(비급여) 세부내역서 / 사고학생 주민등록등본 [가족관계증명서]",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "병원에서 받은 진료비 영수증(계산서 원본)이 반드시 필요합니다. 카드 영수증이나 간이영수증은 인정되지 않으니 병원에서 정식 영수증을 꼭 받아두세요. 외국인 학생의 경우 주민등록등본 대신 외국인등록증으로 대체 가능합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "온라인 청구 방법 안내",
+            "evidenceText": "학교안전공제회 공제급여관리시스템 접속(http://www.schoolsafe.or.kr) / 방법 1) 학부모 시스템로그인(모바일 인증 로그인) / 공제급여청구 클릭 → 청구서 작성",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "공제급여는 학교안전공제회 홈페이지(www.schoolsafe.or.kr)에서 온라인으로 직접 청구할 수 있습니다. 모바일 인증 로그인 후 자녀 이름과 사고 정보를 입력하면 됩니다. 서류는 파일로 업로드하거나 우편으로 제출할 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "청구권 소멸시효 안내",
+            "evidenceText": "청구권 소멸시효: 사고 발생일로부터 3년 경과 시 청구권 소멸",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "사고가 발생하고 3년이 지나면 치료비를 청구할 수 없습니다. 당장 치료비가 크지 않더라도 나중에 후유증이 생길 수 있으므로, 사고 후 반드시 담임 선생님께 알려두는 것이 중요합니다."
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+{
+    "documentId": "doc_011",
+    "documentTitle": "2026년 1차 학교폭력 실태조사 참여 안내",
+    "documentDate": "2026-04-13",
+    "school": "서울삼성초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_012_1",
+            "raw": "4. 14.(화) 09:00 ~ 5. 13.(수) 18:00",
+            "resolved": "2026-05-13",
+            "note": "실태조사 참여 마감일시"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학교폭력 실태조사 제도 안내",
+            "evidenceText": "학교폭력 걱정이 없는 행복하고 안전한 학교를 만들기 위한 방안을 마련하고자, 전국 시·도교육감은 2026년 1차 학교폭력 실태조사를 실시합니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국에서는 매년 전국 초·중·고 학생을 대상으로 학교폭력 경험 여부를 온라인으로 조사합니다. 이는 정부가 의무적으로 실시하는 전수조사이며, 학생의 응답은 익명으로 처리되고 불이익은 없습니다."
+        },
+        {
+            "type": "schedule",
+            "title": "학교폭력 실태조사 참여 기간",
+            "evidenceText": "일정: 4. 14.(화) 09:00 ~ 5. 13.(수) 18:00(기간 중 24시간 참여 가능) / 대상: 초등학교 4학년 ~ 6학년 재학생",
+            "selectedDateCandidateId": "dc_012_1",
+            "dateStatus": "confirmed",
+            "date": "2026-05-13",
+            "target": "both",
+            "actionRequired": true,
+            "schoolContext": null
+        },
+        {
+            "type": "checklist",
+            "title": "자녀가 가정에서 개별적으로 조사 참여하도록 안내",
+            "evidenceText": "솔직한 응답 및 비밀보장을 위해 가정에서 개별적으로 참여할 수 있도록 지도 부탁드립니다.",
+            "selectedDateCandidateId": "dc_012_1",
+            "dateStatus": "confirmed",
+            "date": "2026-05-13",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "학교폭력 실태조사는 학교에서도 하지만, 가정에서 자녀가 혼자 참여하면 더 솔직하게 응답할 수 있습니다. 컴퓨터나 스마트폰으로 조사 사이트(https://survey.eduro.go.kr)에 접속해 참여할 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "다문화 학생 다국어 지원 안내",
+            "evidenceText": "다문화 학생은 본인이 주로 사용하는 언어 버튼을 클릭하여 선택한 언어로 설문참여 가능 (지원 다국어: 영어, 중국어, 일본어, 베트남어, 태국어, 필리핀어, 러시아어)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "both",
+            "actionRequired": false,
+            "schoolContext": "학교폭력 실태조사는 다국어를 지원합니다. 한국어가 어려운 다문화 학생은 영어, 중국어, 베트남어 등 자신에게 편한 언어를 선택해 응답할 수 있습니다."
+        }
+    ]
+}
