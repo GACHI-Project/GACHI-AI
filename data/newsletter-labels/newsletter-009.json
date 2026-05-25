@@ -1,0 +1,83 @@
+{
+    "documentId": "doc_009",
+    "documentTitle": "2025학년도 1·4학년 학생 건강검진 안내",
+    "documentDate": "2025-06-02",
+    "school": "서울잠실초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_008_1",
+            "raw": "2025. 6.9.(월) ~ 2025. 6.27.(금)",
+            "resolved": "2025-06-27",
+            "note": "건강검진 기간 마감일"
+        },
+        {
+            "id": "dc_008_2",
+            "raw": "6.20.(금)까지",
+            "resolved": "2025-06-20",
+            "note": "혼잡 방지를 위한 권장 완료일"
+        },
+        {
+            "id": "dc_008_3",
+            "raw": "6.11.(수)",
+            "resolved": "2025-06-11",
+            "note": "검진기관 휴진일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학교 건강검진 제도 안내",
+            "evidenceText": "학교건강검사 규칙에 의거하여 1, 4학년 학생들은 건강검진 기관의 내과, 구강 검진을 받도록 되어 있습니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국에서는 초등학교 1학년과 4학년 학생을 대상으로 매년 국가가 지정한 건강검진을 의무적으로 실시합니다. 검진 비용은 학교가 부담하므로 무료입니다. 검진을 받지 않으면 학교로부터 별도 안내를 받을 수 있습니다."
+        },
+        {
+            "type": "schedule",
+            "title": "건강검진 기간",
+            "evidenceText": "검진 기간: 2025. 6.9.(월) ~ 2025. 6.27.(금)까지 (*6.11.(수) 휴진)",
+            "selectedDateCandidateId": "dc_008_1",
+            "dateStatus": "confirmed",
+            "date": "2025-06-27",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "검진은 학교에서 하는 것이 아니라 지정된 검진 기관(병원)에 보호자가 자녀를 데리고 직접 방문해야 합니다. 방문 시 보호자 동반이 필수입니다."
+        },
+        {
+            "type": "checklist",
+            "title": "문진표 미리 작성 후 지참",
+            "evidenceText": "배부된 내과 및 구강 검진 문진표(1장)는 미리 작성해서 검진 기관에 제출합니다. (분실 시 담임선생님께 재배부받습니다)",
+            "selectedDateCandidateId": "dc_008_1",
+            "dateStatus": "confirmed",
+            "date": "2025-06-27",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "문진표는 자녀의 건강 상태와 병력을 기록하는 서류입니다. 학교에서 배부하며, 검진 기관 방문 전에 미리 작성해서 가져가야 합니다. 분실했다면 담임 선생님께 요청하세요."
+        },
+        {
+            "type": "checklist",
+            "title": "4학년 경도비만 이상 학생: 혈액검사 전 5시간 공복 유지",
+            "evidenceText": "4학년 아동 중 경도비만 이상 학생은 혈액검사 대상입니다. (* 5시간 이상의 공복 상태 유지 필요)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "혈액검사는 채혈 전 일정 시간 금식이 필요합니다. 검진 당일 아침 식사를 하지 않고 방문해야 정확한 검사가 가능합니다. 해당 여부가 불확실하면 담임 선생님께 확인하세요."
+        },
+        {
+            "type": "checklist",
+            "title": "검진 후 검진확인서 담임 선생님께 제출",
+            "evidenceText": "검진 후 검진 기관에서 배부하는 검진확인서는 담임선생님께 제출해 주시기 바랍니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "검진을 마치면 기관에서 확인서를 발급해줍니다. 이 확인서를 학교에 제출해야 검진 완료로 처리됩니다. 제출하지 않으면 미검진 처리될 수 있습니다."
+        }
+    ]
+}

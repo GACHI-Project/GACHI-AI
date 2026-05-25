@@ -4,7 +4,7 @@
 
 - `OPENAI_ENABLED`: OpenAI 실제 호출 활성화 여부. 기본값은 `false`
 - `OPENAI_API_KEY`: OpenAI API key. `OPENAI_ENABLED=true`일 때 필요
-- `OPENAI_MODEL`: 사용할 모델. 기본값은 `gpt-4o-mini`
+- `OPENAI_MODEL`: 사용할 모델. 기본값은 `gpt-4.1-mini`
 - `OPENAI_BASE_URL`: OpenAI API base URL. 기본값은 `https://api.openai.com/v1`
 - `OPENAI_TIMEOUT_SECONDS`: OpenAI 호출 timeout 초. 기본값은 `60`
 

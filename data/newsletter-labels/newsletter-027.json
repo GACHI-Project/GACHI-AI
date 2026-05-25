@@ -1,0 +1,82 @@
+{
+  "documentId": "doc_027",
+  "documentTitle": "위(Wee)클래스 이용 및 상담 동의 안내",
+  "documentDate": "2026-03-23",
+  "school": "도일초등학교",
+  "dateCandidates": [
+    {
+      "id": "dc_027_1",
+      "raw": "3월 27일(금)까지",
+      "resolved": "2026-03-27",
+      "note": "상담 동의서 및 개인정보 동의서 제출 마감일"
+    }
+  ],
+  "labels": [
+    {
+      "type": "reminder",
+      "title": "위(Wee)클래스 제도 안내",
+      "evidenceText": "본교 위클래스 상담실에서는 학생들의 심리·정서적 안정과 학교생활 적응을 돕고, 상담 활동을 전문화하여 학생들의 고민과 문제를 함께 해결하고자 노력하고 있습니다.",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "parent",
+      "actionRequired": false,
+      "schoolContext": "위(Wee)클래스는 한국 교육부가 전국 학교에 설치한 학생 상담 전문 공간입니다. 전문 상담교사가 상주하며 학생의 학교 적응, 친구 관계, 심리·정서 문제 등을 무료로 상담해줍니다. 별도 비용이 없으며 학부모도 이용할 수 있습니다."
+    },
+    {
+      "type": "reminder",
+      "title": "위클래스 상담 내용과 이용 방법 안내",
+      "evidenceText": "개인상담, 집단상담: 친구 및 가족관계, 학업 및 진로, 성격, 심리·정서 관련, 학교 적응 등 / 각종 심리검사 실시 및 해석 상담 / 상담 진행: 약 4~10회기 진행 (1회기 상담은 주 1회, 40분)",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "parent",
+      "actionRequired": false,
+      "schoolContext": "상담은 보통 4~10회에 걸쳐 진행되며, 주 1회 약 40분씩 이루어집니다. 단순 대화가 아닌 전문 상담교사가 진행하는 구조화된 상담입니다. 심리검사(ADHD 성향, 불안, 우울 등)도 실시할 수 있으며, 필요시 외부 전문 병원이나 기관으로 연계해 줍니다."
+    },
+    {
+      "type": "deadline",
+      "title": "위클래스 상담 동의서 및 개인정보 동의서 제출",
+      "evidenceText": "아래 내용을 살펴보신 후 학생 상담 동의 및 개인정보 수집·이용 동의서를 3월 27일(금)까지 이알리미로 제출해 주시기 바랍니다.",
+      "selectedDateCandidateId": "dc_027_1",
+      "dateStatus": "confirmed",
+      "date": "2026-03-27",
+      "target": "parent",
+      "actionRequired": true,
+      "schoolContext": "위클래스를 이용하려면 학부모 동의서가 필요합니다. 동의서는 이알리미 앱을 통해 제출하며, 동의하지 않으면 상담, 심리검사, 상담 프로그램 참여에 제한이 생깁니다. 동의서를 미리 제출해두면 자녀가 필요할 때 바로 이용할 수 있습니다."
+    },
+    {
+      "type": "reminder",
+      "title": "상담 내용 비밀 보장 안내",
+      "evidenceText": "상담의 내용은 비밀 보장되며, 학교생활기록부에도 일절 기록되지 않습니다. 다만, 담임(교과)교사에게는 학생의 동의하에 제한적인 정보 제공과 교육적 자문이 이루어질 수 있습니다.",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "parent",
+      "actionRequired": false,
+      "schoolContext": "상담 내용은 학교생활기록부(성적표)에 기록되지 않습니다. 상담을 받았다는 사실이 이후 진학이나 성적에 영향을 주지 않으므로 안심하고 이용할 수 있습니다. 다만 자녀나 타인에게 위험이 있는 경우(자해, 학교폭력, 아동학대 등)에는 비밀 보장 예외가 적용됩니다."
+    },
+    {
+      "type": "reminder",
+      "title": "비밀 보장 예외 상황 안내",
+      "evidenceText": "단, 몇 가지 예외 사항이 있습니다. 자신이나 타인의 신체 및 재산에 해를 가할 가능성(자해 및 자살, 학교폭력, 성폭력 등), 가정 폭력 및 아동학대와 관련된 경우, 범죄와 연루된 경우, 수사기관이 요구하는 경우 등이 있습니다.",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "parent",
+      "actionRequired": false,
+      "schoolContext": "자녀가 자해, 자살 위험, 학교폭력 피해, 아동학대 등과 관련된 내용을 상담에서 이야기할 경우 상담교사는 의무적으로 관계기관에 신고하거나 학부모에게 알려야 합니다. 이는 아이의 안전을 위한 법적 의무이며, 상담교사의 자의적 판단이 아닙니다."
+    },
+    {
+      "type": "reminder",
+      "title": "ADHD·우울·자해 등 심각한 문제의 경우 외부기관 연계 안내",
+      "evidenceText": "ADHD, 심각한 우울, 자해, 품행장애 등의 문제를 가진 학생들은 진단을 통해 심리치료(병원, 외부 전문기관)를 함께 받아야 합니다. 또한 학교 상담은 많은 학생을 대상으로 하므로 장기간 상담이 어려워 지속적으로 상담을 받을 수 있는 센터나 사설 기관으로 의뢰하는 경우도 있습니다.",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "parent",
+      "actionRequired": false,
+      "schoolContext": "학교 위클래스는 경미한 어려움을 다루는 초기 상담 공간입니다. 전문적인 치료가 필요한 수준이라면 학교 상담만으로는 한계가 있어 외부 전문기관(정신건강복지센터, 병원 등)으로 연계합니다. 연계된 외부기관도 대부분 무료 또는 저렴하게 이용할 수 있습니다."
+    }
+  ]
+}

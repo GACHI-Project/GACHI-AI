@@ -32,6 +32,16 @@ Windows PowerShell에서는 다음처럼 가상환경을 활성화합니다.
 - `POST /ai/newsletters/extract-items`: 날짜 후보 기반 baseline 항목 추출
 - `POST /ai/newsletters/prompt-preview`: LLM 입력용 prompt와 최종 분석 response schema 미리보기
 
+## 분석 평가
+
+라벨링된 가정통신문 JSON으로 baseline 또는 OpenAI adapter 결과를 평가할 수 있습니다.
+
+```powershell
+python scripts/evaluate_newsletter_labels.py data/newsletter-labels --report-output reports/newsletter-eval-baseline.json
+```
+
+기본 모드는 비용이 발생하지 않는 baseline입니다. 실제 OpenAI 호출은 `--mode openai`를 명시한 경우에만 실행합니다.
+
 ## 작업 규칙
 
 - 기본 브랜치: `develop`
@@ -45,3 +55,4 @@ Windows PowerShell에서는 다음처럼 가상환경을 활성화합니다.
 - `docs/deploy.md`: Docker image와 EC2 배포 방식
 - `docs/newsletter-extraction.md`: 가정통신문 분석 구현 경계와 유지 결정
 - `docs/newsletter-labeling-guide.md`: 정답 데이터 라벨링 기준
+- `docs/newsletter-evaluation.md`: 라벨링 데이터 기반 분석 평가 실행 방법

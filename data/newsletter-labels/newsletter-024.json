@@ -1,0 +1,64 @@
+{
+    "documentId": "doc_024",
+    "documentTitle": "2026학년도 1학기 평가 안내 (수행평가)",
+    "documentDate": "2026-04-02",
+    "school": "성라초등학교",
+    "dateCandidates": [],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "수행평가 개념 안내",
+            "evidenceText": "학습으로의 평가는 논술형 평가, 정의적 능력 평가, 협력적 문제해결력 평가를 포함한 다양한 수행평가(논술, 토의·토론, 실험·실습, 포트폴리오, 보고서 등)로 실시합니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 초등학교에서는 지필시험(종이 시험지) 대신 수행평가 방식으로 학생을 평가합니다. 수업 중 발표, 실험, 글쓰기, 토론 등을 통해 과목별로 수시로 평가가 이루어집니다. 단 한 번의 시험으로 성적이 결정되는 것이 아니므로, 평소 수업 참여가 중요합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "평가 단계(4단계 성취도) 안내",
+            "evidenceText": "평가단계: 매우 잘함 - 잘함 - 보통 - 노력 요함 / 교과평가(4단계 성취도)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 초등학교는 100점 만점 점수 대신 4단계 성취도(매우 잘함·잘함·보통·노력 요함)로 평가 결과를 표시합니다. 이 결과는 학기말에 생활통지표로 가정에 발송됩니다. 중학교부터는 점수제로 전환됩니다."
+        },
+        {
+            "type": "reminder",
+            "title": "창의적 체험활동 평가 안내",
+            "evidenceText": "창의적 체험활동: 활동 상황의 관찰, 질문지를 이용한 조사, 학생의 작품과 기록, 교사의 의견 교환 등",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "창의적 체험활동(창체)은 교과 수업 외에 자율활동, 동아리활동, 봉사활동, 진로활동 등을 포함합니다. 학업 성적과는 별도로 평가되며 학교생활기록부에 기재됩니다. 체육대회, 현장학습, 각종 행사 참여도 창체 활동에 해당합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "생활통지표 발송 안내",
+            "evidenceText": "평가 결과는 학기별로 가정으로 안내 / 생활통지표 가정 통지 내용: 1학기 - 기본학적사항, 출결 상황, 교과평가(4단계 성취도), 창의적 체험활동상황 / 2학기 - 기본학적사항, 출결 상황, 교과평가, 창의적 체험활동상황, 행동특성 및 종합의견",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "생활통지표는 학기말에 학교에서 학부모에게 발송하는 성적표입니다. 교과 성취도, 출결, 활동 내용이 담겨 있습니다. 2학기 생활통지표에는 담임 선생님이 작성하는 '행동특성 및 종합의견'이 추가되며, 이 내용이 학교생활기록부에 그대로 기재됩니다."
+        },
+        {
+            "type": "reminder",
+            "title": "정의적 능력 평가 개념 안내",
+            "evidenceText": "정의적 능력 수시 평가: 근면성, 책임감, 자주성, 협동성, 준법성, 예절성 등",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "정의적 능력 평가는 학업 실력이 아닌 태도와 인성을 평가하는 항목입니다. 수업 중 참여도, 친구와의 협동, 규칙 준수 등을 교사가 관찰해서 평가합니다. 시험을 잘 봐도 이 항목에서 낮은 평가를 받을 수 있으니, 자녀의 학교 태도에도 관심을 기울여주세요."
+        }
+    ]
+}

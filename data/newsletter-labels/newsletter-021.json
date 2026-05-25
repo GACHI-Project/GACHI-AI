@@ -1,0 +1,55 @@
+{
+    "documentId": "doc_021",
+    "documentTitle": "2025학년도 1학기 일일형 체험학습(롯데월드) 참가 신청 안내",
+    "documentDate": "2025-06-04",
+    "school": "포천삼정초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_020_1",
+            "raw": "6월 5일(목)까지",
+            "resolved": "2025-06-05",
+            "note": "참가 신청서 제출 마감일"
+        },
+        {
+            "id": "dc_020_2",
+            "raw": "2025.06.19.(목) 08:00~17:30",
+            "resolved": "2025-06-19T08:00",
+            "note": "체험학습 당일 일정"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학교 주관 현장체험학습 개념 안내",
+            "evidenceText": "체험학습 교육과정 운영을 통하여 친구들끼리 친밀감도 높이고, 올바른 사회성과 바른 인성을 기르고자 합니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "학교 주관 현장체험학습은 교외체험학습(개인 신청)과 다릅니다. 학교가 전체 학생을 대상으로 계획하고 인솔하는 단체 활동으로, 개별 신청이 아닌 참가 의사만 확인합니다. 모든 학생이 참여하는 것을 원칙으로 하며, 비용은 학교에서 부담합니다."
+        },
+        {
+            "type": "deadline",
+            "title": "체험학습 참가 신청서 제출",
+            "evidenceText": "아래의 내용을 잘 확인하셔서 체험학습 참가 신청서를 작성하시고 담임교사에게 6월 5일(목)까지 제출해 주시기 바랍니다.",
+            "selectedDateCandidateId": "dc_020_1",
+            "dateStatus": "confirmed",
+            "date": "2025-06-05",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "참가 신청서는 참석 여부(동의 및 참석/불참)를 선택해 담임 선생님에게 제출하는 서류입니다. 불참을 선택하는 경우 사유를 적어야 합니다."
+        },
+        {
+            "type": "schedule",
+            "title": "일일형 현장체험학습(롯데월드)",
+            "evidenceText": "기간: 2025.06.19.(목) 08:00~17:30 / 장소: 서울시 송파구 롯데월드 어드벤처 / 참가비: 없음 (입장료, 체험비, 중식비, 간식비 일체 학교에서 지원함)",
+            "selectedDateCandidateId": "dc_020_2",
+            "dateStatus": "confirmed",
+            "date": "2025-06-19",
+            "target": "both",
+            "actionRequired": false,
+            "schoolContext": "학교 주관 체험학습은 입장료와 식비를 학교에서 부담하므로 별도 비용이 없습니다. 당일 학교에서 버스로 이동하며 교사가 인솔합니다. 오전 8시까지 학교에 집합해야 합니다."
+        }
+    ]
+}

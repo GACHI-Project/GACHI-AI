@@ -1,0 +1,55 @@
+{
+    "documentId": "doc_015",
+    "documentTitle": "꿈·끼 탐색주간 학부모 재능기부 참여 안내",
+    "documentDate": "2026-04-23",
+    "school": "서울잠실초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_016_1",
+            "raw": "~2026. 4. 30. (목) 오전 11:45 까지",
+            "resolved": "2026-04-30",
+            "note": "재능기부 신청 마감일시"
+        },
+        {
+            "id": "dc_016_2",
+            "raw": "2026. 6. 15. (월) ~ 6. 19. (금)",
+            "resolved": "2026-06-19",
+            "note": "꿈·끼 탐색주간 운영 기간 마감일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "꿈·끼 탐색주간 제도 안내",
+            "evidenceText": "2026학년도 꿈·끼 탐색주간에 학부모님들의 재능기부를 통해 다양한 직업에 대하여 알아보고 진로탐색교육을 하고자 합니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "꿈·끼 탐색주간은 한국 교육부가 학생들의 진로 탐색을 위해 지정한 교육 주간입니다. 이 기간에는 다양한 직업인을 초청해 진로 체험 교육을 진행하며, 학부모도 자신의 직업을 소개하는 '재능기부 명예교사'로 참여할 수 있습니다."
+        },
+        {
+            "type": "deadline",
+            "title": "학부모 재능기부 신청",
+            "evidenceText": "신청 기간: ~2026. 4. 30. (목) 오전 11:45 까지 / 신청 방법: 구글 설문 (https://forms.gle/wNDRXWR3SAUwmA8x9)",
+            "selectedDateCandidateId": "dc_016_1",
+            "dateStatus": "confirmed",
+            "date": "2026-04-30",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "재능기부는 자녀의 교실이 아닌 다른 학년·반에 배정될 수 있습니다. 신청은 구글 설문 링크 또는 QR코드로 가능하며, 직업 분야와 희망 날짜를 입력하면 됩니다."
+        },
+        {
+            "type": "schedule",
+            "title": "꿈·끼 탐색주간 재능기부 활동",
+            "evidenceText": "운영 기간: 2026. 6. 15. (월) ~ 6. 19. (금) (기간 중 1일) / 희망하시는 날 같은 내용으로 2교시(9:50~10:30), 3교시(10:40~11:20) 2개 학급에서 직업 소개 및 진로 탐색 활동이 진행될 수 있습니다.",
+            "selectedDateCandidateId": "dc_016_2",
+            "dateStatus": "confirmed",
+            "date": "2026-06-19",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "재능기부 명예교사로 선정되면 학교 교실에서 학생들에게 약 40분씩 2회 직업을 소개합니다. 별도 교육 자료는 자유롭게 준비하면 되며, 수업 방식에 대한 사전 안내를 학교에서 제공합니다."
+        }
+    ]
+}

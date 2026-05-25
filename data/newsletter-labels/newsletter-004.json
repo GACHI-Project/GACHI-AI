@@ -1,0 +1,66 @@
+{
+    "documentId": "doc_004",
+    "documentTitle": "학생생활규정, 학교규칙 6차 개정 공포 및 시행 안내",
+    "documentDate": "2026-03-09",
+    "school": "서울세륜초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_009_1",
+            "raw": "26.3.9.일자",
+            "resolved": "2026-03-09",
+            "note": "개정 규정 공포일"
+        },
+        {
+            "id": "dc_009_2",
+            "raw": "2026.3.1.시행",
+            "resolved": "2026-03-01",
+            "note": "초중등교육법 개정 시행일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학생생활규정·학교규칙 개정 안내",
+            "evidenceText": "개정된 학생생활규정과 학교규칙을 26.3.9.일자로 공포합니다.",
+            "selectedDateCandidateId": "dc_009_1",
+            "dateStatus": "confirmed",
+            "date": "2026-03-09",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "학생생활규정과 학교규칙은 학생의 학교생활 전반에 적용되는 규칙입니다. 개정될 때마다 가정통신문으로 학부모에게 안내됩니다. 전체 내용은 e알리미 앱 또는 학교 홈페이지에서 확인할 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "수업 중 스마트기기 사용 금지 규정 강화",
+            "evidenceText": "제14조(교내 스마트기기 사용 제한 등) ① 학생은 수업 중에 휴대전화 등 스마트기기를 사용해서는 안 된다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "both",
+            "actionRequired": false,
+            "schoolContext": "한국 학교에서는 수업 중 휴대폰 사용이 엄격히 제한됩니다. 이번 개정으로 위반 시 교사가 기기를 직접 수거·보관할 수 있게 되었습니다. 자녀에게 수업 중 스마트폰 사용 금지를 미리 안내해주세요."
+        },
+        {
+            "type": "reminder",
+            "title": "학생 징계 단계 및 기준 안내",
+            "evidenceText": "제36조(징계) 학교장은 생활교육(소)위원회의 결정에 따라 학생 교육을 위해 필요하다고 인정할 때에는 학생에게 다음 각 호의 징계를 할 수 있다. 1. 학교 내의 봉사 2. 사회봉사 3. 특별교육이수 4. 출석정지",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 학교에서 학생이 규칙을 위반하면 단계적 징계가 적용됩니다. 가장 가벼운 것이 학교 내 봉사이고, 가장 무거운 것이 출석정지입니다. 출석정지는 미인정 결석으로 처리되어 학교생활기록부에 기록됩니다. 이번 개정으로 출석정지 조항이 새로 추가되었습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "생활교육(소)위원회 개념 안내",
+            "evidenceText": "학교장은 생활교육(소)위원회의 결정에 따라 학생 교육을 위해 필요하다고 인정할 때에는 학생을 징계할 수 있고",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "생활교육위원회는 학생 징계를 심의하는 학교 내 위원회입니다. 학교장 단독으로 징계를 결정하는 것이 아니라 위원회의 심의를 거쳐야 합니다. 징계가 결정되면 학부모에게 의견 진술 기회가 주어집니다."
+        }
+    ]
+}

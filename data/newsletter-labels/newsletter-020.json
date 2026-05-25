@@ -1,0 +1,49 @@
+{
+    "documentId": "doc_020",
+    "documentTitle": "학교생활기록부 진로정보 초·중·고 연계를 위한 개인정보 활용 동의 안내",
+    "documentDate": "2023-11-29",
+    "school": "대전관저초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_025_1",
+            "raw": "12월 1일(금)까지",
+            "resolved": "2023-12-01",
+            "note": "동의서 제출 마감일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "진로정보 초·중·고 연계 서비스 안내",
+            "evidenceText": "진로정보 초·중·고 연계 서비스란 초·중·고가 연계하여 지속적·심층적 진로교육 지도를 위한 기반을 마련하기 위해 학생의 진로 관련 학교생활기록을 나이스 시스템을 통해 전달·제공하는 것입니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "이 서비스는 초등학교 6학년 때의 진로활동 기록(창의적 체험활동 중 진로활동 영역)을 중학교에 자동으로 전달하는 것입니다. 중학교 담임 선생님이 학생의 초등학교 진로 기록을 참고해 더 맞춤화된 진로 상담을 할 수 있습니다."
+        },
+        {
+            "type": "deadline",
+            "title": "개인정보 활용 동의서 제출",
+            "evidenceText": "담임선생님께 12월 1일(금)까지 제출해주시기 바랍니다.",
+            "selectedDateCandidateId": "dc_025_1",
+            "dateStatus": "confirmed",
+            "date": "2023-12-01",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "동의서에 예/아니오를 체크하고 학생과 보호자 모두 서명한 뒤 담임 선생님께 제출하면 됩니다. 동의하지 않아도 불이익은 없지만, 거부 시 중학교에서 진로 관련 정보를 연계해서 활용하지 못합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "개인정보 보유 기간 및 활용 범위 안내",
+            "evidenceText": "수집한 학생의 진로 관련 사항은 상급학교(중·고등학교) 재학(휴학) 기간에만 해당 학교에서 이용할 수 있습니다. / 입학전형 및 학생선발 자료로는 활용되지 않습니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "이 정보는 진로 상담 목적으로만 사용되며, 중학교·고등학교 입학 시험이나 선발에는 사용되지 않습니다. 학생이 상급학교를 졸업하거나 전학하면 더 이상 사용되지 않습니다."
+        }
+    ]
+}

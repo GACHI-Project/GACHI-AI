@@ -1,0 +1,77 @@
+{
+    "documentId": "doc_016",
+    "documentTitle": "2026학년도 학부모 상담 운영 안내",
+    "documentDate": "2026-03-20",
+    "school": "서울세륜초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_010_1",
+            "raw": "3.30(월) ~ 4.10.(금)",
+            "resolved": "2026-04-10",
+            "note": "1~2학년 1학기 상담주간 마감일"
+        },
+        {
+            "id": "dc_010_2",
+            "raw": "8.31.(월) ~ 9.11.(금)",
+            "resolved": "2026-09-11",
+            "note": "3~6학년 2학기 상담주간 마감일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "상담주간 제도 안내",
+            "evidenceText": "상담주간: 학부모상담주간을 지정하여 해당 기간 동안에 상담 운영",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 초등학교는 학기마다 특정 기간을 '상담주간'으로 지정해 담임 선생님과 학부모가 1:1로 면담하는 시간을 운영합니다. 이 기간에는 학교에서 시간을 배정하므로 별도 신청 없이 안내에 따라 참석하면 됩니다."
+        },
+        {
+            "type": "schedule",
+            "title": "1~2학년 1학기 상담주간",
+            "evidenceText": "1~2학년 / 1학기: 상담주간 운영 {3.30(월) ~ 4.10.(금)}",
+            "selectedDateCandidateId": "dc_010_1",
+            "dateStatus": "confirmed",
+            "date": "2026-04-10",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "1~2학년 학부모는 이 기간 중 담임 선생님과 면담 일정을 잡게 됩니다. 학교에서 개별 일정 안내가 올 예정이므로 확인하세요."
+        },
+        {
+            "type": "schedule",
+            "title": "3~6학년 2학기 상담주간",
+            "evidenceText": "3~6학년 / 2학기: 상담주간 운영 {8.31.(월) ~ 9.11.(금)}",
+            "selectedDateCandidateId": "dc_010_2",
+            "dateStatus": "confirmed",
+            "date": "2026-09-11",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": null
+        },
+        {
+            "type": "reminder",
+            "title": "수시상담 신청 방법 안내",
+            "evidenceText": "수시상담: 기간 지정 없이 학부모님의 요청에 따라 수시로 대면 또는 전화 상담 운영",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "수시상담은 상담주간과 관계없이 언제든지 담임 선생님께 연락해 일정을 잡는 개별 상담입니다. 자녀의 학교생활에 궁금한 점이 생기면 언제든지 담임 선생님께 전화하거나 알림장을 통해 상담을 요청할 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "상담 주요 주제 안내",
+            "evidenceText": "교실 안에서의 문제, 교우 관계, 성적 및 진로 문제, 학교 폭력 및 집단 따돌림, 학교 부적응 문제 등",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 담임 선생님과의 상담은 자녀의 학습뿐 아니라 친구 관계, 학교 적응 문제 등 폭넓은 주제를 다룹니다. 학교생활 전반에 대해 자유롭게 질문하고 도움을 요청할 수 있습니다."
+        }
+    ]
+}
