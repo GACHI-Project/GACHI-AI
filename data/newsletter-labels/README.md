@@ -25,8 +25,27 @@
   "documentTitle": "문서 제목",
   "documentDate": "2026-03-24",
   "school": "학교명",
-  "dateCandidates": [],
-  "labels": []
+  "dateCandidates": [
+    {
+      "id": "dc_001_1",
+      "raw": "5월 20일",
+      "resolved": "2026-05-20",
+      "note": "제출 마감일"
+    }
+  ],
+  "labels": [
+    {
+      "type": "schedule | deadline | checklist | reminder",
+      "title": "항목 제목",
+      "evidenceText": "원문 근거 텍스트",
+      "selectedDateCandidateId": "dc_001_1 또는 null",
+      "dateStatus": "confirmed | ambiguous | missing",
+      "date": "YYYY-MM-DD 또는 null",
+      "target": "parent | student | both",
+      "actionRequired": true,
+      "schoolContext": "학교 문화 맥락 설명 또는 null"
+    }
+  ]
 }
 ```
 

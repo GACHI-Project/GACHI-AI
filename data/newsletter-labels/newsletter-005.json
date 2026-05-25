@@ -1,98 +1,96 @@
-[
+{
+  "documentId": "doc_005",
+  "documentTitle": "2026학년도 교외체험학습 안내",
+  "documentDate": "2026-03-03",
+  "school": "서울세륜초등학교",
+  "dateCandidates": [
     {
-        "documentId": "doc_005",
-        "documentTitle": "2026학년도 교외체험학습 안내",
-        "documentDate": "2026-03-03",
-        "school": "서울세륜초등학교",
-        "dateCandidates": [
-            {
-                "id": "dc_001_1",
-                "raw": "3일 전까지",
-                "note": "체험학습 실시일 기준 상대적 날짜 — 절대 날짜 특정 불가"
-            },
-            {
-                "id": "dc_001_2",
-                "raw": "7일 이내",
-                "note": "체험학습 종료일 기준 상대적 날짜 — 절대 날짜 특정 불가"
-            },
-            {
-                "id": "dc_001_3",
-                "raw": "연속 10일 이내",
-                "note": "허용 기간 범위 표현 — 특정 날짜 아님"
-            },
-            {
-                "id": "dc_001_4",
-                "raw": "19일 이내",
-                "note": "연간 총 허용 일수 — 특정 날짜 아님"
-            }
-        ],
-        "labels": [
-            {
-                "type": "reminder",
-                "title": "교외체험학습 제도 안내",
-                "evidenceText": "개인 계획에 의하여 학교장의 사전 허가를 받은 후 실시한 체험학습으로 관찰, 조사, 수집, 현장 견학, 답사, 문화체험, 직업체험 등의 직접적인 경험, 활동, 실천이 중심이 되어 교육적 효과를 나타내는 폭넓은 학습을 의미합니다.",
-                "selectedDateCandidateId": null,
-                "dateStatus": "missing",
-                "date": null,
-                "target": "parent",
-                "actionRequired": false,
-                "schoolContext": "한국에서는 학부모가 사전에 신청하고 학교장이 허가하면, 가족 여행이나 체험 활동을 수업일에 해도 출석으로 인정받을 수 있습니다. 단, 정해진 절차(신청서 제출 → 허가 → 실시 → 보고서 제출)를 모두 지켜야 합니다."
-            },
-            {
-                "type": "deadline",
-                "title": "교외체험학습 신청서 제출",
-                "evidenceText": "체험학습 신청서 제출(3일 전까지)",
-                "selectedDateCandidateId": "dc_001_1",
-                "dateStatus": "ambiguous",
-                "date": null,
-                "target": "parent",
-                "actionRequired": true,
-                "schoolContext": "교외체험학습을 가기 전에 반드시 신청서를 학교에 제출하고 허가를 받아야 합니다. 허가 없이 결석하면 미인정 결석으로 처리됩니다. 서식은 학교 홈페이지 [Quick menu]-[각종서식]에서 다운로드할 수 있습니다."
-            },
-            {
-                "type": "deadline",
-                "title": "교외체험학습 보고서 제출",
-                "evidenceText": "보고서 제출(7일 이내)",
-                "selectedDateCandidateId": "dc_001_2",
-                "dateStatus": "ambiguous",
-                "date": null,
-                "target": "parent",
-                "actionRequired": true,
-                "schoolContext": "체험학습을 마친 후 7일 이내에 결과 보고서도 제출해야 합니다. 신청서와 보고서 두 가지 모두 제출해야 출석으로 인정됩니다. 보고서 서식도 학교 홈페이지에서 다운로드할 수 있습니다."
-            },
-            {
-                "type": "reminder",
-                "title": "연간 허용 일수 초과 시 미인정 결석 처리",
-                "evidenceText": "19일 초과 시 미인정 결석으로 처리됨",
-                "selectedDateCandidateId": null,
-                "dateStatus": "missing",
-                "date": null,
-                "target": "parent",
-                "actionRequired": false,
-                "schoolContext": "미인정 결석은 학교가 출석으로 인정하지 않는 결석입니다. 한국에서는 미인정 결석이 누적되면 학교생활기록부(학생의 공식 이력 문서)에 기록되어 이후 진학에 영향을 줄 수 있습니다."
-            },
-            {
-                "type": "reminder",
-                "title": "허용 일수 계산 기준 안내",
-                "evidenceText": "연속 10일 이내(학교자율휴업일, 토요일, 공휴일 제외)",
-                "selectedDateCandidateId": null,
-                "dateStatus": "missing",
-                "date": null,
-                "target": "parent",
-                "actionRequired": false,
-                "schoolContext": "교외체험학습 허용 일수를 계산할 때 주말, 공휴일, 학교가 자체적으로 지정한 휴업일은 날수에 포함되지 않습니다. 실제 수업일 기준으로만 계산합니다."
-            },
-            {
-                "type": "reminder",
-                "title": "연속 5일 초과 시 담임 교사 연락 필요",
-                "evidenceText": "연속 5일을 초과하여 실시(재량휴업일, 토요일, 공휴일 제외)하는 경우, 학생 안전 및 건강 상태에 대해 학교에 알리기 위해 기간 중 1회 이상 학생이 담임교사에게 연락해야 합니다.",
-                "selectedDateCandidateId": null,
-                "dateStatus": "missing",
-                "date": null,
-                "target": "both",
-                "actionRequired": true,
-                "schoolContext": "한국 학교는 장기 체험학습 중에도 학생의 안전을 확인할 의무가 있습니다. 5일을 넘는 경우 학생이 직접 담임 선생님께 연락해 안전하다는 것을 알려야 합니다."
-            }
-        ]
+      "id": "dc_001_1",
+      "raw": "3일 전까지",
+      "note": "체험학습 실시일 기준 상대적 날짜 — 절대 날짜 특정 불가"
+    },
+    {
+      "id": "dc_001_2",
+      "raw": "7일 이내",
+      "note": "체험학습 종료일 기준 상대적 날짜 — 절대 날짜 특정 불가"
+    },
+    {
+      "id": "dc_001_3",
+      "raw": "연속 10일 이내",
+      "note": "허용 기간 범위 표현 — 특정 날짜 아님"
+    },
+    {
+      "id": "dc_001_4",
+      "raw": "19일 이내",
+      "note": "연간 총 허용 일수 — 특정 날짜 아님"
     }
-]
+  ],
+  "labels": [
+    {
+      "type": "reminder",
+      "title": "교외체험학습 제도 안내",
+      "evidenceText": "개인 계획에 의하여 학교장의 사전 허가를 받은 후 실시한 체험학습으로 관찰, 조사, 수집, 현장 견학, 답사, 문화체험, 직업체험 등의 직접적인 경험, 활동, 실천이 중심이 되어 교육적 효과를 나타내는 폭넓은 학습을 의미합니다.",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "parent",
+      "actionRequired": false,
+      "schoolContext": "한국에서는 학부모가 사전에 신청하고 학교장이 허가하면, 가족 여행이나 체험 활동을 수업일에 해도 출석으로 인정받을 수 있습니다. 단, 정해진 절차(신청서 제출 → 허가 → 실시 → 보고서 제출)를 모두 지켜야 합니다."
+    },
+    {
+      "type": "deadline",
+      "title": "교외체험학습 신청서 제출",
+      "evidenceText": "체험학습 신청서 제출(3일 전까지)",
+      "selectedDateCandidateId": "dc_001_1",
+      "dateStatus": "ambiguous",
+      "date": null,
+      "target": "parent",
+      "actionRequired": true,
+      "schoolContext": "교외체험학습을 가기 전에 반드시 신청서를 학교에 제출하고 허가를 받아야 합니다. 허가 없이 결석하면 미인정 결석으로 처리됩니다. 서식은 학교 홈페이지 [Quick menu]-[각종서식]에서 다운로드할 수 있습니다."
+    },
+    {
+      "type": "deadline",
+      "title": "교외체험학습 보고서 제출",
+      "evidenceText": "보고서 제출(7일 이내)",
+      "selectedDateCandidateId": "dc_001_2",
+      "dateStatus": "ambiguous",
+      "date": null,
+      "target": "parent",
+      "actionRequired": true,
+      "schoolContext": "체험학습을 마친 후 7일 이내에 결과 보고서도 제출해야 합니다. 신청서와 보고서 두 가지 모두 제출해야 출석으로 인정됩니다. 보고서 서식도 학교 홈페이지에서 다운로드할 수 있습니다."
+    },
+    {
+      "type": "reminder",
+      "title": "연간 허용 일수 초과 시 미인정 결석 처리",
+      "evidenceText": "19일 초과 시 미인정 결석으로 처리됨",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "parent",
+      "actionRequired": false,
+      "schoolContext": "미인정 결석은 학교가 출석으로 인정하지 않는 결석입니다. 한국에서는 미인정 결석이 누적되면 학교생활기록부(학생의 공식 이력 문서)에 기록되어 이후 진학에 영향을 줄 수 있습니다."
+    },
+    {
+      "type": "reminder",
+      "title": "허용 일수 계산 기준 안내",
+      "evidenceText": "연속 10일 이내(학교자율휴업일, 토요일, 공휴일 제외)",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "parent",
+      "actionRequired": false,
+      "schoolContext": "교외체험학습 허용 일수를 계산할 때 주말, 공휴일, 학교가 자체적으로 지정한 휴업일은 날수에 포함되지 않습니다. 실제 수업일 기준으로만 계산합니다."
+    },
+    {
+      "type": "reminder",
+      "title": "연속 5일 초과 시 담임 교사 연락 필요",
+      "evidenceText": "연속 5일을 초과하여 실시(재량휴업일, 토요일, 공휴일 제외)하는 경우, 학생 안전 및 건강 상태에 대해 학교에 알리기 위해 기간 중 1회 이상 학생이 담임교사에게 연락해야 합니다.",
+      "selectedDateCandidateId": null,
+      "dateStatus": "missing",
+      "date": null,
+      "target": "both",
+      "actionRequired": true,
+      "schoolContext": "한국 학교는 장기 체험학습 중에도 학생의 안전을 확인할 의무가 있습니다. 5일을 넘는 경우 학생이 직접 담임 선생님께 연락해 안전하다는 것을 알려야 합니다."
+    }
+  ]
+}

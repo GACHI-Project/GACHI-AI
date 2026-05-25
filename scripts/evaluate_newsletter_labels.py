@@ -207,10 +207,7 @@ def parse_sample(raw: dict[str, Any], index: int) -> LabelSample:
 
     return LabelSample(
         sample_id=str(
-            raw.get("sampleId")
-            or raw.get("id")
-            or raw.get("_fileStem")
-            or f"sample_{index}"
+            raw.get("sampleId") or raw.get("id") or raw.get("_fileStem") or f"sample_{index}"
         ),
         source_file=_optional_str(raw.get("sourceFile")),
         request=request,
@@ -348,9 +345,7 @@ def evaluate_sample(sample: LabelSample, predicted: NewsletterAnalysisResponse) 
     matched_predicted = {match.predicted_index for match in matches}
 
     precision = (
-        len(matches) / len(predicted_items)
-        if predicted_items
-        else float(not sample.expected_items)
+        len(matches) / len(predicted_items) if predicted_items else float(not sample.expected_items)
     )
     recall = len(matches) / len(sample.expected_items) if sample.expected_items else 1.0
     f1 = _f1(precision, recall)
