@@ -43,7 +43,7 @@ class OpenAISettings:
         return cls(
             enabled=_read_bool("OPENAI_ENABLED", default=False),
             api_key=_read_str("OPENAI_API_KEY"),
-            model=_read_str("OPENAI_MODEL", "gpt-4o-mini") or "gpt-4o-mini",
+            model=_read_str("OPENAI_MODEL", "gpt-4.1-mini") or "gpt-4.1-mini",
             base_url=_read_str("OPENAI_BASE_URL", "https://api.openai.com/v1")
             or "https://api.openai.com/v1",
             timeout_seconds=_read_float("OPENAI_TIMEOUT_SECONDS", 60.0, min_value=0.001),

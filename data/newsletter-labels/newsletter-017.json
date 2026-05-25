@@ -1,0 +1,75 @@
+{
+    "documentId": "doc_017",
+    "documentTitle": "2026학년도 학교생활기록부 출결 관리 안내",
+    "documentDate": "2026-03-04",
+    "school": "대전관저초등학교",
+    "dateCandidates": [],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "출결 관리와 학교생활기록부 연관성 안내",
+            "evidenceText": "2026학년도 학교생활기록부 기재요령에 따라 본교 학생 출결 관리에 대한 안내를 하고자 하오니 자녀의 학교생활에 참고하시기 바랍니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국에서는 출결(출석·결석·지각·조퇴) 기록이 모두 학교생활기록부에 남습니다. 결석 사유에 따라 '출석인정결석'과 '미인정결석'으로 구분되며, 미인정결석은 불리한 기록으로 남을 수 있습니다. 결석 시 반드시 사유를 학교에 알리고 서류를 제출해야 합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "법정감염병 결석 시 출석인정 절차",
+            "evidenceText": "법정 전염병: 법정감염병 및 기타 전염성이 강한 질병 / 담임교사에게 유선 연락 / 발병 시 즉시 등교중지하고 완치 후 서류 제출 / 결석계 + 증빙서류(진단서, 진료확인서, 의사 소견서, 약봉투 중 1통)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "수두, 독감 등 법정감염병에 걸리면 학교에 즉시 연락하고 등교를 중지해야 합니다. 완치 후 등교할 때 진단서나 약봉투 중 하나를 제출하면 결석이 아닌 출석으로 인정받습니다. 서류 없이 결석하면 미인정결석으로 처리될 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "질병 결석 시 증빙서류 제출 기준",
+            "evidenceText": "질병으로 인한 2일 이내 결석: 결석계 제출 / 질병으로 인한 3일 이상의 결석: 결석계 + 병명, 진료기간 등이 기록된 증빙서류(진단서, 진료확인서, 의사 소견서, 약봉투 중 1통)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "아파서 학교를 쉴 때는 결석계를 제출해야 출석으로 인정받습니다. 2일 이하는 결석계만으로 충분하지만, 3일 이상 결석하면 반드시 병원 서류도 함께 제출해야 합니다. 결석계는 사유 발생 후 5일 이내에 제출해야 합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "경조사 결석 인정 기준 안내",
+            "evidenceText": "결혼: 형제, 자매, 부, 모 - 1일 / 사망: 부모, 조부모, 외조부모 - 5일 / 부모의 형제·자매 및 그의 배우자 - 3일 / 토요휴업일 및 공휴일은 경조사 일수에 포함하지 않음.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "가족 경조사(결혼, 사망 등)가 있을 때도 학교에 신고하면 출석으로 인정받는 일수가 정해져 있습니다. 경조사 일수는 주말과 공휴일을 제외하고 계산합니다. 부고장이나 사망진단서 등 증빙서류를 함께 제출해야 합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "미인정결석 기준 안내",
+            "evidenceText": "미인정: 태만, 가출, 출석 거부 등 고의 결석 / 기타 합당하지 않은 사유 / 지각: 수업 시작 시간인 9시 이후로 수업에 참여하는 경우",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "사유 없이 학교에 오지 않거나, 인정되지 않는 이유로 결석하면 미인정결석으로 학교생활기록부에 기록됩니다. 수업 시작 시간(오전 9시) 이후에 도착하면 지각으로 처리됩니다. 지각·조퇴가 3회 누적되면 결석 1일로 계산됩니다."
+        },
+        {
+            "type": "reminder",
+            "title": "나이스 학부모 서비스로 결석계 온라인 제출 가능",
+            "evidenceText": "결석계 제출은 온라인 <나이스 학부모 서비스>를 통해 가능하십니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "나이스(NEIS) 학부모 서비스는 한국 교육부가 운영하는 학부모용 교육 포털입니다. 스마트폰 앱이나 웹사이트에서 결석계를 온라인으로 제출할 수 있어 직접 학교를 방문하지 않아도 됩니다. 앱 설치를 권장합니다."
+        }
+    ]
+}

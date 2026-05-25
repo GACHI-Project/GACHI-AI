@@ -1,0 +1,83 @@
+{
+    "documentId": "doc_022",
+    "documentTitle": "2025학년도 2학기 우유급식 신청 조사",
+    "documentDate": "2025-08-22",
+    "school": "대전관저초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_021_1",
+            "raw": "8월 28일(목)까지",
+            "resolved": "2025-08-28",
+            "note": "우유급식 신청 마감일"
+        },
+        {
+            "id": "dc_021_2",
+            "raw": "9월 3일(수) / 9월 5일(금)",
+            "resolved": "2025-09-03",
+            "note": "CMS 자동이체일 (두 날짜 중 하나)"
+        },
+        {
+            "id": "dc_021_3",
+            "raw": "9월 8일~12월 26일",
+            "resolved": "2025-09-08",
+            "note": "우유급식 기간 시작일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학교 우유급식 제도 안내",
+            "evidenceText": "2025학년도 2학기 우유급식 신청을 받고자 하오니 우유급식을 희망하는 학생은 하이클래스로 8월 28일(목)까지 제출해 주시기 바랍니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 학교에서는 점심 급식 외에 오전 중 우유를 별도로 제공하는 프로그램이 있습니다. 이는 선택 사항으로, 희망하는 학생만 신청하고 비용(학기당 약 33,000원)을 납부합니다. 신청하지 않으면 제공되지 않습니다."
+        },
+        {
+            "type": "deadline",
+            "title": "우유급식 신청",
+            "evidenceText": "우유급식을 희망하는 학생은 하이클래스로 8월 28일(목)까지 제출해 주시기 바랍니다. (기한 내에 미신청 시 우유급식을 희망하지 않는 것으로 간주)",
+            "selectedDateCandidateId": "dc_021_1",
+            "dateStatus": "confirmed",
+            "date": "2025-08-28",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "하이클래스는 학교와 학부모가 소통하는 한국의 학교 전용 앱입니다. 앱을 통해 우유급식 신청서를 제출할 수 있습니다. 기한이 지나면 추가 신청이 원칙적으로 불가합니다."
+        },
+        {
+            "type": "deadline",
+            "title": "우유급식비 CMS 자동이체",
+            "evidenceText": "우유급식기간: 9월 8일~12월 26일 / CMS 자동이체일: 9월 3일(수) / 9월 5일(금) (현금수납 불가, 통장잔액 확인)",
+            "selectedDateCandidateId": "dc_021_2",
+            "dateStatus": "confirmed",
+            "date": "2025-09-03",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "CMS는 학교 납부금을 계좌에서 자동으로 인출하는 시스템입니다. 현금 납부는 불가하며, 지정일에 등록된 계좌에서 자동 출금됩니다. 잔액이 부족하면 이체가 실패하므로 미리 확인해두세요."
+        },
+        {
+            "type": "reminder",
+            "title": "무상 우유급식 지원 대상 안내",
+            "evidenceText": "농림축산식품부 「학교우유급식사업」에 따라 자격기준을 충족하는 가정의 학생에게 무상으로 우유를 지원하고 있습니다. 자격기준: 국민기초생활수급자, 차상위계층, 한부모가족, 특수교육대상자, 교육비지원대상자, 국가유공자 자녀",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "저소득 가정, 한부모가정 등은 우유급식 비용을 정부에서 지원받을 수 있습니다. 해당 대상자도 반드시 신청해야 지원받을 수 있으며, 신청하지 않으면 자동으로 지원되지 않습니다. 해당 여부가 불확실하면 학교 행정실에 문의하세요."
+        },
+        {
+            "type": "reminder",
+            "title": "우유 알레르기·소화장애 학생 신청 주의",
+            "evidenceText": "우유에 이상반응(알레르기, 소화장애 등)이 있는 학생은 신청을 고려하시기 바랍니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "유당불내증(우유를 마시면 소화가 안 되는 증상)이 있는 자녀는 우유급식 신청을 하지 않는 것이 좋습니다. 신청 후 취소는 전출(전학)하는 경우에만 가능하며, 일반적인 취소는 한 달 단위로만 가능합니다."
+        }
+    ]
+}

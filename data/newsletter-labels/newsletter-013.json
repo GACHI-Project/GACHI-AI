@@ -1,0 +1,60 @@
+{
+    "documentId": "doc_013",
+    "documentTitle": "2026년 학생 식품알레르기 실태조사 협조 안내",
+    "documentDate": "2026-03-06",
+    "school": "서울잠실초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_015_1",
+            "raw": "2025. 3. 6.(금)까지",
+            "resolved": "2025-03-06",
+            "note": "제출 기한 (문서 내 연도가 2025로 표기됨 — 원문 그대로 반영)"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학교급식 식품알레르기 관리 제도 안내",
+            "evidenceText": "안전한 학교급식 운영을 위해 학생들의 식품알레르기 실태를 파악하여 관리하고자 합니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 학교급식은 매일 학교에서 식사를 제공하는 제도입니다. 알레르기 정보를 학교에 사전에 알려두면, 급식 식단표에서 알레르기 유발 식품 번호를 확인하여 자녀가 해당 음식을 피할 수 있도록 관리해줍니다."
+        },
+        {
+            "type": "deadline",
+            "title": "식품알레르기 실태조사 제출",
+            "evidenceText": "제출기한: 2025. 3. 6.(금)까지 / 제출대상: 식품알레르기가 있는 학생 / 제출방법: '스쿨투게더 메시지'를 통해 제출",
+            "selectedDateCandidateId": "dc_015_1",
+            "dateStatus": "confirmed",
+            "date": "2025-03-06",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "스쿨투게더는 학교와 학부모가 메시지를 주고받는 한국의 학교 전용 앱입니다. 알레르기가 있는 학생의 학부모만 회신하면 됩니다. 알레르기가 없으면 별도로 응답하지 않아도 됩니다."
+        },
+        {
+            "type": "reminder",
+            "title": "급식 식단표 알레르기 유발식품 표시제 안내",
+            "evidenceText": "학교급식 식단표에 알레르기 유발식품 표시제를 실시하고 있습니다. 알레르기 유발식품의 번호를 식단 이름 옆에 상세히 안내하고 있으니 증상이 있는 학생들이 해당 식품을 섭취하지 않도록 가정에서 확인과 지도바랍니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국 학교급식 식단표에는 19가지 법정 알레르기 유발 식품이 번호로 표시됩니다(예: 1=난류, 2=우유, 5=대두). 학교 홈페이지나 급식 게시판에서 매일 식단을 확인하고, 자녀가 해당 번호 음식을 스스로 피할 수 있도록 지도해주세요."
+        },
+        {
+            "type": "reminder",
+            "title": "아나필락시스 쇼크 학생 에피네프린 응급주사 안내",
+            "evidenceText": "혹시, 심한 알레르기 증상인 아나필락시스 쇼크환자로 에피네프린 응급주사가 필요한가요?",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "아나필락시스는 특정 식품에 노출 시 호흡곤란 등 생명을 위협하는 심각한 알레르기 반응입니다. 해당하는 학생은 반드시 학교 보건실에 사전에 알리고 에피네프린 자동주사기(에피펜)를 보건실에 보관해두어야 합니다."
+        }
+    ]
+}

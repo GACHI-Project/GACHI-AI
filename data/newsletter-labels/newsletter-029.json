@@ -1,0 +1,88 @@
+{
+    "documentId": "doc_029",
+    "documentTitle": "2025학년도 겨울방학 방과후학교 연계형 돌봄교실 신청 안내",
+    "documentDate": "2025-12-01",
+    "school": "대전관저초등학교",
+    "dateCandidates": [
+        {
+            "id": "dc_027_1",
+            "raw": "12월 5일(금)까지",
+            "resolved": "2025-12-05",
+            "note": "신청서 및 서류 제출 마감일"
+        },
+        {
+            "id": "dc_027_2",
+            "raw": "2026. 1. 12.(월) ~ 2. 13.(금)",
+            "resolved": "2026-02-13",
+            "note": "겨울방학 돌봄교실 운영 기간 마감일"
+        }
+    ],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "방과후학교 연계형 돌봄교실 개념 안내",
+            "evidenceText": "2025학년도 겨울방학 방과후학교 연계형 돌봄교실 신청 방법을 아래와 같이 안내하오니, 참여를 희망하시는 학부모님께서는 신청서와 서류를 12월 5일(금)까지 돌봄교실 2반으로 제출해주시기 바랍니다.",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "방과후학교 연계형 돌봄교실은 방학 중 맞벌이·저소득 가정 등 돌봄이 필요한 학생을 위해 학교에서 운영하는 돌봄 서비스입니다. 방학 중에도 학교에서 자녀를 안전하게 돌봐주며, 방과후 프로그램과 연계해 수업도 함께 진행합니다. 모든 학생이 이용하는 것이 아니라 신청자에 한해 선발합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "돌봄교실 우선순위 선발 기준 안내",
+            "evidenceText": "1순위: 국민기초생활보장수급자 / 2순위: 법정차상위 한부모가족보호대상자, 법정차상위 자활근로참가자 등 / 4순위: 한부모 가족 / 5순위: 취업 부모 / 6순위: 두 자녀 이상 다자녀",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "돌봄교실 자리가 제한되어 있어 우선순위에 따라 선발합니다. 국민기초생활수급자, 한부모가정, 저소득층이 우선 대상이며, 맞벌이 가정도 취업 증빙서류를 제출하면 신청할 수 있습니다. 다문화가정은 별도 우선순위가 없더라도 소득 기준 충족 시 해당 순위로 신청 가능합니다."
+        },
+        {
+            "type": "deadline",
+            "title": "겨울방학 돌봄교실 신청서 및 증빙서류 제출",
+            "evidenceText": "신청서와 서류를 12월 5일(금)까지 돌봄교실 2반으로 제출해주시기 바랍니다. (학기 중 참여자는 신청서만 제출)",
+            "selectedDateCandidateId": "dc_027_1",
+            "dateStatus": "confirmed",
+            "date": "2025-12-05",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "처음 신청하는 경우 신청서와 해당 순위 증빙서류를 함께 제출해야 합니다. 이미 학기 중 돌봄교실에 참여하고 있는 학생은 신청서만 제출하면 됩니다. 서류 없이 신청서만 내면 선정에서 제외될 수 있습니다."
+        },
+        {
+            "type": "schedule",
+            "title": "겨울방학 돌봄교실 운영 기간",
+            "evidenceText": "운영 기간: 2026. 1. 12.(월) ~ 2. 13.(금) *공휴일 및 주말 제외 / 운영 시간: 09:00 ~ 11:50",
+            "selectedDateCandidateId": "dc_027_2",
+            "dateStatus": "confirmed",
+            "date": "2026-02-13",
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "방학 중 돌봄교실은 오전 9시부터 11시 50분까지 운영됩니다. 이 시간 안에서 학부모가 원하는 귀가 시간을 지정할 수 있습니다. 급식과 간식은 제공되지 않으므로 자녀가 배가 고프지 않도록 아침을 먹이고 등교시키세요."
+        },
+        {
+            "type": "reminder",
+            "title": "취업 부모 신청 시 필요 서류 안내",
+            "evidenceText": "취업 부모: 재직증명서(사업장 업체전화번호, 근로시간 기입) 또는 근무시간확인서 / 고용보험피보험자격내역서 / 직장건강보험 자격득실확인서 / 부, 모 각각 제출(총 4부)",
+            "selectedDateCandidateId": "dc_027_1",
+            "dateStatus": "confirmed",
+            "date": "2025-12-05",
+            "target": "parent",
+            "actionRequired": true,
+            "schoolContext": "맞벌이 가정으로 신청하려면 부모 모두의 재직증명서와 고용 관련 서류를 각각 제출해야 합니다(총 4부). 재직증명서는 직장에서 발급받을 수 있으며, 고용보험 확인서는 고용지원센터나 온라인에서 발급 가능합니다. 자영업자는 사업자등록증과 소득증빙 서류를 대신 제출합니다."
+        },
+        {
+            "type": "reminder",
+            "title": "방학 중 돌봄교실 급·간식 미제공 안내",
+            "evidenceText": "운영 시간: 09:00 ~ 11:50 / 급·간식 미제공",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "학기 중 급식과 달리 방학 중 돌봄교실에서는 점심 급식과 간식을 제공하지 않습니다. 운영 시간이 오전 중에만 이루어지므로 귀가 전 식사가 필요한 경우 도시락을 따로 챙겨주거나, 귀가 후 바로 식사할 수 있도록 준비해 두세요."
+        }
+    ]
+}

@@ -1,0 +1,64 @@
+{
+    "documentId": "doc_019",
+    "documentTitle": "학교폭력 예방을 위한 안내문",
+    "documentDate": "2024-09-04",
+    "school": "대전관저초등학교",
+    "dateCandidates": [],
+    "labels": [
+        {
+            "type": "reminder",
+            "title": "학교폭력 법적 정의 안내",
+            "evidenceText": "'학교폭력'이란 학교 내·외에서 학생을 대상으로 발생한 상해, 폭행, 감금, 협박, 약취·유인, 명예훼손·모욕, 공갈, 강요·강제적인 심부름 및 성폭력, 따돌림, 사이버 따돌림, 정보통신망을 이용한 음란·폭력 정보 등에 의하여 신체·정신 또는 재산상의 피해를 수반하는 행위",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국에서 학교폭력은 신체적 폭행뿐 아니라 언어폭력, 따돌림(왕따), 사이버폭력, 금품갈취까지 법으로 정의된 광범위한 개념입니다. 장난처럼 보이는 행위도 피해학생이 고통을 느끼면 학교폭력으로 간주될 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "학교폭력 피해학생 징후 안내",
+            "evidenceText": "피해학생의 징후: 늦잠을 자고 몸이 아프다고 하며 학교 가기를 꺼림 / 학교생활 및 친구관계에 대한 대화를 시도할 때 예민한 반응을 보임 / 용돈을 평소보다 많이 달라고 하거나 스마트폰 요금이 많이 부과됨",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "자녀가 학교폭력 피해를 당하고 있어도 직접 말하지 않는 경우가 많습니다. 위 징후들이 반복적으로 나타나면 담임 선생님에게 먼저 연락하거나 자녀와 부드럽게 대화해보세요. 절대 자녀를 탓하거나 다그치지 마세요."
+        },
+        {
+            "type": "reminder",
+            "title": "학교폭력 피해 발생 시 학부모 대처 방법",
+            "evidenceText": "피해학생의 경우: 1) 피해 사실을 확인하세요 2) 안정시켜 주세요 3) 공감해 주세요 4) 들어주세요 5) 도움을 요청하세요 - 먼저 담임선생님께 도움을 요청하세요 6) 보복하지 마세요",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "한국에서 학교폭력 피해가 발생하면 학교에 신고하면 학교폭력대책심의위원회가 열리고 공식 절차가 시작됩니다. 먼저 담임 선생님에게 연락하는 것이 첫 번째 단계이며, 긴급한 경우 학교폭력 신고전화(117)를 이용할 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "학교폭력 가해학생 조치 단계 안내",
+            "evidenceText": "가해학생 교육·선도 조치: 제1호 서면사과 / 제2호 접촉·협박 및 보복행위 금지 / 제3호 학교에서의 봉사 / 제4호 사회봉사 / 제5호 특별교육이수 또는 심리치료 / 제6호 출석정지 / 제7호 학급교체 / 제8호 전학",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "학교폭력이 인정되면 가해학생에게 단계별 조치가 내려집니다. 경미한 경우 서면사과부터 시작해, 심각한 경우 전학 조치까지 가능합니다. 이 조치 결과는 학교생활기록부에 기재되어 이후 입시에 영향을 줄 수 있습니다."
+        },
+        {
+            "type": "reminder",
+            "title": "학교폭력 신고 연락처 안내",
+            "evidenceText": "학교폭력 발생 시 신고·상담 연락처: 담임교사 또는 교무실, 학교폭력전담경찰관, 학교폭력 신고 전화(117)",
+            "selectedDateCandidateId": null,
+            "dateStatus": "missing",
+            "date": null,
+            "target": "parent",
+            "actionRequired": false,
+            "schoolContext": "117은 학교폭력 전국 신고전화로, 24시간 운영됩니다. 한국어 외에도 외국어 통역 서비스를 제공합니다. 긴급하지 않은 경우 먼저 담임 선생님에게 연락하는 것이 권장됩니다."
+        }
+    ]
+}
