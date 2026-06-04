@@ -99,16 +99,17 @@ class PromptPreviewResponse(BaseModel):
     messages: list[PromptMessage]
     response_schema: dict[str, Any] = Field(alias="responseSchema")
 
+
 class ChatMessageItem(BaseModel):
-    role: str   # "user" | "assistant"
+    role: str  # "user" | "assistant"
     content: str
 
 
 class ChatRequest(BaseModel):
-    message: str                          # 사용자가 보낸 메시지
-    history: list[ChatMessageItem] = []   # 이전 대화 히스토리 (없으면 빈 리스트)
-    language: str = "KO"                  # 사용자 언어코드 KO/US/ZH/VI
-    chat_type: str = "GENERAL"            # GENERAL(일반) / DOCUMENT(문서 기반, 추후)
+    message: str  # 사용자가 보낸 메시지
+    history: list[ChatMessageItem] = []  # 이전 대화 히스토리 (없으면 빈 리스트)
+    language: str = "KO"  # 사용자 언어코드 KO/US/ZH/VI
+    chat_type: str = "GENERAL"  # GENERAL(일반) / DOCUMENT(문서 기반, 추후)
 
 
 class ChatResponse(BaseModel):

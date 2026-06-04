@@ -12,23 +12,29 @@ def build_chat_messages(request: ChatRequest) -> list[dict[str, str]]:
     messages: list[dict[str, str]] = []
 
     # 시스템 프롬프트
-    messages.append({
-        "role": "system",
-        "content": _build_system_prompt(request.language, request.chat_type),
-    })
+    messages.append(
+        {
+            "role": "system",
+            "content": _build_system_prompt(request.language, request.chat_type),
+        }
+    )
 
     # 이전 대화 히스토리 (BE Redis에서 가져온 것)
     for item in request.history:
-        messages.append({
-            "role": item.role,
-            "content": item.content,
-        })
+        messages.append(
+            {
+                "role": item.role,
+                "content": item.content,
+            }
+        )
 
     # 현재 유저 메시지
-    messages.append({
-        "role": "user",
-        "content": request.message,
-    })
+    messages.append(
+        {
+            "role": "user",
+            "content": request.message,
+        }
+    )
 
     return messages
 
