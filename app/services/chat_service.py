@@ -39,7 +39,7 @@ def _call_openai_chat(settings: OpenAISettings, messages: list[dict[str, str]]) 
         "model": settings.model,
         "messages": messages,
         "max_tokens": 1000,
-        "temperature": 0.7,
+        "temperature": 0.2,
     }
 
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
