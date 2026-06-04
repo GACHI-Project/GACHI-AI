@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from app.routers import health, newsletters
+from app.routers import health, newsletters, chat
 
 app = FastAPI(
     title="GACHI-AI",
@@ -12,3 +12,4 @@ app = FastAPI(
 
 app.include_router(health.router)
 app.include_router(newsletters.router)
+app.include_router(chat.router)
