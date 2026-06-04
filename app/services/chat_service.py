@@ -14,9 +14,11 @@ logger = logging.getLogger(__name__)
 def chat(request: ChatRequest) -> ChatResponse:
     settings = get_openai_settings()
 
+    if not settings.enabled:
+        raise OpenAIConfigurationError("OpenAI 기능이 비활성화되어 있습니다.")
+
     if not settings.api_key:
         raise OpenAIConfigurationError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
-
     messages = build_chat_messages(request)
 
     logger.info(

@@ -100,17 +100,34 @@ class PromptPreviewResponse(BaseModel):
     response_schema: dict[str, Any] = Field(alias="responseSchema")
 
 
+class ChatMessageRole(StrEnum):
+    USER = "user"
+    ASSISTANT = "assistant"
+
+
+class ChatLanguage(StrEnum):
+    KO = "KO"
+    US = "US"
+    ZH = "ZH"
+    VI = "VI"
+
+
+class ChatType(StrEnum):
+    GENERAL = "GENERAL"
+    DOCUMENT = "DOCUMENT"  # 추후 문서 챗봇
+
+
 class ChatMessageItem(BaseModel):
-    role: str  # "user" | "assistant"
+    role: ChatMessageRole
     content: str
 
 
 class ChatRequest(BaseModel):
-    message: str  # 사용자가 보낸 메시지
-    history: list[ChatMessageItem] = []  # 이전 대화 히스토리 (없으면 빈 리스트)
-    language: str = "KO"  # 사용자 언어코드 KO/US/ZH/VI
-    chat_type: str = "GENERAL"  # GENERAL(일반) / DOCUMENT(문서 기반, 추후)
+    message: str
+    history: list[ChatMessageItem] = []
+    language: ChatLanguage = ChatLanguage.KO
+    chat_type: ChatType = ChatType.GENERAL
 
 
 class ChatResponse(BaseModel):
-    reply: str  # AI가 생성한 응답 텍스트
+    reply: str

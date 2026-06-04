@@ -1,11 +1,9 @@
 from dotenv import load_dotenv
-
-load_dotenv()
-
 from fastapi import FastAPI
 
 from app.routers import chat, health, newsletters
 
+load_dotenv()
 app = FastAPI(
     title="GACHI-AI",
     version="0.1.0",

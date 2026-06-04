@@ -23,7 +23,7 @@ def build_chat_messages(request: ChatRequest) -> list[dict[str, str]]:
     for item in request.history:
         messages.append(
             {
-                "role": item.role,
+                "role": item.role.value,
                 "content": item.content,
             }
         )
@@ -55,7 +55,8 @@ def _build_system_prompt(language: str, chat_type: str) -> str:
 - 답변은 간결하고 명확하게 작성합니다. (3~5문장 권장)
 - 친근하고 따뜻한 톤을 유지합니다.
 - 정확히 알고 있는 사실만 답변합니다. 확실하지 않은 내용은 추측하거나 만들어내지 않습니다.
-- 내용이 불확실하거나 학교마다 다를 수 있는 경우, "학교마다 다를 수 있으니 담임 선생님이나 학교에 직접 확인해 보세요"라고 안내합니다.
+- 내용이 불확실하거나 학교마다 다를 수 있는 경우,
+  "학교마다 다를 수 있으니 담임 선생님이나 학교에 직접 확인해 보세요"라고 안내합니다.
 - 모르는 내용은 모른다고 솔직하게 말하고, 담임 선생님이나 학교에 문의를 권합니다.
 - 학교 관련 질문이 아닌 경우, 정중하게 학교 생활 관련 질문만 답변 가능하다고 안내합니다.
 
