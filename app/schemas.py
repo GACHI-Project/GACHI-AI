@@ -80,8 +80,10 @@ class NewsletterExtractionResponse(BaseModel):
     items: list[ExtractedItem]
     meta: dict[str, Any] = Field(default_factory=dict)
 
+
 class ConversationTopic(BaseModel):
     topic: str
+
 
 class NewsletterAnalysisResponse(BaseModel):
     title: str
