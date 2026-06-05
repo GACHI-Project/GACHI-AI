@@ -81,10 +81,17 @@ class NewsletterExtractionResponse(BaseModel):
     meta: dict[str, Any] = Field(default_factory=dict)
 
 
+class ConversationTopic(BaseModel):
+    topic: str = Field(min_length=1, max_length=200)
+
+
 class NewsletterAnalysisResponse(BaseModel):
     title: str
     summary: str
     items: list[ExtractedItem]
+    conversation_topics: list[ConversationTopic] = Field(
+        default_factory=list, alias="conversationTopics"
+    )
     meta: dict[str, Any] = Field(default_factory=dict)
 
 
