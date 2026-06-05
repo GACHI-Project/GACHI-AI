@@ -57,14 +57,29 @@ EXTRACTION_RESPONSE_SCHEMA = {
     },
 }
 
+CONVERSATION_TOPIC_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["topic"],
+    "properties": {
+        "topic": {"type": "string"},
+    },
+}
+
 ANALYSIS_RESPONSE_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["title", "summary", "items", "meta"],
+    "required": ["title", "summary", "items", "conversationTopics", "meta"],
     "properties": {
         "title": {"type": "string"},
         "summary": {"type": "string"},
         "items": {"type": "array", "items": ITEM_RESPONSE_SCHEMA},
+        "conversationTopics": {
+            "type": "array",
+            "items": CONVERSATION_TOPIC_SCHEMA,
+            "minItems": 0,
+            "maxItems": 3,
+        },
         "meta": {
             "type": "object",
             "additionalProperties": True,
@@ -107,6 +122,20 @@ def _build_system_prompt() -> str:
 - schedule: 행사, 수업, 상담, 체험학습, 설명회, 운영일
 - checklist: 준비물, 지참물, 확인 문서, 보호자나 학생이 해야 하는 행동
 - reminder: deadline이나 schedule은 아니지만 알림으로 보여줄 가치가 있는 항목
+
+대화 주제(conversationTopics) 추출 원칙:
+- 다문화 가정 학부모가 자녀(초등학생)와 나눌 수 있는 대화 주제를 최대 3개 추출한다.
+- 아래 두 조건을 모두 만족하는 주제만 포함한다.
+  1. 자녀와 직접 연관된 내용일 것: 법령 안내, 급식비 납부, 개인정보 동의 등 행정·보호자 대상 내용은 제외한다.
+  2. 문서 맥락에 맞는 시제로 작성할 것:
+     - 가정통신문이 신청/예정 안내(아직 일어나지 않은 일)라면 기대·계획 기반 질문만 허용한다.
+       (예: 현장학습 신청서 → "이번 현장학습에서 제일 기대되는 게 뭐야?" O / "거기서 뭐가 재미있었어?" X)
+     - 가정통신문이 결과/완료 안내(이미 일어난 일)라면 경험 기반 질문도 허용한다.
+       (예: 현장학습 결과 안내 → "박물관에서 뭐가 제일 재미있었어?" O)
+     - 학부모가 이미 알고 있는 사실(자녀가 어디 갔는지, 무엇을 했는지 등)을 단순히 확인하는 질문은 제외한다.
+- 위 조건을 만족하는 주제가 없으면 빈 배열([])을 반환한다.
+- topic은 학부모가 자녀에게 바로 말할 수 있는 자연스러운 구어체 문장으로 작성한다.
+- 주제는 한국어로만 작성한다. (번역은 BE에서 처리)
 """.strip()
 
 
