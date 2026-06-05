@@ -62,7 +62,7 @@ CONVERSATION_TOPIC_SCHEMA = {
     "additionalProperties": False,
     "required": ["topic"],
     "properties": {
-        "topic": {"type": "string"},
+        "topic": {"type": "string", "minLength": 1, "maxLength": 200},
     },
 }
 
@@ -136,6 +136,7 @@ def _build_system_prompt() -> str:
        (예: 현장학습 결과 안내 → "박물관에서 뭐가 제일 재미있었어?" O)
      - 학부모가 이미 알고 있는 사실(자녀가 어디 갔는지, 무엇을 했는지 등)을
        단순히 확인하는 질문은 제외한다.
+       (예: "오늘 현장학습 갔다 왔지?" X, "급식 먹었어?" X)
 - 위 조건을 만족하는 주제가 없으면 빈 배열([])을 반환한다.
 - topic은 학부모가 자녀에게 바로 말할 수 있는 자연스러운 구어체 문장으로 작성한다.
 - 주제는 한국어로만 작성한다. (번역은 BE에서 처리)

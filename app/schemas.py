@@ -82,7 +82,7 @@ class NewsletterExtractionResponse(BaseModel):
 
 
 class ConversationTopic(BaseModel):
-    topic: str
+    topic: str = Field(min_length=1, max_length=200)
 
 
 class NewsletterAnalysisResponse(BaseModel):
