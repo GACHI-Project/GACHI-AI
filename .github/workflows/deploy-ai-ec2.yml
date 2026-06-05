@@ -124,7 +124,7 @@ jobs:
             --arg deployPath "$EC2_DEPLOY_PATH" \
             --arg image "$DOCKERHUB_USERNAME/gachi-ai:latest" \
             '{
-              commands: [[
+              commands: [
                 "#!/bin/bash",
                 "set -Eeuo pipefail",
                 "cd " + ($deployPath | @sh),
@@ -139,7 +139,7 @@ jobs:
                 "docker compose --env-file .env up -d --remove-orphans --force-recreate --no-deps nginx",
                 "docker compose --env-file .env ps",
                 "docker compose --env-file .env logs --tail=80 ai nginx || true"
-              ] | join(" && ")],
+              ],
               executionTimeout: ["900"]
             }')"
           COMMAND_ID="$(aws ssm send-command \
