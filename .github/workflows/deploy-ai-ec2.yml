@@ -125,6 +125,7 @@ jobs:
             --arg image "$DOCKERHUB_USERNAME/gachi-ai:latest" \
             '{
               commands: [[
+                "#!/bin/bash",
                 "set -Eeuo pipefail",
                 "cd " + ($deployPath | @sh),
                 "test -f .env",
