@@ -46,6 +46,7 @@ def prompt_preview(req: NewsletterExtractionRequest) -> PromptPreviewResponse:
     messages = build_prompt_messages(req)
     return PromptPreviewResponse(messages=messages, responseSchema=ANALYSIS_RESPONSE_SCHEMA)
 
+
 @router.post("/refine-translation", response_model=TranslationRefineResponse)
 def refine_translation_endpoint(req: TranslationRefineRequest) -> TranslationRefineResponse:
     try:

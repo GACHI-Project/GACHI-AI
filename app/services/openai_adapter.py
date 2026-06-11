@@ -19,6 +19,7 @@ from app.services.newsletter_prompt import (
     build_prompt_messages,
     build_refine_prompt_messages,
 )
+
 logger = logging.getLogger(__name__)
 
 
@@ -59,9 +60,7 @@ class OpenAINewsletterAdapter:
             logger.warning("[OpenAIAdapter] 응답 스키마 검증 실패. error=%s", exc)
             raise OpenAIAdapterError("OpenAI 응답이 분석 스키마와 일치하지 않습니다.") from exc
 
-    def refine_translation(
-        self, request: TranslationRefineRequest
-    ) -> TranslationRefineResponse:
+    def refine_translation(self, request: TranslationRefineRequest) -> TranslationRefineResponse:
         if not self.settings.api_key:
             raise OpenAIConfigurationError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
 

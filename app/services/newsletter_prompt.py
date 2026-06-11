@@ -289,6 +289,7 @@ def _format_candidates(request: NewsletterAnalysisRequest) -> str:
         )
     return "\n".join(lines)
 
+
 REFINE_FIELD_SCHEMA = {
     "type": "string",
     "minLength": 1,
@@ -373,4 +374,3 @@ def _build_refine_user_prompt(original_text: str, fields: list[dict[str, str]]) 
         "</fields>",
     ]
     return "\n".join(sections)
-

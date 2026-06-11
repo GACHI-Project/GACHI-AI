@@ -336,6 +336,7 @@ def _summarize_document(
 def _normalized_language(language: str | None) -> str:
     return (language or "KO").strip().upper()
 
+
 def refine_translation(request: TranslationRefineRequest) -> TranslationRefineResponse:
     settings = get_openai_settings()
 
@@ -343,7 +344,9 @@ def refine_translation(request: TranslationRefineRequest) -> TranslationRefineRe
         return TranslationRefineResponse(fields=[])
 
     if not settings.enabled:
-        logger.info("[TranslationRefine] OpenAI 비활성화. 파파고 1차 번역 결과를 그대로 사용합니다.")
+        logger.info(
+            "[TranslationRefine] OpenAI 비활성화. 파파고 1차 번역 결과를 그대로 사용합니다."
+        )
         return TranslationRefineResponse(
             fields=[
                 RefineFieldOutput(id=field.id, text=field.translated_text)

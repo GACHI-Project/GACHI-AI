@@ -147,8 +147,8 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     reply: str
 
-class RefineFieldInput(BaseModel):
 
+class RefineFieldInput(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
     id: str
