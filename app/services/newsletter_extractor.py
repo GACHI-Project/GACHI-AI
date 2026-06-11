@@ -79,6 +79,8 @@ def analyze_newsletter(
                 "model": settings.model,
                 "dateCandidateCount": len(request.date_candidates),
                 "requiresLLMReview": False,
+                "outputLanguage": _normalized_language(request.language),
+                "localizedOutput": True,
             }
         )
         return response.model_copy(update={"meta": meta})
@@ -107,6 +109,8 @@ def _build_meta(request: NewsletterAnalysisRequest) -> dict[str, object]:
         "mode": "rule_based_baseline",
         "dateCandidateCount": len(request.date_candidates),
         "requiresLLMReview": True,
+        "outputLanguage": _normalized_language(request.language),
+        "localizedOutput": _normalized_language(request.language) == "KO",
         "retainedDateCandidateInput": True,
         "retainedItemResponse": True,
     }
@@ -286,7 +290,12 @@ def _dedupe_items(items: list[ExtractedItem]) -> list[ExtractedItem]:
 
 
 def _extract_document_title(request: NewsletterAnalysisRequest) -> str:
-    for line in request.original_text.splitlines():
+    source_text = (
+        request.translated_text
+        if _normalized_language(request.language) != "KO" and request.translated_text
+        else request.original_text
+    )
+    for line in source_text.splitlines():
         title = re.sub(r"\s+", " ", line).strip(" -:\t")
         if title:
             return title[:80].rstrip()
@@ -308,3 +317,7 @@ def _summarize_document(
     if items:
         return f"추출된 주요 항목 {len(items)}건을 확인해야 합니다."
     return "분석할 본문 내용이 충분하지 않습니다."
+
+
+def _normalized_language(language: str | None) -> str:
+    return (language or "KO").strip().upper()

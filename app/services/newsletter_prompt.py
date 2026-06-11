@@ -1,5 +1,12 @@
 from app.schemas import NewsletterAnalysisRequest
 
+LANGUAGE_NAMES = {
+    "KO": "한국어",
+    "US": "미국 영어",
+    "ZH": "중국어 간체",
+    "VI": "베트남어",
+}
+
 SELECTED_DATE_CANDIDATE_SCHEMA = {
     "type": ["object", "null"],
     "additionalProperties": False,
@@ -102,6 +109,8 @@ ANALYSIS_RESPONSE_SCHEMA = {
                 "mode": {"type": "string"},
                 "dateCandidateCount": {"type": "integer", "minimum": 0},
                 "requiresLLMReview": {"type": "boolean"},
+                "outputLanguage": {"type": "string"},
+                "localizedOutput": {"type": "boolean"},
             },
         },
     },
@@ -110,19 +119,21 @@ ANALYSIS_RESPONSE_SCHEMA = {
 
 def build_prompt_messages(request: NewsletterAnalysisRequest) -> list[dict[str, str]]:
     return [
-        {"role": "system", "content": _build_system_prompt()},
+        {"role": "system", "content": _build_system_prompt(request.language)},
         {"role": "user", "content": _build_user_prompt(request)},
     ]
 
 
-def _build_system_prompt() -> str:
-    return """
+def _build_system_prompt(language: str) -> str:
+    language_name = _language_name(language)
+    return f"""
 역할: 학교 가정통신문 원문을 분석해서 저장 가능한 제목, 요약,
 주요 일정/마감/체크리스트 항목을 JSON으로 반환한다.
 
 응답 원칙:
 - response schema에 맞는 JSON만 반환한다.
 - AI 서버는 DB 저장을 직접 알지 않는다. 저장 판단은 BE가 하며, AI 서버는 분석 결과만 반환한다.
+- 최종 사용자 노출 문구는 반드시 {language_name}로 작성한다.
 - title은 문서 제목으로 사용할 수 있는 짧은 문자열로 작성한다.
 - summary는 보호자나 학생이 빠르게 확인할 수 있는 1~2문장으로 작성한다.
 - items의 구조는 /ai/newsletters/extract-items 응답 형식을 유지한다.
@@ -130,7 +141,7 @@ def _build_system_prompt() -> str:
 - dateCandidates에 없는 날짜를 새로 만들거나 추론해서 confirmed로 반환하지 않는다.
 - 날짜 근거가 명확할 때만 dateStatus를 confirmed로 설정한다.
 - 날짜 정보가 없거나 근거가 약하면 ambiguous 또는 missing을 사용한다.
-- evidenceText는 원문에서 직접 가져온 근거 문장이나 구절로 작성한다.
+- evidenceText는 사용자가 볼 수 있는 근거/상세 설명 문구로 작성하되, 원문 의미를 벗어나지 않는다.
 
 항목 분류 기준 (items[] 최상위 — 모두 "일정"이다):
 - deadline: 제출, 신청, 납부, 등록, 동의, 회신, 마감 행동
@@ -152,10 +163,10 @@ def _build_system_prompt() -> str:
   표현하는 항목을 여러 개 만들지 않는다.
 - content는 다문화 학부모가 실제로 수행할 수 있는 구체적 행동 단위로,
   "OO 제출하기", "OO 준비하기", "OO 동의서 작성하기"처럼 행동 지향적인
-  짧은 문구로 작성한다.
+  짧은 문구로 작성하되 최종 응답 언어는 {language_name}로 맞춘다.
 - detail은 그 항목에 대한 부가 설명을 원문 근거에 기반해 1줄로 작성한다.
   (특별한 부가 설명이 없으면 null 가능)
-- 체크리스트 문구는 한국어로 작성한다. (번역은 BE에서 처리)
+- 체크리스트 문구는 BE에서 다시 번역하지 않고 바로 저장/표시할 수 있어야 한다.
 
 대화 주제(conversationTopics) 추출 원칙:
 - 다문화 가정 학부모가 자녀(초등학생)와 나눌 수 있는 대화 주제를 최대 3개 추출한다.
@@ -185,17 +196,29 @@ def _build_system_prompt() -> str:
   - 위 4가지 관점 중 적합한 게 3개 미만이면 그 수만큼만 반환한다.
 - 위 조건을 만족하는 주제가 없으면 빈 배열([])을 반환한다.
 - topic은 학부모가 자녀에게 바로 말할 수 있는 자연스러운 구어체 문장으로 작성한다.
-- 주제는 한국어로만 작성한다. (번역은 BE에서 처리)
+- topic도 최종 사용자 노출 문구이므로 반드시 {language_name}로 작성한다.
+
+다국어 생성 원칙:
+- original_text는 사실 판단의 기준이다.
+- translated_text가 있으면 초벌 번역/참고자료로만 사용하고, 어색하거나 문맥이 틀리면
+  original_text를 기준으로 바로잡는다.
+- 학교명, 기관명, 행사명, 고유명사는 무리하게 의역하지 말고 필요하면 원문을 보존한다.
+- 날짜, 시간, 금액, 준비물, 제출 대상 같은 핵심 정보는 빠뜨리지 않는다.
+- enum 값(type, dateStatus), datetime, timezone, selectedDateCandidate.originalText는
+  schema와 원문 추적을 위해 번역하지 않는다.
+- confirmationQuestion이 필요한 경우에도 {language_name}로 작성한다.
 """.strip()
 
 
 def _build_user_prompt(request: NewsletterAnalysisRequest) -> str:
     translated_text = request.translated_text.strip() if request.translated_text else ""
     reference_date = request.reference_date.isoformat() if request.reference_date else "null"
+    language_name = _language_name(request.language)
     sections = [
         f"referenceDate: {reference_date}",
         f"timezone: {request.timezone}",
         f"language: {request.language}",
+        f"targetLanguageName: {language_name}",
         "",
         "<date_candidates>",
         _format_candidates(request),
@@ -206,8 +229,21 @@ def _build_user_prompt(request: NewsletterAnalysisRequest) -> str:
         "</original_text>",
     ]
     if translated_text:
-        sections.extend(["", "<translated_text>", translated_text, "</translated_text>"])
+        sections.extend(
+            [
+                "",
+                "<translated_text>",
+                "아래 translated_text는 기계 번역 초안이며 최종 문구가 아닙니다.",
+                translated_text,
+                "</translated_text>",
+            ]
+        )
     return "\n".join(sections)
+
+
+def _language_name(language: str | None) -> str:
+    normalized = (language or "KO").strip().upper()
+    return LANGUAGE_NAMES.get(normalized, LANGUAGE_NAMES["KO"])
 
 
 def _format_candidates(request: NewsletterAnalysisRequest) -> str:
