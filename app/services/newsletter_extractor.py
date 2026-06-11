@@ -3,6 +3,7 @@ import re
 from collections.abc import Iterable
 
 from app.config import get_openai_settings
+from app.constants import SUPPORTED_LANGUAGE_CODES
 from app.schemas import (
     ChecklistItem,
     DateCandidate,
@@ -79,13 +80,17 @@ def analyze_newsletter(
                 "model": settings.model,
                 "dateCandidateCount": len(request.date_candidates),
                 "requiresLLMReview": False,
+                "outputLanguage": _normalized_language(request.language),
+                "localizedOutput": True,
             }
         )
         return response.model_copy(update={"meta": meta})
 
     items = _extract_items(request)
+    title = _extract_document_title(request)
     return NewsletterAnalysisResponse(
-        title=_extract_document_title(request),
+        title=title,
+        titleI18n=_fallback_i18n(title),
         summary=_summarize_document(request, items),
         items=items,
         meta=_build_meta(request),
@@ -107,6 +112,8 @@ def _build_meta(request: NewsletterAnalysisRequest) -> dict[str, object]:
         "mode": "rule_based_baseline",
         "dateCandidateCount": len(request.date_candidates),
         "requiresLLMReview": True,
+        "outputLanguage": _normalized_language(request.language),
+        "localizedOutput": _normalized_language(request.language) == "KO",
         "retainedDateCandidateInput": True,
         "retainedItemResponse": True,
     }
@@ -120,6 +127,7 @@ def _extract_candidate_backed_items(
     for index, candidate in enumerate(request.date_candidates):
         evidence = _evidence_window(text, candidate)
         item_type = _classify_item_type(evidence)
+        title = _build_title(evidence, item_type)
         selected = SelectedDateCandidate(
             index=index,
             candidateId=candidate.candidate_id,
@@ -129,7 +137,8 @@ def _extract_candidate_backed_items(
         items.append(
             ExtractedItem(
                 type=item_type,
-                title=_build_title(evidence, item_type),
+                title=title,
+                titleI18n=_fallback_i18n(title),
                 selectedDateCandidate=selected,
                 dateStatus=DateStatus.CONFIRMED,
                 datetime=candidate.normalized_date.isoformat(),
@@ -201,8 +210,10 @@ def _attach_checklist_items(
         )
         target_item = items[nearest_index]
 
+        compact_content = _compact_title(sentence)
         checklist_item = ChecklistItem(
-            content=_compact_title(sentence),
+            content=compact_content,
+            contentI18n=_fallback_i18n(compact_content),
             detail=sentence,
         )
 
@@ -228,6 +239,10 @@ def _build_title(evidence: str, item_type: ExtractedItemType) -> str:
     if item_type == ExtractedItemType.DEADLINE and "마감" not in title:
         return f"{title} 마감"
     return title
+
+
+def _fallback_i18n(value: str) -> dict[str, str]:
+    return {language: value for language in SUPPORTED_LANGUAGE_CODES}
 
 
 def _compact_title(text: str) -> str:
@@ -286,7 +301,12 @@ def _dedupe_items(items: list[ExtractedItem]) -> list[ExtractedItem]:
 
 
 def _extract_document_title(request: NewsletterAnalysisRequest) -> str:
-    for line in request.original_text.splitlines():
+    source_text = (
+        request.translated_text
+        if _normalized_language(request.language) != "KO" and request.translated_text
+        else request.original_text
+    )
+    for line in source_text.splitlines():
         title = re.sub(r"\s+", " ", line).strip(" -:\t")
         if title:
             return title[:80].rstrip()
@@ -308,3 +328,7 @@ def _summarize_document(
     if items:
         return f"추출된 주요 항목 {len(items)}건을 확인해야 합니다."
     return "분석할 본문 내용이 충분하지 않습니다."
+
+
+def _normalized_language(language: str | None) -> str:
+    return (language or "KO").strip().upper()
