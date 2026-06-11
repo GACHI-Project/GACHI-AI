@@ -4,6 +4,7 @@ from collections.abc import Iterable
 
 from app.config import get_openai_settings
 from app.schemas import (
+    ChecklistItem,
     DateCandidate,
     DateStatus,
     ExtractedItem,
@@ -96,8 +97,7 @@ def _extract_items(
 ) -> list[ExtractedItem]:
     text = request.original_text or ""
     items = _extract_candidate_backed_items(text, request)
-    items.extend(_extract_missing_date_checklists(text, request))
-    return _dedupe_items(items)
+    items = _dedupe_items(items)
     _attach_checklist_items(text, request, items)
     return items
 
@@ -271,8 +271,6 @@ def _contains_any(text: str, keywords: tuple[str, ...]) -> bool:
 def _confidence_for(item_type: ExtractedItemType) -> float:
     if item_type in (ExtractedItemType.DEADLINE, ExtractedItemType.SCHEDULE):
         return 0.82
-    if item_type == ExtractedItemType.CHECKLIST:
-        return 0.74
     return 0.62
 
 

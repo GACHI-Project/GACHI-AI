@@ -36,6 +36,7 @@ ITEM_RESPONSE_SCHEMA = {
         "confidence",
         "needsUserConfirmation",
         "confirmationQuestion",
+        "checklistItems",
     ],
     "properties": {
         "type": {
