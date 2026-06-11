@@ -37,9 +37,7 @@ class NewsletterMultilingualPromptTest(unittest.TestCase):
         )
         self.assertIn(translated_text_skip_phrase, system_prompt)
         self.assertIn("targetLanguageName: 미국 영어", user_prompt)
-        self.assertIn(
-            "아래 translated_text는 기계 번역 초안입니다.", user_prompt
-        )
+        self.assertIn("아래 translated_text는 기계 번역 초안입니다.", user_prompt)
         self.assertIn("알림용 다국어 map 생성 원칙", system_prompt)
         self.assertIn(
             "conversationTopics는 알림에 쓰지 않으므로 다국어 map을 만들지 않는다", system_prompt
