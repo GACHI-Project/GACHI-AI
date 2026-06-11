@@ -321,10 +321,7 @@ def build_refine_prompt_messages(
     language: str,
     fields: list[dict[str, str]],
 ) -> list[dict[str, str]]:
-    """파파고로 1차 번역된 title/summary/checklist/topic 등을 교정하기 위한 프롬프트.
 
-    fields: [{"id": "...", "koText": "...", "translatedText": "..."}, ...]
-    """
     return [
         {"role": "system", "content": _build_refine_system_prompt(language)},
         {"role": "user", "content": _build_refine_user_prompt(original_text, fields)},
@@ -360,8 +357,8 @@ def _build_refine_user_prompt(original_text: str, fields: list[dict[str, str]]) 
     for field in fields:
         field_lines.append(
             f"- id: {field['id']}\n"
-            f"  koText: {field.get('koText', '')}\n"
-            f"  translatedText: {field.get('translatedText', '')}"
+            f"  koText: {field['koText']}\n"
+            f"  translatedText: {field['translatedText']}"
         )
 
     sections = [

@@ -153,7 +153,7 @@ class RefineFieldInput(BaseModel):
 
     id: str
     ko_text: str = Field(alias="koText")
-    translated_text: str = Field(alias="translatedText")
+    translated_text: str = Field(min_length=1, alias="translatedText")
 
 
 class TranslationRefineRequest(BaseModel):
@@ -166,7 +166,7 @@ class TranslationRefineRequest(BaseModel):
 
 class RefineFieldOutput(BaseModel):
     id: str
-    text: str
+    text: str = Field(min_length=1)
 
 
 class TranslationRefineResponse(BaseModel):
