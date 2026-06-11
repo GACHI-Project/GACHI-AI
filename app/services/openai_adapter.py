@@ -50,6 +50,47 @@ class OpenAINewsletterAdapter:
             logger.warning("[OpenAIAdapter] 응답 스키마 검증 실패. error=%s", exc)
             raise OpenAIAdapterError("OpenAI 응답이 분석 스키마와 일치하지 않습니다.") from exc
 
+    def refine_translation(
+        self, request: TranslationRefineRequest
+    ) -> TranslationRefineResponse:
+        if not self.settings.api_key:
+            raise OpenAIConfigurationError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
+
+        if not request.fields:
+            return TranslationRefineResponse(fields=[])
+
+        payload = {
+            "model": self.settings.model,
+            "input": build_refine_prompt_messages(
+                request.original_text,
+                request.language,
+                [
+                    {
+                        "id": field.id,
+                        "koText": field.ko_text,
+                        "translatedText": field.translated_text,
+                    }
+                    for field in request.fields
+                ],
+            ),
+            "text": {
+                "format": {
+                    "type": "json_schema",
+                    "name": "translation_refine",
+                    "schema": REFINE_RESPONSE_SCHEMA,
+                    "strict": False,
+                }
+            },
+        }
+
+        response_body = self._post_json("/responses", payload)
+        parsed = self._extract_output_json(response_body)
+        try:
+            return TranslationRefineResponse.model_validate(parsed)
+        except ValidationError as exc:
+            logger.warning("[OpenAIAdapter] 2차 검증 응답 스키마 검증 실패. error=%s", exc)
+            raise OpenAIAdapterError("OpenAI 응답이 검증 스키마와 일치하지 않습니다.") from exc
+
     def _post_json(self, path: str, payload: dict[str, Any]) -> dict[str, Any]:
         url = self.settings.base_url.rstrip("/") + path
         body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
