@@ -12,6 +12,16 @@ SELECTED_DATE_CANDIDATE_SCHEMA = {
     },
 }
 
+CHECKLIST_ITEM_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["content", "detail"],
+    "properties": {
+        "content": {"type": "string", "minLength": 1, "maxLength": 500},
+        "detail": {"type": ["string", "null"], "maxLength": 500},
+    },
+}
+
 ITEM_RESPONSE_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
@@ -30,7 +40,7 @@ ITEM_RESPONSE_SCHEMA = {
     "properties": {
         "type": {
             "type": "string",
-            "enum": ["schedule", "deadline", "checklist", "reminder"],
+            "enum": ["schedule", "deadline", "reminder"],
         },
         "title": {"type": "string"},
         "selectedDateCandidate": SELECTED_DATE_CANDIDATE_SCHEMA,
@@ -44,6 +54,10 @@ ITEM_RESPONSE_SCHEMA = {
         "confidence": {"type": "number", "minimum": 0, "maximum": 1},
         "needsUserConfirmation": {"type": "boolean"},
         "confirmationQuestion": {"type": ["string", "null"]},
+        "checklistItems": {
+            "type": "array",
+            "items": CHECKLIST_ITEM_SCHEMA,
+        },
     },
 }
 
@@ -117,11 +131,30 @@ def _build_system_prompt() -> str:
 - 날짜 정보가 없거나 근거가 약하면 ambiguous 또는 missing을 사용한다.
 - evidenceText는 원문에서 직접 가져온 근거 문장이나 구절로 작성한다.
 
-항목 분류 기준:
+항목 분류 기준 (items[] 최상위 — 모두 "일정"이다):
 - deadline: 제출, 신청, 납부, 등록, 동의, 회신, 마감 행동
 - schedule: 행사, 수업, 상담, 체험학습, 설명회, 운영일
-- checklist: 준비물, 지참물, 확인 문서, 보호자나 학생이 해야 하는 행동
 - reminder: deadline이나 schedule은 아니지만 알림으로 보여줄 가치가 있는 항목
+
+체크리스트(checklistItems) 추출 원칙:
+- 체크리스트는 더 이상 독립적인 최상위 항목이 아니다. 반드시 items[] 중
+  하나의 일정(schedule/deadline/reminder)에 속한 checklistItems[]로만 추출한다.
+- 체크리스트는 그 일정의 날짜를 그대로 따라간다. checklistItems 각 원소에는
+  날짜 관련 필드를 절대 포함하지 않는다 (content, detail만 작성).
+- 모든 일정에 체크리스트가 있어야 하는 것은 아니다. 해당 일정과 관련해
+  학부모나 자녀가 실제로 준비하거나 수행해야 할 행동이 명확할 때만 추출하고,
+  없으면 checklistItems: [] (빈 배열)로 둔다.
+- 문서 전체 맥락을 통합적으로 파악해서 작성한다. 같은 행동(예: "신청서 제출하기"와
+  "참가 동의서 제출하기")을 여러 일정에 중복으로 나누어 넣지 않는다. 하나의 행동은
+  그 행동과 가장 직접적으로 연관된 단 하나의 일정에만 귀속시킨다.
+- 같은 일정 내에서도 checklistItems끼리 서로 중복되거나 사실상 같은 행동을
+  표현하는 항목을 여러 개 만들지 않는다.
+- content는 다문화 학부모가 실제로 수행할 수 있는 구체적 행동 단위로,
+  "OO 제출하기", "OO 준비하기", "OO 동의서 작성하기"처럼 행동 지향적인
+  짧은 문구로 작성한다.
+- detail은 그 항목에 대한 부가 설명을 원문 근거에 기반해 1줄로 작성한다.
+  (특별한 부가 설명이 없으면 null 가능)
+- 체크리스트 문구는 한국어로 작성한다. (번역은 BE에서 처리)
 
 대화 주제(conversationTopics) 추출 원칙:
 - 다문화 가정 학부모가 자녀(초등학생)와 나눌 수 있는 대화 주제를 최대 3개 추출한다.
