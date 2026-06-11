@@ -7,9 +7,18 @@ from typing import Any
 from pydantic import ValidationError
 
 from app.config import OpenAISettings
-from app.schemas import NewsletterAnalysisRequest, NewsletterAnalysisResponse
-from app.services.newsletter_prompt import ANALYSIS_RESPONSE_SCHEMA, build_prompt_messages
-
+from app.schemas import (
+    NewsletterAnalysisRequest,
+    NewsletterAnalysisResponse,
+    TranslationRefineRequest,
+    TranslationRefineResponse,
+)
+from app.services.newsletter_prompt import (
+    ANALYSIS_RESPONSE_SCHEMA,
+    REFINE_RESPONSE_SCHEMA,
+    build_prompt_messages,
+    build_refine_prompt_messages,
+)
 logger = logging.getLogger(__name__)
 
 

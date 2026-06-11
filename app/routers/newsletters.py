@@ -9,7 +9,11 @@ from app.schemas import (
     TranslationRefineRequest,
     TranslationRefineResponse,
 )
-from app.services.newsletter_extractor import (analyze_newsletter, extract_newsletter_items, refine_translation,)
+from app.services.newsletter_extractor import (
+    analyze_newsletter,
+    extract_newsletter_items,
+    refine_translation,
+)
 from app.services.newsletter_prompt import ANALYSIS_RESPONSE_SCHEMA, build_prompt_messages
 from app.services.openai_adapter import OpenAIAdapterError, OpenAIConfigurationError
 
