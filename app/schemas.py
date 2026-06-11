@@ -146,3 +146,28 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     reply: str
+
+
+class RefineFieldInput(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    id: str
+    ko_text: str = Field(alias="koText")
+    translated_text: str = Field(min_length=1, alias="translatedText")
+
+
+class TranslationRefineRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    original_text: str = Field(alias="originalText")
+    language: str = "KO"
+    fields: list[RefineFieldInput] = Field(default_factory=list)
+
+
+class RefineFieldOutput(BaseModel):
+    id: str
+    text: str = Field(min_length=1)
+
+
+class TranslationRefineResponse(BaseModel):
+    fields: list[RefineFieldOutput] = Field(default_factory=list)

@@ -21,14 +21,23 @@ class NewsletterMultilingualPromptTest(unittest.TestCase):
         system_prompt = messages[0]["content"]
         user_prompt = messages[1]["content"]
 
-        self.assertIn("최종 사용자 노출 문구는 반드시 미국 영어로 작성", system_prompt)
-        self.assertIn("체크리스트 문구는 BE에서 다시 번역하지 않고 바로 저장/표시", system_prompt)
-        self.assertIn("topic도 최종 사용자 노출 문구이므로 반드시 미국 영어로 작성", system_prompt)
-        self.assertIn("translated_text가 있으면 초벌 번역/참고자료로만 사용", system_prompt)
-        self.assertIn("targetLanguageName: 미국 영어", user_prompt)
-        self.assertIn(
-            "아래 translated_text는 기계 번역 초안이며 최종 문구가 아닙니다.", user_prompt
+        notification_us_phrase = (
+            "사용자의 현재 언어(미국 영어)와\n  무관하게 알림(notification)에서 사용된다"
         )
+        self.assertIn(notification_us_phrase, system_prompt)
+        self.assertIn(
+            "conversationTopics[].topic은 사용자 언어(미국 영어)와 무관하게 항상 한국어로 작성한다",
+            system_prompt,
+        )
+        self.assertIn("체크리스트 문구는 BE에서 다시 번역하지 않고 바로 저장/표시", system_prompt)
+        self.assertIn("topic은 항상 한국어로 작성한다", system_prompt)
+        translated_text_skip_phrase = (
+            "translated_text는 참고하지 않는다. "
+            "(단일 필드는 항상 한국어로 작성하므로 번역 초안이 필요 없다.)"
+        )
+        self.assertIn(translated_text_skip_phrase, system_prompt)
+        self.assertIn("targetLanguageName: 미국 영어", user_prompt)
+        self.assertIn("아래 translated_text는 기계 번역 초안입니다.", user_prompt)
         self.assertIn("알림용 다국어 map 생성 원칙", system_prompt)
         self.assertIn(
             "conversationTopics는 알림에 쓰지 않으므로 다국어 map을 만들지 않는다", system_prompt
@@ -55,7 +64,10 @@ class NewsletterMultilingualPromptTest(unittest.TestCase):
 
         messages = build_prompt_messages(request)
 
-        self.assertIn("최종 사용자 노출 문구는 반드시 한국어로 작성", messages[0]["content"])
+        notification_i18n_phrase = (
+            "사용자의 현재 언어(한국어)와\n  무관하게 알림(notification)에서 사용된다"
+        )
+        self.assertIn(notification_i18n_phrase, messages[0]["content"])
         self.assertIn("targetLanguageName: 한국어", messages[1]["content"])
 
 
