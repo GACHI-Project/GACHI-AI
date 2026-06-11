@@ -14,7 +14,10 @@ from app.schemas import (
     NewsletterAnalysisResponse,
     NewsletterExtractionRequest,
     NewsletterExtractionResponse,
+    RefineFieldOutput,
     SelectedDateCandidate,
+    TranslationRefineRequest,
+    TranslationRefineResponse,
 )
 from app.services.openai_adapter import OpenAINewsletterAdapter
 
@@ -332,3 +335,46 @@ def _summarize_document(
 
 def _normalized_language(language: str | None) -> str:
     return (language or "KO").strip().upper()
+
+def refine_translation(request: TranslationRefineRequest) -> TranslationRefineResponse:
+    settings = get_openai_settings()
+
+    if not request.fields:
+        return TranslationRefineResponse(fields=[])
+
+    if not settings.enabled:
+        logger.info("[TranslationRefine] OpenAI 비활성화. 파파고 1차 번역 결과를 그대로 사용합니다.")
+        return TranslationRefineResponse(
+            fields=[
+                RefineFieldOutput(id=field.id, text=field.translated_text)
+                for field in request.fields
+            ]
+        )
+
+    logger.info(
+        "[TranslationRefine] OpenAI 2차 검증 모드로 실행합니다. model=%s, fieldCount=%s",
+        settings.model,
+        len(request.fields),
+    )
+    response = OpenAINewsletterAdapter(settings).refine_translation(request)
+
+    # 응답 fields의 id가 요청 fields의 id 집합과 일치하는지 검증.
+    # 누락되거나 알 수 없는 id가 있으면 해당 필드는 파파고 1차 번역 결과로 대체한다.
+    requested_by_id = {field.id: field for field in request.fields}
+    refined_by_id = {field.id: field.text for field in response.fields}
+
+    result_fields = []
+    for field in request.fields:
+        text = refined_by_id.get(field.id)
+        if text is None or not text.strip():
+            logger.warning(
+                "[TranslationRefine] id=%s 응답 누락. 파파고 1차 번역 결과로 대체합니다.", field.id
+            )
+            text = field.translated_text
+        result_fields.append(RefineFieldOutput(id=field.id, text=text))
+
+    unknown_ids = set(refined_by_id.keys()) - set(requested_by_id.keys())
+    if unknown_ids:
+        logger.warning("[TranslationRefine] 알 수 없는 id 응답 무시. unknownIds=%s", unknown_ids)
+
+    return TranslationRefineResponse(fields=result_fields)
