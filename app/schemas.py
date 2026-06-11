@@ -8,7 +8,6 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 class ExtractedItemType(StrEnum):
     SCHEDULE = "schedule"
     DEADLINE = "deadline"
-    CHECKLIST = "checklist"
     REMINDER = "reminder"
 
 
@@ -59,6 +58,11 @@ class SelectedDateCandidate(BaseModel):
     normalized_date: date = Field(alias="normalizedDate")
 
 
+class ChecklistItem(BaseModel):
+    content: str = Field(min_length=1, max_length=500)
+    detail: str | None = Field(default=None, max_length=500)
+
+
 class ExtractedItem(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -74,6 +78,7 @@ class ExtractedItem(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     needs_user_confirmation: bool = Field(alias="needsUserConfirmation")
     confirmation_question: str | None = Field(default=None, alias="confirmationQuestion")
+    checklist_items: list[ChecklistItem] = Field(default_factory=list, alias="checklistItems")
 
 
 class NewsletterExtractionResponse(BaseModel):
