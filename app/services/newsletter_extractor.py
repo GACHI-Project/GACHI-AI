@@ -169,6 +169,7 @@ def _extract_candidate_backed_items(
 #         )
 #     return items
 
+
 def _attach_checklist_items(
     text: str,
     request: NewsletterAnalysisRequest,
@@ -207,13 +208,11 @@ def _attach_checklist_items(
 
         # 동일한 content가 이미 있으면 중복 추가하지 않음
         if any(
-            existing.content == checklist_item.content
-            for existing in target_item.checklist_items
+            existing.content == checklist_item.content for existing in target_item.checklist_items
         ):
             continue
 
         target_item.checklist_items.append(checklist_item)
-
 
 
 def _classify_item_type(evidence: str) -> ExtractedItemType:

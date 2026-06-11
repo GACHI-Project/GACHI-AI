@@ -78,9 +78,7 @@ class ExtractedItem(BaseModel):
     confidence: float = Field(ge=0.0, le=1.0)
     needs_user_confirmation: bool = Field(alias="needsUserConfirmation")
     confirmation_question: str | None = Field(default=None, alias="confirmationQuestion")
-    checklist_items: list[ChecklistItem] = Field(
-        default_factory=list, alias="checklistItems"
-    )
+    checklist_items: list[ChecklistItem] = Field(default_factory=list, alias="checklistItems")
 
 
 class NewsletterExtractionResponse(BaseModel):
