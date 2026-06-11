@@ -60,6 +60,7 @@ class SelectedDateCandidate(BaseModel):
 
 class ChecklistItem(BaseModel):
     content: str = Field(min_length=1, max_length=500)
+    content_i18n: dict[str, str] = Field(default_factory=dict, alias="contentI18n")
     detail: str | None = Field(default=None, max_length=500)
 
 
@@ -68,6 +69,7 @@ class ExtractedItem(BaseModel):
 
     type: ExtractedItemType
     title: str
+    title_i18n: dict[str, str] = Field(default_factory=dict, alias="titleI18n")
     selected_date_candidate: SelectedDateCandidate | None = Field(
         default=None, alias="selectedDateCandidate"
     )
@@ -92,6 +94,7 @@ class ConversationTopic(BaseModel):
 
 class NewsletterAnalysisResponse(BaseModel):
     title: str
+    title_i18n: dict[str, str] = Field(default_factory=dict, alias="titleI18n")
     summary: str
     items: list[ExtractedItem]
     conversation_topics: list[ConversationTopic] = Field(
