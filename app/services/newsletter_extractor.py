@@ -3,6 +3,7 @@ import re
 from collections.abc import Iterable
 
 from app.config import get_openai_settings
+from app.constants import SUPPORTED_LANGUAGE_CODES
 from app.schemas import (
     ChecklistItem,
     DateCandidate,
@@ -53,7 +54,6 @@ CHECKLIST_KEYWORDS = (
     "서명",
     "제출",
 )
-SUPPORTED_LANGUAGE_CODES = ("KO", "US", "ZH", "VI")
 
 
 def extract_newsletter_items(
@@ -210,9 +210,10 @@ def _attach_checklist_items(
         )
         target_item = items[nearest_index]
 
+        compact_content = _compact_title(sentence)
         checklist_item = ChecklistItem(
-            content=_compact_title(sentence),
-            contentI18n=_fallback_i18n(_compact_title(sentence)),
+            content=compact_content,
+            contentI18n=_fallback_i18n(compact_content),
             detail=sentence,
         )
 

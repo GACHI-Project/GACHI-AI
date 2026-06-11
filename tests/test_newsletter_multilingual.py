@@ -2,11 +2,10 @@ import os
 import unittest
 from datetime import date
 
+from app.constants import SUPPORTED_LANGUAGE_CODES
 from app.schemas import NewsletterAnalysisRequest
 from app.services.newsletter_extractor import analyze_newsletter
 from app.services.newsletter_prompt import ANALYSIS_RESPONSE_SCHEMA, build_prompt_messages
-
-SUPPORTED_LANGUAGE_CODES = {"KO", "US", "ZH", "VI"}
 
 
 class NewsletterMultilingualPromptTest(unittest.TestCase):
@@ -45,7 +44,7 @@ class NewsletterMultilingualPromptTest(unittest.TestCase):
         self.assertIn("contentI18n", checklist_properties)
         self.assertEqual(
             set(response_properties["titleI18n"]["required"]),
-            SUPPORTED_LANGUAGE_CODES,
+            set(SUPPORTED_LANGUAGE_CODES),
         )
 
     def test_prompt_falls_back_to_korean_for_unknown_language(self):
@@ -81,7 +80,7 @@ class NewsletterMultilingualFallbackTest(unittest.TestCase):
         response = analyze_newsletter(request)
 
         self.assertEqual(response.title, "Saturday Bakery Program Application Guide")
-        self.assertEqual(set(response.title_i18n), SUPPORTED_LANGUAGE_CODES)
+        self.assertEqual(set(response.title_i18n), set(SUPPORTED_LANGUAGE_CODES))
         self.assertEqual(
             response.title_i18n["US"],
             "Saturday Bakery Program Application Guide",
