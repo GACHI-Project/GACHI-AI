@@ -53,6 +53,7 @@ CHECKLIST_KEYWORDS = (
     "서명",
     "제출",
 )
+SUPPORTED_LANGUAGE_CODES = ("KO", "US", "ZH", "VI")
 
 
 def extract_newsletter_items(
@@ -86,8 +87,10 @@ def analyze_newsletter(
         return response.model_copy(update={"meta": meta})
 
     items = _extract_items(request)
+    title = _extract_document_title(request)
     return NewsletterAnalysisResponse(
-        title=_extract_document_title(request),
+        title=title,
+        titleI18n=_fallback_i18n(title),
         summary=_summarize_document(request, items),
         items=items,
         meta=_build_meta(request),
@@ -124,6 +127,7 @@ def _extract_candidate_backed_items(
     for index, candidate in enumerate(request.date_candidates):
         evidence = _evidence_window(text, candidate)
         item_type = _classify_item_type(evidence)
+        title = _build_title(evidence, item_type)
         selected = SelectedDateCandidate(
             index=index,
             candidateId=candidate.candidate_id,
@@ -133,7 +137,8 @@ def _extract_candidate_backed_items(
         items.append(
             ExtractedItem(
                 type=item_type,
-                title=_build_title(evidence, item_type),
+                title=title,
+                titleI18n=_fallback_i18n(title),
                 selectedDateCandidate=selected,
                 dateStatus=DateStatus.CONFIRMED,
                 datetime=candidate.normalized_date.isoformat(),
@@ -207,6 +212,7 @@ def _attach_checklist_items(
 
         checklist_item = ChecklistItem(
             content=_compact_title(sentence),
+            contentI18n=_fallback_i18n(_compact_title(sentence)),
             detail=sentence,
         )
 
@@ -232,6 +238,10 @@ def _build_title(evidence: str, item_type: ExtractedItemType) -> str:
     if item_type == ExtractedItemType.DEADLINE and "마감" not in title:
         return f"{title} 마감"
     return title
+
+
+def _fallback_i18n(value: str) -> dict[str, str]:
+    return {language: value for language in SUPPORTED_LANGUAGE_CODES}
 
 
 def _compact_title(text: str) -> str:

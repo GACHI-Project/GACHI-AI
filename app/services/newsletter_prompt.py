@@ -7,6 +7,18 @@ LANGUAGE_NAMES = {
     "VI": "베트남어",
 }
 
+SUPPORTED_LANGUAGE_CODES = tuple(LANGUAGE_NAMES.keys())
+
+I18N_TEXT_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": list(SUPPORTED_LANGUAGE_CODES),
+    "properties": {
+        code: {"type": "string", "minLength": 1, "maxLength": 500}
+        for code in SUPPORTED_LANGUAGE_CODES
+    },
+}
+
 SELECTED_DATE_CANDIDATE_SCHEMA = {
     "type": ["object", "null"],
     "additionalProperties": False,
@@ -22,9 +34,10 @@ SELECTED_DATE_CANDIDATE_SCHEMA = {
 CHECKLIST_ITEM_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["content", "detail"],
+    "required": ["content", "contentI18n", "detail"],
     "properties": {
         "content": {"type": "string", "minLength": 1, "maxLength": 500},
+        "contentI18n": I18N_TEXT_SCHEMA,
         "detail": {"type": ["string", "null"], "maxLength": 500},
     },
 }
@@ -35,6 +48,7 @@ ITEM_RESPONSE_SCHEMA = {
     "required": [
         "type",
         "title",
+        "titleI18n",
         "selectedDateCandidate",
         "dateStatus",
         "datetime",
@@ -51,6 +65,7 @@ ITEM_RESPONSE_SCHEMA = {
             "enum": ["schedule", "deadline", "reminder"],
         },
         "title": {"type": "string"},
+        "titleI18n": I18N_TEXT_SCHEMA,
         "selectedDateCandidate": SELECTED_DATE_CANDIDATE_SCHEMA,
         "dateStatus": {
             "type": "string",
@@ -91,9 +106,10 @@ CONVERSATION_TOPIC_SCHEMA = {
 ANALYSIS_RESPONSE_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["title", "summary", "items", "conversationTopics", "meta"],
+    "required": ["title", "titleI18n", "summary", "items", "conversationTopics", "meta"],
     "properties": {
         "title": {"type": "string"},
+        "titleI18n": I18N_TEXT_SCHEMA,
         "summary": {"type": "string"},
         "items": {"type": "array", "items": ITEM_RESPONSE_SCHEMA},
         "conversationTopics": {
@@ -135,6 +151,7 @@ def _build_system_prompt(language: str) -> str:
 - AI 서버는 DB 저장을 직접 알지 않는다. 저장 판단은 BE가 하며, AI 서버는 분석 결과만 반환한다.
 - 최종 사용자 노출 문구는 반드시 {language_name}로 작성한다.
 - title은 문서 제목으로 사용할 수 있는 짧은 문자열로 작성한다.
+- titleI18n은 알림에서 사용할 문서 제목이며 KO/US/ZH/VI 네 언어 값을 모두 채운다.
 - summary는 보호자나 학생이 빠르게 확인할 수 있는 1~2문장으로 작성한다.
 - items의 구조는 /ai/newsletters/extract-items 응답 형식을 유지한다.
 - 구체적인 날짜는 제공된 dateCandidates 중 하나만 선택한다.
@@ -164,6 +181,7 @@ def _build_system_prompt(language: str) -> str:
 - content는 다문화 학부모가 실제로 수행할 수 있는 구체적 행동 단위로,
   "OO 제출하기", "OO 준비하기", "OO 동의서 작성하기"처럼 행동 지향적인
   짧은 문구로 작성하되 최종 응답 언어는 {language_name}로 맞춘다.
+- contentI18n은 알림에서 사용할 체크리스트/할 일 이름이며 KO/US/ZH/VI 값을 모두 채운다.
 - detail은 그 항목에 대한 부가 설명을 원문 근거에 기반해 1줄로 작성한다.
   (특별한 부가 설명이 없으면 null 가능)
 - 체크리스트 문구는 BE에서 다시 번역하지 않고 바로 저장/표시할 수 있어야 한다.
@@ -207,6 +225,16 @@ def _build_system_prompt(language: str) -> str:
 - enum 값(type, dateStatus), datetime, timezone, selectedDateCandidate.originalText는
   schema와 원문 추적을 위해 번역하지 않는다.
 - confirmationQuestion이 필요한 경우에도 {language_name}로 작성한다.
+
+알림용 다국어 map 생성 원칙:
+- titleI18n, items[].titleI18n, checklistItems[].contentI18n은 반드시
+  KO/US/ZH/VI 네 키를 모두 가진다.
+- 이 map들은 알림 목록과 푸시 알림의 동적 값으로 쓰일 수 있으므로
+  사용자의 현재 언어와 무관하게 네 언어를 모두 생성한다.
+- items[].titleI18n은 캘린더 preview 일정 이름으로 바로 사용할 수 있는 짧은 이름이어야 한다.
+- checklistItems[].contentI18n은 알림에 표시할 체크리스트/할 일 이름으로 바로 사용할 수 있어야 한다.
+- conversationTopics는 알림에 쓰지 않으므로 다국어 map을 만들지 않는다.
+- 네 언어 값 모두 original_text의 사실관계와 날짜, 금액, 준비물, 기관명, 행사명을 보존한다.
 """.strip()
 
 

@@ -4,7 +4,9 @@ from datetime import date
 
 from app.schemas import NewsletterAnalysisRequest
 from app.services.newsletter_extractor import analyze_newsletter
-from app.services.newsletter_prompt import build_prompt_messages
+from app.services.newsletter_prompt import ANALYSIS_RESPONSE_SCHEMA, build_prompt_messages
+
+SUPPORTED_LANGUAGE_CODES = {"KO", "US", "ZH", "VI"}
 
 
 class NewsletterMultilingualPromptTest(unittest.TestCase):
@@ -27,6 +29,23 @@ class NewsletterMultilingualPromptTest(unittest.TestCase):
         self.assertIn("targetLanguageName: 미국 영어", user_prompt)
         self.assertIn(
             "아래 translated_text는 기계 번역 초안이며 최종 문구가 아닙니다.", user_prompt
+        )
+        self.assertIn("알림용 다국어 map 생성 원칙", system_prompt)
+        self.assertIn(
+            "conversationTopics는 알림에 쓰지 않으므로 다국어 map을 만들지 않는다", system_prompt
+        )
+
+    def test_analysis_schema_requires_notification_i18n_maps(self):
+        response_properties = ANALYSIS_RESPONSE_SCHEMA["properties"]
+        item_properties = response_properties["items"]["items"]["properties"]
+        checklist_properties = item_properties["checklistItems"]["items"]["properties"]
+
+        self.assertIn("titleI18n", ANALYSIS_RESPONSE_SCHEMA["required"])
+        self.assertIn("titleI18n", item_properties)
+        self.assertIn("contentI18n", checklist_properties)
+        self.assertEqual(
+            set(response_properties["titleI18n"]["required"]),
+            SUPPORTED_LANGUAGE_CODES,
         )
 
     def test_prompt_falls_back_to_korean_for_unknown_language(self):
@@ -62,6 +81,11 @@ class NewsletterMultilingualFallbackTest(unittest.TestCase):
         response = analyze_newsletter(request)
 
         self.assertEqual(response.title, "Saturday Bakery Program Application Guide")
+        self.assertEqual(set(response.title_i18n), SUPPORTED_LANGUAGE_CODES)
+        self.assertEqual(
+            response.title_i18n["US"],
+            "Saturday Bakery Program Application Guide",
+        )
         self.assertEqual(response.meta["outputLanguage"], "US")
         self.assertFalse(response.meta["localizedOutput"])
         self.assertTrue(response.meta["requiresLLMReview"])
