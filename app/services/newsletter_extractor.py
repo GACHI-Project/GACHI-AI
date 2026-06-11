@@ -4,6 +4,7 @@ from collections.abc import Iterable
 
 from app.config import get_openai_settings
 from app.schemas import (
+    ChecklistItem,
     DateCandidate,
     DateStatus,
     ExtractedItem,
@@ -96,8 +97,9 @@ def _extract_items(
 ) -> list[ExtractedItem]:
     text = request.original_text or ""
     items = _extract_candidate_backed_items(text, request)
-    items.extend(_extract_missing_date_checklists(text, request))
-    return _dedupe_items(items)
+    items = _dedupe_items(items)
+    _attach_checklist_items(text, request, items)
+    return items
 
 
 def _build_meta(request: NewsletterAnalysisRequest) -> dict[str, object]:
@@ -141,31 +143,76 @@ def _extract_candidate_backed_items(
     return items
 
 
-def _extract_missing_date_checklists(
+# def _extract_missing_date_checklists(
+#     text: str,
+#     request: NewsletterAnalysisRequest,
+# ) -> list[ExtractedItem]:
+#     items = []
+#     for sentence in _split_sentences(text):
+#         if not _contains_any(sentence, CHECKLIST_KEYWORDS):
+#             continue
+#         if _overlaps_any_candidate(sentence, request.date_candidates):
+#             continue
+#         items.append(
+#             ExtractedItem(
+#                 type=ExtractedItemType.CHECKLIST,
+#                 title=_compact_title(sentence),
+#                 selectedDateCandidate=None,
+#                 dateStatus=DateStatus.MISSING,
+#                 datetime=None,
+#                 timezone=request.timezone,
+#                 evidenceText=sentence,
+#                 confidence=0.55,
+#                 needsUserConfirmation=True,
+#                 confirmationQuestion="이 항목을 체크리스트에 추가할까요?",
+#             )
+#         )
+#     return items
+
+
+def _attach_checklist_items(
     text: str,
     request: NewsletterAnalysisRequest,
-) -> list[ExtractedItem]:
-    items = []
+    items: list[ExtractedItem],
+) -> None:
+    if not items:
+        return
+
+    # 각 item의 evidence_text가 본문에서 등장하는 위치(대략적인 오프셋)를 미리 계산
+    item_positions = []
+    for item in items:
+        pos = text.find(item.evidence_text) if item.evidence_text else -1
+        item_positions.append(pos if pos >= 0 else len(text))
+
     for sentence in _split_sentences(text):
         if not _contains_any(sentence, CHECKLIST_KEYWORDS):
             continue
         if _overlaps_any_candidate(sentence, request.date_candidates):
             continue
-        items.append(
-            ExtractedItem(
-                type=ExtractedItemType.CHECKLIST,
-                title=_compact_title(sentence),
-                selectedDateCandidate=None,
-                dateStatus=DateStatus.MISSING,
-                datetime=None,
-                timezone=request.timezone,
-                evidenceText=sentence,
-                confidence=0.55,
-                needsUserConfirmation=True,
-                confirmationQuestion="이 항목을 체크리스트에 추가할까요?",
-            )
+
+        sentence_pos = text.find(sentence)
+        if sentence_pos < 0:
+            sentence_pos = 0
+
+        # 본문 상 위치가 가장 가까운 일정 item을 선택
+        nearest_index = min(
+            range(len(items)),
+            key=lambda i: abs(item_positions[i] - sentence_pos),
         )
-    return items
+        target_item = items[nearest_index]
+
+        checklist_item = ChecklistItem(
+            content=_compact_title(sentence),
+            detail=sentence,
+        )
+
+        # 동일한 content가 이미 있으면 중복 추가하지 않음
+        if any(
+            existing.content == checklist_item.content for existing in target_item.checklist_items
+        ):
+            continue
+
+        target_item.checklist_items.append(checklist_item)
 
 
 def _classify_item_type(evidence: str) -> ExtractedItemType:
@@ -173,8 +220,6 @@ def _classify_item_type(evidence: str) -> ExtractedItemType:
         return ExtractedItemType.DEADLINE
     if _contains_any(evidence, SCHEDULE_KEYWORDS):
         return ExtractedItemType.SCHEDULE
-    if _contains_any(evidence, CHECKLIST_KEYWORDS):
-        return ExtractedItemType.CHECKLIST
     return ExtractedItemType.REMINDER
 
 
@@ -225,8 +270,6 @@ def _contains_any(text: str, keywords: tuple[str, ...]) -> bool:
 def _confidence_for(item_type: ExtractedItemType) -> float:
     if item_type in (ExtractedItemType.DEADLINE, ExtractedItemType.SCHEDULE):
         return 0.82
-    if item_type == ExtractedItemType.CHECKLIST:
-        return 0.74
     return 0.62
 
 
