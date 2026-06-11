@@ -138,10 +138,14 @@ def _build_system_prompt(language: str) -> str:
 역할: 학교 가정통신문 원문을 분석해서 저장 가능한 제목, 요약,
 주요 일정/마감/체크리스트 항목을 JSON으로 반환한다.
 
-응답 원칙:
 - response schema에 맞는 JSON만 반환한다.
 - AI 서버는 DB 저장을 직접 알지 않는다. 저장 판단은 BE가 하며, AI 서버는 분석 결과만 반환한다.
-- 최종 사용자 노출 문구는 반드시 {language_name}로 작성한다.
+- title, summary, items[].title, checklistItems[].content, checklistItems[].detail,
+  conversationTopics[].topic은 사용자 언어({language_name})와 무관하게 항상 한국어로 작성한다.
+  (이 값들은 이후 단계에서 번역 및 검수를 거쳐 사용자 언어로 변환된다.)
+- 단, titleI18n과 checklistItems[].contentI18n은 기존과 동일하게 KO/US/ZH/VI
+  네 언어 값을 모두 채운다. 이 값들은 사용자의 현재 언어({language_name})와
+  무관하게 알림(notification)에서 사용된다.
 - title은 문서 제목으로 사용할 수 있는 짧은 문자열로 작성한다.
 - titleI18n은 알림에서 사용할 문서 제목이며 KO/US/ZH/VI 네 언어 값을 모두 채운다.
 - summary는 보호자나 학생이 빠르게 확인할 수 있는 1~2문장으로 작성한다.
@@ -172,12 +176,12 @@ def _build_system_prompt(language: str) -> str:
   표현하는 항목을 여러 개 만들지 않는다.
 - content는 다문화 학부모가 실제로 수행할 수 있는 구체적 행동 단위로,
   "OO 제출하기", "OO 준비하기", "OO 동의서 작성하기"처럼 행동 지향적인
-  짧은 문구로 작성하되 최종 응답 언어는 {language_name}로 맞춘다.
+  짧은 문구로 작성하되, 항상 한국어로 작성한다. (사용자 언어로의 번역은
+  이후 단계에서 별도로 처리한다.)
 - contentI18n은 알림에서 사용할 체크리스트/할 일 이름이며 KO/US/ZH/VI 값을 모두 채운다.
 - detail은 그 항목에 대한 부가 설명을 원문 근거에 기반해 1줄로 작성한다.
   (특별한 부가 설명이 없으면 null 가능)
 - 체크리스트 문구는 BE에서 다시 번역하지 않고 바로 저장/표시할 수 있어야 한다.
-
 대화 주제(conversationTopics) 추출 원칙:
 - 다문화 가정 학부모가 자녀(초등학생)와 나눌 수 있는 대화 주제를 최대 3개 추출한다.
 - 아래 두 조건을 모두 만족하는 주제만 포함한다.
@@ -206,17 +210,16 @@ def _build_system_prompt(language: str) -> str:
   - 위 4가지 관점 중 적합한 게 3개 미만이면 그 수만큼만 반환한다.
 - 위 조건을 만족하는 주제가 없으면 빈 배열([])을 반환한다.
 - topic은 학부모가 자녀에게 바로 말할 수 있는 자연스러운 구어체 문장으로 작성한다.
-- topic도 최종 사용자 노출 문구이므로 반드시 {language_name}로 작성한다.
+- topic은 항상 한국어로 작성한다. (사용자 언어로의 번역은 이후 단계에서 별도로 처리한다.)
 
-다국어 생성 원칙:
+한국어 작성 원칙 (title/summary/items[].title/checklistItems/conversationTopics):
 - original_text는 사실 판단의 기준이다.
-- translated_text가 있으면 초벌 번역/참고자료로만 사용하고, 어색하거나 문맥이 틀리면
-  original_text를 기준으로 바로잡는다.
-- 학교명, 기관명, 행사명, 고유명사는 무리하게 의역하지 말고 필요하면 원문을 보존한다.
+- translated_text는 참고하지 않는다. (단일 필드는 항상 한국어로 작성하므로 번역 초안이 필요 없다.)
+- 학교명, 기관명, 행사명, 고유명사는 원문 표기를 그대로 사용한다.
 - 날짜, 시간, 금액, 준비물, 제출 대상 같은 핵심 정보는 빠뜨리지 않는다.
 - enum 값(type, dateStatus), datetime, timezone, selectedDateCandidate.originalText는
-  schema와 원문 추적을 위해 번역하지 않는다.
-- confirmationQuestion이 필요한 경우에도 {language_name}로 작성한다.
+  schema와 원문 추적을 위해 그대로 둔다 (원래도 번역 대상 아님).
+- evidenceText, confirmationQuestion도 한국어로 작성한다.
 
 알림용 다국어 map 생성 원칙:
 - titleI18n, items[].titleI18n, checklistItems[].contentI18n은 반드시
@@ -253,7 +256,10 @@ def _build_user_prompt(request: NewsletterAnalysisRequest) -> str:
             [
                 "",
                 "<translated_text>",
-                "아래 translated_text는 기계 번역 초안이며 최종 문구가 아닙니다.",
+                "아래 translated_text는 기계 번역 초안입니다. title/summary/items[].title/",
+                "checklistItems/conversationTopics(한국어 고정 필드)에는 사용하지 않는다.",
+                "titleI18n/checklistItems[].contentI18n(알림용 다국어 map) 생성 시에만",
+                "참고자료로 활용한다.",
                 translated_text,
                 "</translated_text>",
             ]
@@ -282,3 +288,86 @@ def _format_candidates(request: NewsletterAnalysisRequest) -> str:
             f"extractionType: {candidate.extraction_type or 'null'}"
         )
     return "\n".join(lines)
+
+
+REFINE_FIELD_SCHEMA = {
+    "type": "string",
+    "minLength": 1,
+}
+
+REFINE_RESPONSE_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": ["fields"],
+    "properties": {
+        "fields": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "additionalProperties": False,
+                "required": ["id", "text"],
+                "properties": {
+                    "id": {"type": "string", "minLength": 1},
+                    "text": REFINE_FIELD_SCHEMA,
+                },
+            },
+        },
+    },
+}
+
+
+def build_refine_prompt_messages(
+    original_text: str,
+    language: str,
+    fields: list[dict[str, str]],
+) -> list[dict[str, str]]:
+
+    return [
+        {"role": "system", "content": _build_refine_system_prompt(language)},
+        {"role": "user", "content": _build_refine_user_prompt(original_text, fields)},
+    ]
+
+
+def _build_refine_system_prompt(language: str) -> str:
+    language_name = _language_name(language)
+    return f"""
+역할: 가정통신문 원문(한국어)과, 그 일부 문구를 한국어 → {language_name}로
+기계번역(파파고)한 결과 목록을 받아서 교정한다.
+
+원칙:
+- response schema에 맞는 JSON만 반환한다 (fields[] 배열).
+- fields[]의 각 원소는 입력으로 받은 fields와 동일한 id를 가져야 하며,
+  누락되거나 새로운 id를 추가하지 않는다. 입력 순서와 개수를 그대로 유지한다.
+- 입력으로 받은 translatedText(파파고 번역 결과)를 기본 베이스로 삼는다.
+- translatedText가 자연스럽고 원문(originalText, koText)의 의미와 일치하면
+  그대로 text에 반환한다 (불필요한 재작성 금지).
+- translatedText가 어색하거나, 원문 의미와 다르거나, 숫자/날짜/금액 등 핵심
+  정보가 누락·왜곡된 경우에만 {language_name}로 자연스럽게 다듬어서 반환한다.
+- 새로운 정보를 추가하거나 임의로 의역을 확장하지 않는다. 어디까지나 "교정"이지
+  "재작성"이 아니다.
+- text는 항상 {language_name}로 작성한다 (translatedText의 언어를 유지).
+- 학교명, 기관명, 행사명, 고유명사도 모두 {language_name}로 번역한다.
+  원문 한국어 표기를 그대로 남기지 않는다 (예: "서울노원초등학교"를 한국어
+  그대로 두지 않고 {language_name} 표기/음역으로 변환한다).
+""".strip()
+
+
+def _build_refine_user_prompt(original_text: str, fields: list[dict[str, str]]) -> str:
+    field_lines = []
+    for field in fields:
+        field_lines.append(
+            f"- id: {field['id']}\n"
+            f"  koText: {field['koText']}\n"
+            f"  translatedText: {field['translatedText']}"
+        )
+
+    sections = [
+        "<original_text>",
+        original_text.strip(),
+        "</original_text>",
+        "",
+        "<fields>",
+        "\n".join(field_lines),
+        "</fields>",
+    ]
+    return "\n".join(sections)
