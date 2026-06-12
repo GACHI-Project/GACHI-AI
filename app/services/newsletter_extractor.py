@@ -218,6 +218,7 @@ def _attach_checklist_items(
             content=compact_content,
             contentI18n=_fallback_i18n(compact_content),
             detail=sentence,
+            detailI18n=_fallback_i18n(sentence),
         )
 
         # 동일한 content가 이미 있으면 중복 추가하지 않음

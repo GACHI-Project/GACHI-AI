@@ -11,6 +11,13 @@ I18N_TEXT_SCHEMA = {
     },
 }
 
+NULLABLE_I18N_TEXT_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": list(SUPPORTED_LANGUAGE_CODES),
+    "properties": {code: {"type": "string", "maxLength": 500} for code in SUPPORTED_LANGUAGE_CODES},
+}
+
 SELECTED_DATE_CANDIDATE_SCHEMA = {
     "type": ["object", "null"],
     "additionalProperties": False,
@@ -26,11 +33,12 @@ SELECTED_DATE_CANDIDATE_SCHEMA = {
 CHECKLIST_ITEM_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["content", "contentI18n", "detail"],
+    "required": ["content", "contentI18n", "detail", "detailI18n"],
     "properties": {
         "content": {"type": "string", "minLength": 1, "maxLength": 500},
         "contentI18n": I18N_TEXT_SCHEMA,
         "detail": {"type": ["string", "null"], "maxLength": 500},
+        "detailI18n": NULLABLE_I18N_TEXT_SCHEMA,
     },
 }
 
@@ -143,7 +151,8 @@ def _build_system_prompt(language: str) -> str:
 - title, summary, items[].title, checklistItems[].content, checklistItems[].detail,
   conversationTopics[].topic은 사용자 언어({language_name})와 무관하게 항상 한국어로 작성한다.
   (이 값들은 이후 단계에서 번역 및 검수를 거쳐 사용자 언어로 변환된다.)
-- 단, titleI18n과 checklistItems[].contentI18n은 기존과 동일하게 KO/US/ZH/VI
+- 단, titleI18n과 checklistItems[].contentI18n,
+  checklistItems[].detailI18n은 기존과 동일하게 KO/US/ZH/VI
   네 언어 값을 모두 채운다. 이 값들은 사용자의 현재 언어({language_name})와
   무관하게 알림(notification)에서 사용된다.
 - title은 문서 제목으로 사용할 수 있는 짧은 문자열로 작성한다.
@@ -179,8 +188,8 @@ def _build_system_prompt(language: str) -> str:
   짧은 문구로 작성하되, 항상 한국어로 작성한다. (사용자 언어로의 번역은
   이후 단계에서 별도로 처리한다.)
 - contentI18n은 알림에서 사용할 체크리스트/할 일 이름이며 KO/US/ZH/VI 값을 모두 채운다.
-- detail은 그 항목에 대한 부가 설명을 원문 근거에 기반해 1줄로 작성한다.
-  (특별한 부가 설명이 없으면 null 가능)
+- detailI18n도 contentI18n과 동일하게 KO/US/ZH/VI 값을 모두 채운다.
+  detail이 null이면 detailI18n의 모든 언어 값도 빈 문자열("")로 채운다.
 - 체크리스트 문구는 BE에서 다시 번역하지 않고 바로 저장/표시할 수 있어야 한다.
 대화 주제(conversationTopics) 추출 원칙:
 - 다문화 가정 학부모가 자녀(초등학생)와 나눌 수 있는 대화 주제를 최대 3개 추출한다.
@@ -222,7 +231,7 @@ def _build_system_prompt(language: str) -> str:
 - evidenceText, confirmationQuestion도 한국어로 작성한다.
 
 알림용 다국어 map 생성 원칙:
-- titleI18n, items[].titleI18n, checklistItems[].contentI18n은 반드시
+- titleI18n, items[].titleI18n, checklistItems[].contentI18n, checklistItems[].detailI18n은 반드시
   KO/US/ZH/VI 네 키를 모두 가진다.
 - 이 map들은 알림 목록과 푸시 알림의 동적 값으로 쓰일 수 있으므로
   사용자의 현재 언어와 무관하게 네 언어를 모두 생성한다.
