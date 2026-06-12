@@ -98,6 +98,8 @@ class OpenAIAdapterSchemaRetryTest(unittest.TestCase):
         retry_messages = adapter.payloads[1]["input"]
         self.assertIn("스키마 검증에 실패", retry_messages[-1]["content"])
         self.assertIn("items 배열의 모든 원소", retry_messages[-1]["content"])
+        self.assertNotIn("},{", retry_messages[-1]["content"])
+        self.assertIn('"loc": "items.1"', retry_messages[-1]["content"])
 
     def test_analyze_raises_after_retry_also_fails_validation(self):
         invalid = _valid_response()

@@ -51,10 +51,10 @@ class OpenAINewsletterAdapter:
             except ValidationError as exc:
                 last_validation_error = exc
                 logger.warning(
-                    "[OpenAIAdapter] 응답 스키마 검증 실패. attempt=%s/%s, error=%s",
+                    "[OpenAIAdapter] 응답 스키마 검증 실패. attempt=%s/%s, errors=%s",
                     attempt,
                     MAX_ANALYSIS_ATTEMPTS,
-                    exc,
+                    self._summarize_validation_errors(exc, include_message=False),
                 )
                 if attempt < MAX_ANALYSIS_ATTEMPTS:
                     messages = [
@@ -84,14 +84,29 @@ class OpenAINewsletterAdapter:
         }
 
     def _build_schema_retry_message(self, exc: ValidationError) -> str:
+        summarized_errors = self._summarize_validation_errors(exc, include_message=True)
         return (
             "이전 응답은 NewsletterAnalysisResponse 스키마 검증에 실패했습니다.\n"
             "아래 오류를 반드시 수정해 같은 schema의 JSON object만 다시 반환하세요.\n"
             "- items 배열의 모든 원소는 문자열이 아니라 JSON object여야 합니다.\n"
             "- checklistItems 배열의 모든 원소도 JSON object여야 합니다.\n"
             "- 누락된 required 필드가 있으면 schema에 맞게 모두 채우세요.\n"
-            f"\nvalidationError:\n{exc}"
+            f"\nvalidationErrors:\n{json.dumps(summarized_errors, ensure_ascii=False)}"
         )
+
+    def _summarize_validation_errors(
+        self, exc: ValidationError, *, include_message: bool
+    ) -> list[dict[str, str | None]]:
+        summarized_errors = []
+        for err in exc.errors()[:10]:
+            summary = {
+                "loc": ".".join(str(part) for part in err.get("loc", ())),
+                "type": err.get("type"),
+            }
+            if include_message:
+                summary["msg"] = err.get("msg")
+            summarized_errors.append(summary)
+        return summarized_errors
 
     def refine_translation(self, request: TranslationRefineRequest) -> TranslationRefineResponse:
         if not self.settings.api_key:
