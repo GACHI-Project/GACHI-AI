@@ -22,6 +22,8 @@ from app.services.newsletter_prompt import (
 
 logger = logging.getLogger(__name__)
 
+MAX_ANALYSIS_ATTEMPTS = 2
+
 
 class OpenAIAdapterError(RuntimeError):
     pass
@@ -39,9 +41,38 @@ class OpenAINewsletterAdapter:
         if not self.settings.api_key:
             raise OpenAIConfigurationError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
 
-        payload = {
+        messages = build_prompt_messages(request)
+        last_validation_error: ValidationError | None = None
+        for attempt in range(1, MAX_ANALYSIS_ATTEMPTS + 1):
+            response_body = self._post_json("/responses", self._analysis_payload(messages))
+            parsed = self._extract_output_json(response_body)
+            try:
+                return NewsletterAnalysisResponse.model_validate(parsed)
+            except ValidationError as exc:
+                last_validation_error = exc
+                logger.warning(
+                    "[OpenAIAdapter] 응답 스키마 검증 실패. attempt=%s/%s, errors=%s",
+                    attempt,
+                    MAX_ANALYSIS_ATTEMPTS,
+                    self._summarize_validation_errors(exc, include_message=False),
+                )
+                if attempt < MAX_ANALYSIS_ATTEMPTS:
+                    messages = [
+                        *messages,
+                        {
+                            "role": "user",
+                            "content": self._build_schema_retry_message(exc),
+                        },
+                    ]
+
+        raise OpenAIAdapterError("OpenAI 응답이 분석 스키마와 일치하지 않습니다.") from (
+            last_validation_error
+        )
+
+    def _analysis_payload(self, messages: list[dict[str, str]]) -> dict[str, Any]:
+        return {
             "model": self.settings.model,
-            "input": build_prompt_messages(request),
+            "input": messages,
             "text": {
                 "format": {
                     "type": "json_schema",
@@ -52,13 +83,30 @@ class OpenAINewsletterAdapter:
             },
         }
 
-        response_body = self._post_json("/responses", payload)
-        parsed = self._extract_output_json(response_body)
-        try:
-            return NewsletterAnalysisResponse.model_validate(parsed)
-        except ValidationError as exc:
-            logger.warning("[OpenAIAdapter] 응답 스키마 검증 실패. error=%s", exc)
-            raise OpenAIAdapterError("OpenAI 응답이 분석 스키마와 일치하지 않습니다.") from exc
+    def _build_schema_retry_message(self, exc: ValidationError) -> str:
+        summarized_errors = self._summarize_validation_errors(exc, include_message=True)
+        return (
+            "이전 응답은 NewsletterAnalysisResponse 스키마 검증에 실패했습니다.\n"
+            "아래 오류를 반드시 수정해 같은 schema의 JSON object만 다시 반환하세요.\n"
+            "- items 배열의 모든 원소는 문자열이 아니라 JSON object여야 합니다.\n"
+            "- checklistItems 배열의 모든 원소도 JSON object여야 합니다.\n"
+            "- 누락된 required 필드가 있으면 schema에 맞게 모두 채우세요.\n"
+            f"\nvalidationErrors:\n{json.dumps(summarized_errors, ensure_ascii=False)}"
+        )
+
+    def _summarize_validation_errors(
+        self, exc: ValidationError, *, include_message: bool
+    ) -> list[dict[str, str | None]]:
+        summarized_errors = []
+        for err in exc.errors()[:10]:
+            summary = {
+                "loc": ".".join(str(part) for part in err.get("loc", ())),
+                "type": err.get("type"),
+            }
+            if include_message:
+                summary["msg"] = err.get("msg")
+            summarized_errors.append(summary)
+        return summarized_errors
 
     def refine_translation(self, request: TranslationRefineRequest) -> TranslationRefineResponse:
         if not self.settings.api_key:
