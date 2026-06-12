@@ -11,6 +11,15 @@ I18N_TEXT_SCHEMA = {
     },
 }
 
+NULLABLE_I18N_TEXT_SCHEMA = {
+    "type": "object",
+    "additionalProperties": False,
+    "required": list(SUPPORTED_LANGUAGE_CODES),
+    "properties": {
+        code: {"type": "string", "maxLength": 500} for code in SUPPORTED_LANGUAGE_CODES
+    },
+}
+
 SELECTED_DATE_CANDIDATE_SCHEMA = {
     "type": ["object", "null"],
     "additionalProperties": False,
@@ -26,11 +35,12 @@ SELECTED_DATE_CANDIDATE_SCHEMA = {
 CHECKLIST_ITEM_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["content", "contentI18n", "detail"],
+    "required": ["content", "contentI18n", "detail", "detailI18n"],
     "properties": {
         "content": {"type": "string", "minLength": 1, "maxLength": 500},
         "contentI18n": I18N_TEXT_SCHEMA,
         "detail": {"type": ["string", "null"], "maxLength": 500},
+        "detailI18n": NULLABLE_I18N_TEXT_SCHEMA,
     },
 }
 
