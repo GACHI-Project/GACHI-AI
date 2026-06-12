@@ -148,6 +148,9 @@ def _build_system_prompt(language: str) -> str:
 
 - response schema에 맞는 JSON만 반환한다.
 - AI 서버는 DB 저장을 직접 알지 않는다. 저장 판단은 BE가 하며, AI 서버는 분석 결과만 반환한다.
+- items 배열의 모든 원소는 반드시 JSON object여야 하며, 문자열 조각(예: "}},{{")이나
+  JSON을 흉내 낸 문자열을 배열 원소로 넣지 않는다.
+- checklistItems 배열의 모든 원소도 반드시 JSON object여야 한다.
 - title, summary, items[].title, checklistItems[].content, checklistItems[].detail,
   conversationTopics[].topic은 사용자 언어({language_name})와 무관하게 항상 한국어로 작성한다.
   (이 값들은 이후 단계에서 번역 및 검수를 거쳐 사용자 언어로 변환된다.)
