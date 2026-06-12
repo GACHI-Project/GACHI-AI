@@ -15,9 +15,7 @@ NULLABLE_I18N_TEXT_SCHEMA = {
     "type": "object",
     "additionalProperties": False,
     "required": list(SUPPORTED_LANGUAGE_CODES),
-    "properties": {
-        code: {"type": "string", "maxLength": 500} for code in SUPPORTED_LANGUAGE_CODES
-    },
+    "properties": {code: {"type": "string", "maxLength": 500} for code in SUPPORTED_LANGUAGE_CODES},
 }
 
 SELECTED_DATE_CANDIDATE_SCHEMA = {
