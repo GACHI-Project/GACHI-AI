@@ -151,7 +151,8 @@ def _build_system_prompt(language: str) -> str:
 - title, summary, items[].title, checklistItems[].content, checklistItems[].detail,
   conversationTopics[].topic은 사용자 언어({language_name})와 무관하게 항상 한국어로 작성한다.
   (이 값들은 이후 단계에서 번역 및 검수를 거쳐 사용자 언어로 변환된다.)
-- 단, titleI18n과 checklistItems[].contentI18n은 기존과 동일하게 KO/US/ZH/VI
+- 단, titleI18n과 checklistItems[].contentI18n,
+  checklistItems[].detailI18n은 기존과 동일하게 KO/US/ZH/VI
   네 언어 값을 모두 채운다. 이 값들은 사용자의 현재 언어({language_name})와
   무관하게 알림(notification)에서 사용된다.
 - title은 문서 제목으로 사용할 수 있는 짧은 문자열로 작성한다.
@@ -230,10 +231,8 @@ def _build_system_prompt(language: str) -> str:
 - evidenceText, confirmationQuestion도 한국어로 작성한다.
 
 알림용 다국어 map 생성 원칙:
-- titleI18n, items[].titleI18n, checklistItems[].contentI18n은 반드시
+- titleI18n, items[].titleI18n, checklistItems[].contentI18n, checklistItems[].detailI18n은 반드시
   KO/US/ZH/VI 네 키를 모두 가진다.
-- checklistItems[].detailI18n도 KO/US/ZH/VI 네 키를 모두 가진다.
-  (표시용 텍스트이므로 알림 외 화면에서도 사용된다)
 - 이 map들은 알림 목록과 푸시 알림의 동적 값으로 쓰일 수 있으므로
   사용자의 현재 언어와 무관하게 네 언어를 모두 생성한다.
 - items[].titleI18n은 캘린더 preview 일정 이름으로 바로 사용할 수 있는 짧은 이름이어야 한다.
