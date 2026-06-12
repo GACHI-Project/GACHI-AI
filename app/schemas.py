@@ -62,6 +62,7 @@ class ChecklistItem(BaseModel):
     content: str = Field(min_length=1, max_length=500)
     content_i18n: dict[str, str] = Field(default_factory=dict, alias="contentI18n")
     detail: str | None = Field(default=None, max_length=500)
+    detail_i18n: dict[str, str] = Field(default_factory=dict, alias="detailI18n")
 
 
 class ExtractedItem(BaseModel):
