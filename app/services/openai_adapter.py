@@ -8,10 +8,16 @@ from pydantic import ValidationError
 
 from app.config import OpenAISettings
 from app.schemas import (
+    CulturalGuideRequest,
+    CulturalGuideResponse,
     NewsletterAnalysisRequest,
     NewsletterAnalysisResponse,
     TranslationRefineRequest,
     TranslationRefineResponse,
+)
+from app.services.cultural_guide_prompt import (
+    CULTURAL_GUIDE_RESPONSE_SCHEMA,
+    build_cultural_guide_prompt_messages,
 )
 from app.services.newsletter_prompt import (
     ANALYSIS_RESPONSE_SCHEMA,
@@ -146,6 +152,35 @@ class OpenAINewsletterAdapter:
         except ValidationError as exc:
             logger.warning("[OpenAIAdapter] 2차 검증 응답 스키마 검증 실패. error=%s", exc)
             raise OpenAIAdapterError("OpenAI 응답이 검증 스키마와 일치하지 않습니다.") from exc
+
+    def select_cultural_guides(self,
+                                request: CulturalGuideRequest) -> CulturalGuideResponse:
+        if not self.settings.api_key:
+            raise OpenAIConfigurationError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
+
+        if not request.faq_candidates:
+            return CulturalGuideResponse(selectedFaqs=[])
+
+        payload = {
+            "model": self.settings.model,
+            "input": build_cultural_guide_prompt_messages(request),
+            "text": {
+                "format": {
+                    "type": "json_schema",
+                    "name": "cultural_guide_selection",
+                    "schema": CULTURAL_GUIDE_RESPONSE_SCHEMA,
+                    "strict": False,
+                }
+            },
+        }
+
+        response_body = self._post_json("/responses", payload)
+        parsed = self._extract_output_json(response_body)
+        try:
+            return CulturalGuideResponse.model_validate(parsed)
+        except ValidationError as exc:
+            logger.warning("[OpenAIAdapter] 문화 맥락 응답 스키마 검증 실패. error=%s", exc)
+            raise OpenAIAdapterError("OpenAI 응답이 문화 맥락 스키마와 일치하지 않습니다.") from exc
 
     def _post_json(self, path: str, payload: dict[str, Any]) -> dict[str, Any]:
         url = self.settings.base_url.rstrip("/") + path
