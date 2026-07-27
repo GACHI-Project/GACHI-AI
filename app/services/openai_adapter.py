@@ -153,8 +153,7 @@ class OpenAINewsletterAdapter:
             logger.warning("[OpenAIAdapter] 2차 검증 응답 스키마 검증 실패. error=%s", exc)
             raise OpenAIAdapterError("OpenAI 응답이 검증 스키마와 일치하지 않습니다.") from exc
 
-    def select_cultural_guides(self,
-                                request: CulturalGuideRequest) -> CulturalGuideResponse:
+    def select_cultural_guides(self, request: CulturalGuideRequest) -> CulturalGuideResponse:
         if not self.settings.api_key:
             raise OpenAIConfigurationError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
 

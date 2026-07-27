@@ -130,12 +130,13 @@ class ChatLanguage(StrEnum):
 
 class ChatType(StrEnum):
     GENERAL = "GENERAL"
-    DOCUMENT = "DOCUMENT" # 문서 챗봇
+    DOCUMENT = "DOCUMENT"  # 문서 챗봇
 
 
 class ChatMessageItem(BaseModel):
     role: ChatMessageRole
     content: str
+
 
 # 문서 챗봇에서 BE가 매 요청마다 전달하는 문서 컨텍스트.
 class ChatDocumentContext(BaseModel):
@@ -215,6 +216,4 @@ class SelectedCulturalGuide(BaseModel):
 
 class CulturalGuideResponse(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
-    selected_faqs: list[SelectedCulturalGuide] = Field(
-        default_factory=list, alias="selectedFaqs"
-    )
+    selected_faqs: list[SelectedCulturalGuide] = Field(default_factory=list, alias="selectedFaqs")

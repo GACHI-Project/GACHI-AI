@@ -49,6 +49,7 @@ def _build_system_prompt(request: ChatRequest) -> str:
 
     return _build_general_system_prompt(language_name)
 
+
 def _build_general_system_prompt(language_name: str) -> str:
     return f"""
 당신은 한국 초등학교에 자녀를 둔 다문화 가정 학부모를 돕는 AI 도우미 '까치'입니다.
@@ -76,7 +77,8 @@ def _build_general_system_prompt(language_name: str) -> str:
 - 학부모 참여 활동 (공개수업, 학부모회 등)
 """.strip()
 
-#문서 챗봇
+
+# 문서 챗봇
 def _build_document_system_prompt(language_name: str, document: ChatDocumentContext) -> str:
     document_block = _format_document_block(document)
 

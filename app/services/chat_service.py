@@ -10,8 +10,10 @@ from app.services.openai_adapter import OpenAIAdapterError, OpenAIConfigurationE
 
 logger = logging.getLogger(__name__)
 
+
 class ChatDocumentMissingError(ValueError):
     pass
+
 
 def chat(request: ChatRequest) -> ChatResponse:
     settings = get_openai_settings()

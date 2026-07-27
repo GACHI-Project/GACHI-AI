@@ -65,6 +65,7 @@ def refine_translation_endpoint(req: TranslationRefineRequest) -> TranslationRef
             detail=str(exc),
         ) from exc
 
+
 @router.post("/cultural-guides", response_model=CulturalGuideResponse)
 def cultural_guides(req: CulturalGuideRequest) -> CulturalGuideResponse:
     try:
