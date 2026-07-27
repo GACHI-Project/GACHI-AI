@@ -55,7 +55,7 @@ def _build_system_prompt(request: ChatRequest) -> str:
     language_name = _LANGUAGE_NAME.get(request.language, "한국어")
 
     if request.chat_type == ChatType.DOCUMENT and request.document is not None:
-        return _build_document_system_prompt(language_name, request.document)
+        return _build_document_system_prompt(language_name)
 
     return _build_general_system_prompt(language_name)
 
