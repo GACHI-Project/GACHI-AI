@@ -1,6 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 
 from app.schemas import (
+    CulturalGuideRequest,
+    CulturalGuideResponse,
     NewsletterAnalysisRequest,
     NewsletterAnalysisResponse,
     NewsletterExtractionRequest,
@@ -9,6 +11,7 @@ from app.schemas import (
     TranslationRefineRequest,
     TranslationRefineResponse,
 )
+from app.services.cultural_guide_service import select_cultural_guides
 from app.services.newsletter_extractor import (
     analyze_newsletter,
     extract_newsletter_items,
@@ -51,6 +54,21 @@ def prompt_preview(req: NewsletterExtractionRequest) -> PromptPreviewResponse:
 def refine_translation_endpoint(req: TranslationRefineRequest) -> TranslationRefineResponse:
     try:
         return refine_translation(req)
+    except OpenAIConfigurationError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            detail=str(exc),
+        ) from exc
+    except OpenAIAdapterError as exc:
+        raise HTTPException(
+            status_code=status.HTTP_502_BAD_GATEWAY,
+            detail=str(exc),
+        ) from exc
+
+@router.post("/cultural-guides", response_model=CulturalGuideResponse)
+def cultural_guides(req: CulturalGuideRequest) -> CulturalGuideResponse:
+    try:
+        return select_cultural_guides(req)
     except OpenAIConfigurationError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
