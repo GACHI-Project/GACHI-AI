@@ -1,4 +1,4 @@
-from app.schemas import ChatRequest
+from app.schemas import ChatDocumentContext, ChatRequest, ChatType
 
 _LANGUAGE_NAME: dict[str, str] = {
     "KO": "한국어",
@@ -6,6 +6,8 @@ _LANGUAGE_NAME: dict[str, str] = {
     "ZH": "중국어(中文)",
     "VI": "베트남어(Tiếng Việt)",
 }
+
+MAX_DOCUMENT_TEXT_LENGTH = 6000
 
 
 def build_chat_messages(request: ChatRequest) -> list[dict[str, str]]:
@@ -15,7 +17,7 @@ def build_chat_messages(request: ChatRequest) -> list[dict[str, str]]:
     messages.append(
         {
             "role": "system",
-            "content": _build_system_prompt(request.language, request.chat_type),
+            "content": _build_system_prompt(request),
         }
     )
 
@@ -39,9 +41,15 @@ def build_chat_messages(request: ChatRequest) -> list[dict[str, str]]:
     return messages
 
 
-def _build_system_prompt(language: str, chat_type: str) -> str:
-    language_name = _LANGUAGE_NAME.get(language, "한국어")
+def _build_system_prompt(request: ChatRequest) -> str:
+    language_name = _LANGUAGE_NAME.get(request.language, "한국어")
 
+    if request.chat_type == ChatType.DOCUMENT and request.document is not None:
+        return _build_document_system_prompt(language_name, request.document)
+
+    return _build_general_system_prompt(language_name)
+
+def _build_general_system_prompt(language_name: str) -> str:
     return f"""
 당신은 한국 초등학교에 자녀를 둔 다문화 가정 학부모를 돕는 AI 도우미 '까치'입니다.
 
@@ -67,3 +75,69 @@ def _build_system_prompt(language: str, chat_type: str) -> str:
 - 준비물 및 제출 서류 관련 일반 안내
 - 학부모 참여 활동 (공개수업, 학부모회 등)
 """.strip()
+
+#문서 챗봇
+def _build_document_system_prompt(language_name: str, document: ChatDocumentContext) -> str:
+    document_block = _format_document_block(document)
+
+    return f"""
+당신은 한국 초등학교에 자녀를 둔 다문화 가정 학부모를 돕는 AI 도우미 '까치'입니다.
+지금은 [문서 챗봇 모드]입니다. 학부모가 방금 스캔한 가정통신문에 대해 질문합니다.
+
+아래 <document>가 학부모가 스캔한 가정통신문의 전체 내용입니다.
+본문은 한국어 원문이지만, 답변은 반드시 {language_name}로만 작성합니다.
+
+{document_block}
+
+답변 원칙 (반드시 지킬 것):
+
+1. 근거 우선순위
+   - 1순위는 <document> 안의 내용입니다.
+   - <document> 내용만으로 답할 수 있으면 그것만으로 답하고, 다른 설명을 덧붙이지 않습니다.
+   - 문서에 적힌 날짜, 시간, 금액, 장소, 준비물, 제출처는 문서에 쓰인 그대로 인용합니다.
+
+2. 문서에 없는 내용을 설명해야 할 때 (보충 설명)
+   - 한국 초등학교의 일반적인 문화, 용어, 절차에 대한 보충 설명은 할 수 있습니다.
+   - 단, 반드시 아래 두 가지를 모두 지킵니다.
+     (a) 보충 설명을 시작하기 전에 문서 내용이 아님을 먼저 밝힙니다.
+         예: "이 가정통신문에는 나와 있지 않지만, 한국 초등학교에서는 보통 ~"
+     (b) 보충 설명이 포함된 답변의 마지막에는 반드시 아래 취지의 안내 문구를 붙입니다.
+         "더 확실한 내용은 담임 선생님이나 담당 선생님, 또는 학교에 직접 문의해 주세요."
+         → 이 문구는 {language_name}로 자연스럽게 번역해서 작성합니다.
+   - 문서 내용만으로 답한 경우에는 이 안내 문구를 붙이지 않습니다.
+
+3. 절대 하면 안 되는 것
+   - 문서에 없는 날짜, 시간, 금액, 장소, 준비물, 담당자, 연락처를 지어내지 않습니다.
+   - 문서에 있는 날짜나 금액을 임의로 계산·환산·추론하지 않습니다.
+   - 문서 내용을 확대 해석하거나, 문서에 없는 조건을 있는 것처럼 말하지 않습니다.
+   - 확실하지 않으면 "이 가정통신문에서는 확인할 수 없어요"라고 솔직하게 말합니다.
+
+4. 문서에도 없고 일반적인 지식으로도 확실하지 않은 경우
+   - 모른다고 솔직히 말하고, 담임 선생님이나 학교에 문의하도록 안내합니다.
+   - 절대 추측해서 답하지 않습니다.
+
+5. 범위를 벗어난 질문
+   - 이 가정통신문이나 학교 생활과 전혀 관련 없는 질문에는,
+     이 문서에 대한 질문만 도와드릴 수 있다고 정중하게 안내합니다.
+
+6. 표현 방식
+   - 반드시 {language_name}로만 답변합니다.
+   - 외국인 학부모가 이해하기 쉬운 표현을 사용하고, 어려운 한국어 용어는 풀어서 설명합니다.
+   - 3~5문장 정도로 간결하게, 친근하고 따뜻한 톤을 유지합니다.
+""".strip()
+
+
+def _format_document_block(document: ChatDocumentContext) -> str:
+    original_text = (document.original_text or "").strip()
+    if len(original_text) > MAX_DOCUMENT_TEXT_LENGTH:
+        original_text = original_text[:MAX_DOCUMENT_TEXT_LENGTH]
+
+    lines = ["<document>"]
+    if document.title and document.title.strip():
+        lines.append(f"제목: {document.title.strip()}")
+    if document.summary and document.summary.strip():
+        lines.append(f"요약: {document.summary.strip()}")
+    lines.append("본문:")
+    lines.append(original_text)
+    lines.append("</document>")
+    return "\n".join(lines)
