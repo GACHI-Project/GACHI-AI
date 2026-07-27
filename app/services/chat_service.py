@@ -16,6 +16,16 @@ class ChatDocumentMissingError(ValueError):
 
 
 def chat(request: ChatRequest) -> ChatResponse:
+    if request.chat_type == ChatType.DOCUMENT:
+        if (
+            request.document is None
+            or request.document.original_text is None
+            or not request.document.original_text.strip()
+        ):
+            raise ChatDocumentMissingError(
+                "chatType=DOCUMENT 요청에는 document.originalText가 필요합니다."
+            )
+
     settings = get_openai_settings()
 
     if not settings.enabled:
@@ -23,12 +33,6 @@ def chat(request: ChatRequest) -> ChatResponse:
 
     if not settings.api_key:
         raise OpenAIConfigurationError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
-
-    if request.chat_type == ChatType.DOCUMENT:
-        if request.document is None or not request.document.original_text.strip():
-            raise ChatDocumentMissingError(
-                "chatType=DOCUMENT 요청에는 document.originalText가 필요합니다."
-            )
 
     messages = build_chat_messages(request)
 
@@ -54,6 +58,7 @@ def _call_openai_chat(settings: OpenAISettings, messages: list[dict[str, str]]) 
         "messages": messages,
         "max_tokens": 1000,
         "temperature": 0.2,
+        "store": False,
     }
 
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")

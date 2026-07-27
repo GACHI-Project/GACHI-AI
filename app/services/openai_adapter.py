@@ -79,6 +79,7 @@ class OpenAINewsletterAdapter:
         return {
             "model": self.settings.model,
             "input": messages,
+            "store": False,
             "text": {
                 "format": {
                     "type": "json_schema",
@@ -135,6 +136,7 @@ class OpenAINewsletterAdapter:
                     for field in request.fields
                 ],
             ),
+            "store": False,
             "text": {
                 "format": {
                     "type": "json_schema",
@@ -163,6 +165,7 @@ class OpenAINewsletterAdapter:
         payload = {
             "model": self.settings.model,
             "input": build_cultural_guide_prompt_messages(request),
+            "store": False,
             "text": {
                 "format": {
                     "type": "json_schema",

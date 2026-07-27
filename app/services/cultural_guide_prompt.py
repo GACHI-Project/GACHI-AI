@@ -28,6 +28,11 @@ CULTURAL_GUIDE_RESPONSE_SCHEMA = {
     },
 }
 
+MAX_ORIGINAL_TEXT_LENGTH = 6000
+MAX_TITLE_LENGTH = 200
+MAX_SUMMARY_LENGTH = 1000
+MAX_FAQ_CANDIDATE_COUNT = 300  # 현재 FAQ 180건. 증가 대비 여유값.
+MAX_FAQ_QUESTION_LENGTH = 200
 MAX_SELECTED_FAQ_COUNT = 2
 
 
@@ -80,18 +85,34 @@ relevanceReason 작성 원칙:
 
 
 def _build_user_prompt(request: CulturalGuideRequest) -> str:
+    title = (request.title or "").strip()[:MAX_TITLE_LENGTH] or "(없음)"
+    summary = (request.summary or "").strip()[:MAX_SUMMARY_LENGTH] or "(없음)"
+
+    original_text = (request.original_text or "").strip()
+    truncated = len(original_text) > MAX_ORIGINAL_TEXT_LENGTH
+    if truncated:
+        original_text = original_text[:MAX_ORIGINAL_TEXT_LENGTH]
+
     sections = [
         "<newsletter>",
-        f"제목: {request.title.strip() if request.title else '(없음)'}",
-        f"요약: {request.summary.strip() if request.summary else '(없음)'}",
-        "본문:",
-        request.original_text.strip(),
-        "</newsletter>",
-        "",
-        "<faq_candidates>",
-        _format_faq_candidates(request),
-        "</faq_candidates>",
+        f"제목: {title}",
+        f"요약: {summary}",
     ]
+    if truncated:
+        sections.append(
+            f"[알림] 본문이 길어 앞부분 {MAX_ORIGINAL_TEXT_LENGTH}자만 전달되었습니다."
+        )
+    sections.extend(
+        [
+            "본문:",
+            original_text,
+            "</newsletter>",
+            "",
+            "<faq_candidates>",
+            _format_faq_candidates(request),
+            "</faq_candidates>",
+        ]
+    )
     return "\n".join(sections)
 
 
@@ -100,10 +121,11 @@ def _format_faq_candidates(request: CulturalGuideRequest) -> str:
         return "(후보 없음)"
 
     lines = []
-    for candidate in request.faq_candidates:
+    for candidate in request.faq_candidates[:MAX_FAQ_CANDIDATE_COUNT]:
+        question = (candidate.question or "").strip()[:MAX_FAQ_QUESTION_LENGTH]
         lines.append(
             f"- faqId: {candidate.faq_id}, "
             f"category: {candidate.category}, "
-            f"question: {candidate.question}"
+            f"question: {question}"
         )
     return "\n".join(lines)

@@ -145,7 +145,7 @@ class ChatDocumentContext(BaseModel):
     newsletter_id: int | None = Field(default=None, alias="newsletterId")
     title: str | None = None
     summary: str | None = None
-    original_text: str = Field(alias="originalText")
+    original_text: str | None = Field(default=None, alias="originalText")
 
 
 class ChatRequest(BaseModel):
