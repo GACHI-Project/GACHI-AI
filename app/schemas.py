@@ -130,19 +130,30 @@ class ChatLanguage(StrEnum):
 
 class ChatType(StrEnum):
     GENERAL = "GENERAL"
-    DOCUMENT = "DOCUMENT"  # 추후 문서 챗봇
+    DOCUMENT = "DOCUMENT" # 문서 챗봇
 
 
 class ChatMessageItem(BaseModel):
     role: ChatMessageRole
     content: str
 
+# 문서 챗봇에서 BE가 매 요청마다 전달하는 문서 컨텍스트.
+class ChatDocumentContext(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    newsletter_id: int | None = Field(default=None, alias="newsletterId")
+    title: str | None = None
+    summary: str | None = None
+    original_text: str = Field(alias="originalText")
+
 
 class ChatRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
     message: str
     history: list[ChatMessageItem] = []
     language: ChatLanguage = ChatLanguage.KO
-    chat_type: ChatType = ChatType.GENERAL
+    chat_type: ChatType = Field(default=ChatType.GENERAL, alias="chatType")
+    document: ChatDocumentContext | None = None
 
 
 class ChatResponse(BaseModel):
@@ -172,3 +183,38 @@ class RefineFieldOutput(BaseModel):
 
 class TranslationRefineResponse(BaseModel):
     fields: list[RefineFieldOutput] = Field(default_factory=list)
+
+
+# 문화 맥락 안내 (Cultural Guide)
+class CulturalGuideFaqCandidate(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    faq_id: int = Field(alias="faqId")
+    category: str
+    question: str = Field(min_length=1)
+
+
+class CulturalGuideRequest(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    original_text: str = Field(alias="originalText")
+    title: str | None = None
+    summary: str | None = None
+    faq_candidates: list[CulturalGuideFaqCandidate] = Field(
+        default_factory=list, alias="faqCandidates"
+    )
+
+
+class SelectedCulturalGuide(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    faq_id: int = Field(alias="faqId")
+    # relevanceReason은 화면에 노출X. 프롬프트 품질 점검/로깅용.
+    relevance_reason: str = Field(default="", alias="relevanceReason")
+
+
+class CulturalGuideResponse(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+    selected_faqs: list[SelectedCulturalGuide] = Field(
+        default_factory=list, alias="selectedFaqs"
+    )
