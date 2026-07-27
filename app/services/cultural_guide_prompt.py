@@ -99,9 +99,7 @@ def _build_user_prompt(request: CulturalGuideRequest) -> str:
         f"요약: {summary}",
     ]
     if truncated:
-        sections.append(
-            f"[알림] 본문이 길어 앞부분 {MAX_ORIGINAL_TEXT_LENGTH}자만 전달되었습니다."
-        )
+        sections.append(f"[알림] 본문이 길어 앞부분 {MAX_ORIGINAL_TEXT_LENGTH}자만 전달되었습니다.")
     sections.extend(
         [
             "본문:",
@@ -124,8 +122,6 @@ def _format_faq_candidates(request: CulturalGuideRequest) -> str:
     for candidate in request.faq_candidates[:MAX_FAQ_CANDIDATE_COUNT]:
         question = (candidate.question or "").strip()[:MAX_FAQ_QUESTION_LENGTH]
         lines.append(
-            f"- faqId: {candidate.faq_id}, "
-            f"category: {candidate.category}, "
-            f"question: {question}"
+            f"- faqId: {candidate.faq_id}, category: {candidate.category}, question: {question}"
         )
     return "\n".join(lines)
