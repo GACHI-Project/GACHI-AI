@@ -4,14 +4,28 @@ import urllib.error
 import urllib.request
 
 from app.config import OpenAISettings, get_openai_settings
-from app.schemas import ChatRequest, ChatResponse
+from app.schemas import ChatRequest, ChatResponse, ChatType
 from app.services.chat_prompt import build_chat_messages
 from app.services.openai_adapter import OpenAIAdapterError, OpenAIConfigurationError
 
 logger = logging.getLogger(__name__)
 
 
+class ChatDocumentMissingError(ValueError):
+    pass
+
+
 def chat(request: ChatRequest) -> ChatResponse:
+    if request.chat_type == ChatType.DOCUMENT:
+        if (
+            request.document is None
+            or request.document.original_text is None
+            or not request.document.original_text.strip()
+        ):
+            raise ChatDocumentMissingError(
+                "chatType=DOCUMENT 요청에는 document.originalText가 필요합니다."
+            )
+
     settings = get_openai_settings()
 
     if not settings.enabled:
@@ -19,13 +33,15 @@ def chat(request: ChatRequest) -> ChatResponse:
 
     if not settings.api_key:
         raise OpenAIConfigurationError("OPENAI_API_KEY가 설정되어 있지 않습니다.")
+
     messages = build_chat_messages(request)
 
     logger.info(
-        "[ChatService] OpenAI 호출. language=%s, chat_type=%s, history_size=%d",
+        "[ChatService] OpenAI 호출. language=%s, chat_type=%s, history_size=%d, newsletter_id=%s",
         request.language,
         request.chat_type,
         len(request.history),
+        request.document.newsletter_id if request.document else None,
     )
 
     reply = _call_openai_chat(settings, messages)
@@ -42,6 +58,7 @@ def _call_openai_chat(settings: OpenAISettings, messages: list[dict[str, str]]) 
         "messages": messages,
         "max_tokens": 1000,
         "temperature": 0.2,
+        "store": False,
     }
 
     body = json.dumps(payload, ensure_ascii=False).encode("utf-8")
