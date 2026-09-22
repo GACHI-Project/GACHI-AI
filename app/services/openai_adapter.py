@@ -88,7 +88,7 @@ class OpenAINewsletterAdapter:
                     "type": "json_schema",
                     "name": "newsletter_analysis",
                     "schema": ANALYSIS_RESPONSE_SCHEMA,
-                    "strict": False,
+                    "strict": True,
                 }
             },
         }

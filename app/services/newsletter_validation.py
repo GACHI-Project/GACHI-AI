@@ -3,6 +3,7 @@
 from datetime import date, datetime
 
 from app.schemas import DateStatus, NewsletterAnalysisRequest, NewsletterAnalysisResponse
+from app.services.newsletter_date_source import source_date_warning
 
 
 def normalize_analysis_dates(
@@ -37,13 +38,18 @@ def normalize_analysis_dates(
                 and selected.normalized_date == candidate.normalized_date
                 and _date_part(item.datetime) == candidate.normalized_date
             )
-            if not valid:
+            warning = (
+                source_date_warning(request.original_text, candidate, item.type)
+                if valid
+                else "DATE_CANDIDATE_MISMATCH"
+            )
+            if warning:
                 item.date_status = DateStatus.AMBIGUOUS
                 item.datetime = None
                 item.selected_date_candidate = None
                 item.needs_user_confirmation = True
                 item.confirmation_question = "원문의 날짜와 날짜 후보가 일치하는지 확인해 주세요."
-                warnings.append({"itemIndex": index, "code": "DATE_CANDIDATE_MISMATCH"})
+                warnings.append({"itemIndex": index, "code": warning})
         items.append(item)
 
     meta = dict(response.meta)

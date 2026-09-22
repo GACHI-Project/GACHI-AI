@@ -1,5 +1,8 @@
+import json
+
 from app.constants import LANGUAGE_NAMES, SUPPORTED_LANGUAGE_CODES
 from app.schemas import NewsletterAnalysisRequest
+from app.services.newsletter_date_source import source_span
 
 I18N_TEXT_SCHEMA = {
     "type": "object",
@@ -120,7 +123,14 @@ ANALYSIS_RESPONSE_SCHEMA = {
         },
         "meta": {
             "type": "object",
-            "additionalProperties": True,
+            "additionalProperties": False,
+            "required": [
+                "mode",
+                "dateCandidateCount",
+                "requiresLLMReview",
+                "outputLanguage",
+                "localizedOutput",
+            ],
             "properties": {
                 "mode": {"type": "string"},
                 "dateCandidateCount": {"type": "integer", "minimum": 0},
@@ -168,6 +178,22 @@ def _build_system_prompt(language: str) -> str:
 - 날짜 정보가 없거나 근거가 약하면 ambiguous 또는 missing을 사용한다.
 - evidenceText는 사용자가 볼 수 있는 근거/상세 설명 문구로 작성하되, 원문 의미를 벗어나지 않는다.
 
+작업 순서 (중간 작업은 출력하지 않고 최종 JSON만 반환):
+1. 후보 목록을 고르기 전에 원문 전체의 본문, 표, 첨부 신청서를 끝까지 읽는다.
+   실제 행사, 신청/제출, 납부/이체, 가정 준비 행동을 각각 찾는다.
+   첫 번째 신청 마감을 찾았다고 멈추지 않는다.
+   요약에 언급한 실제 사건도 items에서 빠졌는지 확인한다.
+2. 사건별로 원문 근거, 수행 주체, 행동, 날짜/시간, 방법, 금액, 자격/인원 조건을 묶는다.
+   항목의 제목은 사건과 목적을 나타내며 문서 제목을 반복하지 않는다.
+3. 실제 안내 본문의 날짜를 먼저 확정하고 그 날짜에 대응하는 후보를 선택한다.
+   참여방법 캡처/예시 화면, 상담 가능 시간, 과거 조사 대상 기간은 실제 참여 일정이 아니다.
+   첨부된 신청서의 별도 서명/제출 요구는 유효하지만 화면 클릭 단계는 신청 방법으로 합친다.
+4. 한국어 사건과 행동을 모두 정리한 다음 다국어 map을 작성한다.
+   번역 때문에 사건을 줄이거나 금액, 준비물, 인원 제한, 변동 조건을 생략하지 않는다.
+5. 마지막으로 각 행동이 실제 요구인지, 모든 실제 사건이 있는지 확인한다.
+   기간 종료일과 시각이 맞는지도 확인한다.
+   JSON 길이를 줄이기 위해 누락시키지 않는다. 일반 권고만 있으면 빈 items가 올바른 결과다.
+
 항목 분류 기준 (items[]는 일정 후보 또는 날짜 없는 실행 항목 그룹이다):
 - deadline: 제출, 신청, 납부, 등록, 동의, 회신 등의 기한이 있는 행동
 - schedule: 행사, 수업, 상담, 체험학습, 설명회, 운영일
@@ -201,6 +227,9 @@ def _build_system_prompt(language: str) -> str:
   선택하고 datetime의 날짜 부분도 normalizedDate와 같아야 한다.
 - 연도 없는 후보에 붙은 기준 연도를 무조건 신뢰하지 않는다. 문서 연도와 충돌하면
   날짜를 임의 수정하지 말고 ambiguous로 반환한다.
+  같은 문서의 신청과 납부는 각각 연도를 검증한다. 신청만 ambiguous로 바꾼 뒤
+  납부 후보의 연도를 그대로 확정하지 않는다. 후보 연도가 업로드 연도에서 온 것인지 확인한다.
+  다음 해 일정이 원문에 명시되면 보존하되, 문맥과 충돌하고 연도 근거가 없으면 확인을 요청한다.
 - 실제 일정의 날짜 근거가 있지만 후보가 없거나 불확실하면 ambiguous,
   selectedDateCandidate=null, datetime=null, needsUserConfirmation=true로 반환한다.
   확인 질문을 작성한다.
@@ -211,6 +240,14 @@ def _build_system_prompt(language: str) -> str:
   종료일 후보가 없으면 시작일을 마감일로 사용하지 않고 ambiguous로 반환한다.
   운영 기간은 시작일 후보를 사용하되 전체 기간을 근거에 보존한다.
   기간의 양 끝을 의미 없는 별도 일정으로 만들지 않는다.
+  온라인 조사/설문 참여 기간은 응답 제출 deadline 하나로 표현한다.
+  개시일 schedule을 별도로 만들지 말고 접속/응답/제출 행동을 마감 항목에 통합한다.
+  개별 응답과 비밀보장은 행동의 detail 조건이지 별도 할 일이 아니다.
+- 시각이 명시되면 datetime은 날짜만 쓰지 말고 YYYY-MM-DDTHH:MM:SS로 작성한다.
+  timezone은 요청 값을 유지한다. schedule은 시작 시각, deadline은 마감 시각을 사용한다.
+  종료 시각과 전체 기간은 evidenceText에 보존한다. 문의 가능 시간을 행사 시각으로 쓰지 않는다.
+  시각이 없으면 YYYY-MM-DD만 반환한다. 00:00이나 23:59를 임의로 붙이지 않는다.
+  시작에만 시각이 있고 종료에 시각이 없으면 시작 시각을 마감에 복사하지 않는다.
 
 일정 제목 원칙:
 - top-level title은 문서 제목이고 items[].title은 개별 사건이나 행동의 제목이다.
@@ -229,7 +266,11 @@ def _build_system_prompt(language: str) -> str:
      기관 연락처, 학교의 제공 혜택. 요약/원문에서 확인할 정보이며 할 일로 만들지 않는다.
 - 명령형 문장이라고 모두 A는 아니다. '안전에 유의하세요'는 C이고,
   '첨부된 안전교육 안내장을 자녀와 함께 읽어 주세요'는 완료 가능한 A이다.
+  첨부/뒷면의 실제 내용이 입력에 없어도 함께 읽으라는 요구 자체는 보존한다.
+  읽을 자료의 내용을 창작하지 않는 것과 읽기 행동을 누락하는 것은 다르다.
   '신청 시 동의한 것으로 간주'는 B이고, '동의서에 서명해 제출'은 A이다.
+  자료 목록이나 영상 링크 소개만으로 시청 과제를 만들지 않는다.
+  학교가 '개별 유선 통지'하는 것은 학교의 행동이며 보호자의 '통지 받기' 할 일이 아니다.
   A나 실제 일정이 전혀 없는 일반 안내는 items=[]이며 요약은 유지한다.
 - 체크리스트는 더 이상 독립적인 최상위 항목이 아니다. 반드시 items[] 중
   하나의 일정 후보 또는 날짜 없는 reminder 그룹의 checklistItems[]로 추출한다.
@@ -238,6 +279,15 @@ def _build_system_prompt(language: str) -> str:
 - 신청, 제출, 납부, 작성, 서명과 준비물 중 원문에 명시된 A 행동만 추출한다.
   실제 첨부 동의서 작성과 보호자 서명, 계좌 잔액 확인, 사전 가입 요구를 누락하지 않는다.
   동의서가 없는데 동의서를 만들거나, 자동이체 안내만으로 별도 송금을 요구하지 않는다.
+- 자동이체 납부 기간도 deadline으로 보존한다. 명시된 계좌 잔액 확인은 그 항목에 연결한다.
+  별도 행동 요구가 없는 자동 인출은 checklistItems=[]로 둘 수 있다.
+  납부 사건 자체는 삭제하지 않는다.
+  학교가 계좌에서 인출하는 경우 content를 보호자가 '이체하기'로 작성하지 않는다.
+  잔액 확인이 명시되어 있으면 content는 '스쿨뱅킹 계좌 잔액 확인하기'이고,
+  detail에는 가정 부담 금액, 자동 인출 방식, 기간과 변동 조건을 적는다.
+  체크리스트가 없는 자동 인출은 금액과 방식을 해당 납부 항목 evidenceText에 보존한다.
+  가정 부담액과 학교 지원액을 구분하고 금액 변동 가능성을 납부 근거/행동 detail에 보존한다.
+  신청서의 '학부모 (인)'은 보호자 서명/날인 요구다. 별도 제출물이 아니라 같은 신청 절차에 연결한다.
 - 조건부 행동은 원문에 명시된 참여나 납부의 필요 조건일 때 조건을 포함해 추출한다.
   예: 봉사시간 인정을 받으려면 VMS 가입하기 / 이체 전 계좌 잔액 확인하기
 - 표는 행의 물품명뿐 아니라 열 제목과 구역 제목을 함께 읽고 제공/준비 주체를 구분한다.
@@ -289,6 +339,9 @@ def _build_system_prompt(language: str) -> str:
 - detailI18n도 contentI18n과 동일하게 KO/US/ZH/VI 값을 모두 채운다.
   detail이 null이면 detailI18n의 모든 언어 값도 빈 문자열("")로 채운다.
 - 한국어 필드와 다국어 map은 같은 사실과 조건을 보존한다.
+  이상/이하와 초과/미만은 서로 바꾸지 않는다. 경계값 포함 여부와 가능성 표현을 유지한다.
+  예를 들어 '3팀 이하이면 취소될 수 있음'을 '3팀 미만이면 취소'로 바꾸지 않는다.
+  만 14세 이상은 14세를 포함하며, 밴드 가입 조건을 행사 참가 연령으로 옮기지 않는다.
 - 본문, 표, 첨부에서 반복된 같은 사건은 하나로 합친다. 날짜가 같아도 대상이나 목적이
   다른 실제 사건은 유지한다. 병합 시 checklistItems도 합치고 동일 행동만 중복 제거한다.
 - 신청서와 동의서가 실제로 서로 다른 제출물이라면 별도 행동으로 보존한다.
@@ -404,6 +457,8 @@ def _format_candidates(request: NewsletterAnalysisRequest) -> str:
 
     lines = []
     for index, candidate in enumerate(request.date_candidates):
+        span = source_span(request.original_text, candidate)
+        context = request.original_text[max(0, span[0] - 100) : span[1] + 100] if span else None
         lines.append(
             f"- index: {index}, "
             f"candidateId: {candidate.candidate_id or 'null'}, "
@@ -411,7 +466,8 @@ def _format_candidates(request: NewsletterAnalysisRequest) -> str:
             f"normalizedDate: {candidate.normalized_date.isoformat()}, "
             f"startOffset: {candidate.start_offset}, "
             f"endOffset: {candidate.end_offset}, "
-            f"extractionType: {candidate.extraction_type or 'null'}"
+            f"extractionType: {candidate.extraction_type or 'null'}, "
+            f"sourceContext: {json.dumps(context, ensure_ascii=False)}"
         )
     return "\n".join(lines)
 
