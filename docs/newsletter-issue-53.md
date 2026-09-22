@@ -6,7 +6,8 @@
 - 발행일 제외, 사건별 제목, 날짜 없는 행동, 행동/설명 조건/일반 권고 구분 지침을 보완했다.
 - 후보 index/ID/원문/정규화 날짜와 datetime이 불일치하면 해당 항목만 ambiguous로 바꾼다.
 - ambiguous/missing의 선택 후보와 datetime을 비우고, 체크리스트와 요약은 보존한다.
-- requiresLLMReview를 호출 결과에서 유지한다.
+- requiresLLMReview가 이미 true이면 날짜가 정상이거나 items가 비어 있어도 유지한다.
+  날짜가 ambiguous인 항목이 있으면 기존 플래그와 관계없이 true로 설정한다.
 - 응답 schema, 모델, baseline, BE/FE 코드는 변경하지 않는다.
 - 개선 실패가 확인된 2단계 전체 재검토는 제거했다. 추가 LLM 호출은 없다.
 

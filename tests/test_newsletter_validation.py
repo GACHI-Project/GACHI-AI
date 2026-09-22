@@ -155,3 +155,23 @@ def test_empty_items_preserve_summary():
     result = analyze(raw)
     assert result.items == []
     assert result.summary == raw["summary"]
+
+
+@pytest.mark.parametrize("review_flag", [True, False, None])
+@pytest.mark.parametrize("status", ["confirmed", "missing", "ambiguous", "empty"])
+def test_review_flag_preserves_existing_request_or_ambiguous_dates(review_flag, status):
+    raw = _valid_response()
+    if review_flag is None:
+        raw["meta"].pop("requiresLLMReview")
+    else:
+        raw["meta"]["requiresLLMReview"] = review_flag
+    raw["meta"]["reviewReason"] = "non-date review context"
+    if status == "empty":
+        raw["items"] = []
+    else:
+        raw["items"][0]["dateStatus"] = status
+
+    result = analyze(raw)
+
+    assert result.meta["requiresLLMReview"] is (review_flag is True or status == "ambiguous")
+    assert result.meta["reviewReason"] == "non-date review context"

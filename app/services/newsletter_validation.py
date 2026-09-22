@@ -48,7 +48,10 @@ def normalize_analysis_dates(
 
     meta = dict(response.meta)
     meta["dateValidationWarnings"] = warnings
-    meta["requiresLLMReview"] = any(item.date_status == DateStatus.AMBIGUOUS for item in items)
+    # Date validation must not clear review requests raised for other reasons.
+    meta["requiresLLMReview"] = bool(meta.get("requiresLLMReview")) or any(
+        item.date_status == DateStatus.AMBIGUOUS for item in items
+    )
     return response.model_copy(update={"items": items, "meta": meta})
 
 
