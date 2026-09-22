@@ -25,6 +25,7 @@ from app.services.newsletter_prompt import (
     build_prompt_messages,
     build_refine_prompt_messages,
 )
+from app.services.newsletter_validation import normalize_analysis_dates
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +54,9 @@ class OpenAINewsletterAdapter:
             response_body = self._post_json("/responses", self._analysis_payload(messages))
             parsed = self._extract_output_json(response_body)
             try:
-                return NewsletterAnalysisResponse.model_validate(parsed)
+                return normalize_analysis_dates(
+                    request, NewsletterAnalysisResponse.model_validate(parsed)
+                )
             except ValidationError as exc:
                 last_validation_error = exc
                 logger.warning(

@@ -82,7 +82,7 @@ def analyze_newsletter(
                 "mode": "openai",
                 "model": settings.model,
                 "dateCandidateCount": len(request.date_candidates),
-                "requiresLLMReview": False,
+                "requiresLLMReview": response.meta.get("requiresLLMReview", False),
                 "outputLanguage": _normalized_language(request.language),
                 "localizedOutput": True,
             }
