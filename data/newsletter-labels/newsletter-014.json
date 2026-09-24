@@ -1,66 +1,40 @@
 {
-  "documentId": "doc_014",
-  "documentTitle": "학교자율휴업일 안내",
-  "documentDate": "2026-04-22",
-  "school": "서울위례초등학교",
-  "dateCandidates": [
-    {
-      "id": "dc_007_1",
-      "raw": "5월 4일(월)",
-      "resolved": "2026-05-04",
-      "note": "학교자율휴업일"
-    },
-    {
-      "id": "dc_007_2",
-      "raw": "5월 6일(수)",
-      "resolved": "2026-05-06",
-      "note": "정상 등교일"
-    }
-  ],
-  "labels": [
-    {
-      "type": "reminder",
-      "title": "학교자율휴업일 안내",
-      "evidenceText": "학교자율휴업일: 5월 4일(월)",
-      "selectedDateCandidateId": "dc_007_1",
-      "dateStatus": "confirmed",
-      "date": "2026-05-04",
-      "target": "parent",
-      "actionRequired": false,
-      "schoolContext": "학교자율휴업일은 학교가 자체적으로 지정한 휴일로, 공휴일은 아니지만 학생이 등교하지 않습니다. 이 날은 맞춤형교실, 방과후교실도 운영하지 않습니다. 한국 초등학교는 이런 자율휴업일을 학기 중 몇 차례 지정할 수 있습니다."
-    },
-    {
-      "type": "reminder",
-      "title": "정상 등교일 확인",
-      "evidenceText": "정상 등교일: 5월 6일(수)",
-      "selectedDateCandidateId": "dc_007_2",
-      "dateStatus": "confirmed",
-      "date": "2026-05-06",
-      "target": "parent",
-      "actionRequired": false,
-      "schoolContext": null
-    },
-    {
-      "type": "reminder",
-      "title": "맞춤형교실·방과후교실 미운영 안내",
-      "evidenceText": "맞춤형교실 및 방과후교실은 운영하지 않음",
-      "selectedDateCandidateId": "dc_007_1",
-      "dateStatus": "confirmed",
-      "date": "2026-05-04",
-      "target": "parent",
-      "actionRequired": false,
-      "schoolContext": "맞춤형교실은 저학년 학생을 위한 돌봄 프로그램이고, 방과후교실은 수업 후 운영되는 선택 활동 수업입니다. 자율휴업일에는 둘 다 운영되지 않으므로 자녀 돌봄 계획을 미리 세워두세요."
-    },
-    {
-      "type": "reminder",
-      "title": "돌봄교실 필요 시 e알리미 회신 안내",
-      "evidenceText": "돌봄교실은 신청 학생 대상으로 통합반으로 운영 예정 / 해당일 돌봄이 필요한 학생은 e알리미 '학교 자율휴업일 돌봄운영 수요조사'에 회신",
-      "selectedDateCandidateId": "dc_007_1",
-      "dateStatus": "confirmed",
-      "date": "2026-05-04",
-      "target": "parent",
-      "actionRequired": true,
-      "schoolContext": "e알리미는 한국 학교에서 학부모 스마트폰으로 공지와 설문을 전송하는 앱 서비스입니다. 돌봄교실 이용을 원하면 앱을 통해 미리 신청해야 합니다. 신청하지 않으면 이용이 불가합니다."
-    }
-  ]
+    "documentId": "doc_014",
+    "documentTitle": "학교자율휴업일 안내",
+    "documentDate": "2026-04-22",
+    "school": "서울위례초등학교",
+    "originalText": null,
+    "dateCandidates": [
+        {
+            "id": "dc_014_1",
+            "raw": "5월 4일(월)",
+            "resolved": "2026-05-04",
+            "note": "학교자율휴업일"
+        },
+        {
+            "id": "dc_014_2",
+            "raw": "5월 6일(수)",
+            "resolved": "2026-05-06",
+            "note": "정상 등교일(설명용)"
+        }
+    ],
+    "labels": [
+        {
+            "type": "schedule",
+            "title": "학교자율휴업일",
+            "evidenceText": "학교자율휴업일: 5월 4일(월) / 가. 정상 등교일: 5월 6일(수) / 나. 5.1.(금) 노동절은 공휴일 지정에 따라 학교자율휴업일에서 제외 / 다. 맞춤형교실 및 방과후교실은 운영하지 않음 / 라. 돌봄교실은 신청 학생 대상으로 통합반으로 운영 예정",
+            "selectedDateCandidateId": "dc_014_1",
+            "dateStatus": "confirmed",
+            "date": "2026-05-04",
+            "target": "student",
+            "actionRequired": false,
+            "schoolContext": "학교자율휴업일은 학교가 자체적으로 정하는 휴업일로 그날은 등교하지 않습니다. 5월 5일 어린이날과 이어져 연휴가 되며, 5월 6일(수)부터 정상 등교합니다. 휴업일에는 맞춤형교실과 방과후교실이 운영되지 않고, 돌봄이 필요한 학생만 통합반으로 돌봄교실을 이용할 수 있습니다.",
+            "checklistItems": [
+                {
+                    "content": "해당일 돌봄이 필요하면 e알리미 수요조사에 회신하기",
+                    "detail": "e알리미 '학교 자율휴업일 돌봄운영 수요조사'에 회신. 돌봄교실은 신청 학생 대상 통합반으로 운영 예정. 회신 기한은 안내되지 않음"
+                }
+            ]
+        }
+    ]
 }
