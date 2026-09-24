@@ -34,6 +34,19 @@ class DateCandidate(BaseModel):
         return self
 
 
+# BE가 OCR에 사용한 원본 문서(PDF 원본 / EXIF 보정 PNG)를 페이지 순서대로 전달
+class NewsletterDocument(BaseModel):
+    model_config = ConfigDict(populate_by_name=True)
+
+    file_url: str = Field(alias="fileUrl", min_length=1)
+    file_name: str = Field(alias="fileName", min_length=1)
+    mime_type: str = Field(alias="mimeType", min_length=1)
+
+    # repr/str 출력(디버깅 로그 등)에 Presigned URL이 그대로 찍히지 않게 file_url을 제외한다.
+    def __repr_args__(self):
+        yield "file_name", self.file_name
+        yield "mime_type", self.mime_type
+
 class NewsletterAnalysisRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -43,6 +56,7 @@ class NewsletterAnalysisRequest(BaseModel):
     reference_date: date | None = Field(default=None, alias="referenceDate")
     timezone: str = "Asia/Seoul"
     date_candidates: list[DateCandidate] = Field(default_factory=list, alias="dateCandidates")
+    documents: list[NewsletterDocument] = Field(default_factory=list)
 
 
 class NewsletterExtractionRequest(NewsletterAnalysisRequest):

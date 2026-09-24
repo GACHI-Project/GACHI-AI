@@ -3,8 +3,9 @@ import json
 import pytest
 from test_openai_adapter import StubOpenAINewsletterAdapter, _valid_response
 
-from app.schemas import NewsletterAnalysisRequest
+from app.schemas import NewsletterAnalysisRequest, NewsletterAnalysisResponse
 from app.services.newsletter_prompt import build_prompt_messages
+from app.services.newsletter_validation import normalize_analysis_dates
 
 
 def test_prompt_keeps_application_actions_with_their_deadline():
@@ -175,3 +176,70 @@ def test_review_flag_preserves_existing_request_or_ambiguous_dates(review_flag, 
 
     assert result.meta["requiresLLMReview"] is (review_flag is True or status == "ambiguous")
     assert result.meta["reviewReason"] == "non-date review context"
+
+
+def _document_only_response(datetime_value="2026-06-15"):
+    raw = _valid_response()
+    raw["items"][0]["selectedDateCandidate"] = None
+    raw["items"][0]["datetime"] = datetime_value
+    return NewsletterAnalysisResponse.model_validate(raw)
+
+
+def test_document_only_date_is_kept_when_documents_attached():
+    result = normalize_analysis_dates(request(), _document_only_response(),
+                                      documents_attached=True)
+    item = result.items[0]
+    assert item.date_status == "confirmed"
+    assert item.datetime == "2026-06-15"
+    assert {"itemIndex": 0, "code": "DOCUMENT_ONLY_DATE"} in result.meta[
+        "dateValidationWarnings"]
+
+
+def test_document_only_date_is_downgraded_without_documents():
+    result = normalize_analysis_dates(request(), _document_only_response())
+    item = result.items[0]
+    assert item.date_status == "ambiguous"
+    assert item.datetime is None
+    assert {"itemIndex": 0, "code": "DATE_CANDIDATE_MISMATCH"} in result.meta[
+        "dateValidationWarnings"
+    ]
+
+
+@pytest.mark.parametrize("value", [None, "2026-06-15garbage"])
+def test_document_only_date_with_invalid_datetime_is_downgraded(value):
+    result = normalize_analysis_dates(
+        request(), _document_only_response(value), documents_attached=True
+    )
+    assert result.items[0].date_status == "ambiguous"
+
+
+def test_forged_candidate_is_downgraded_even_when_documents_attached():
+    raw = _valid_response()
+    raw["items"][0]["selectedDateCandidate"]["candidateId"] = "invented"
+    result = normalize_analysis_dates(
+        request(), NewsletterAnalysisResponse.model_validate(raw),
+        documents_attached=True
+    )
+    assert result.items[0].date_status == "ambiguous"
+
+
+class _Attached:
+    file_name = "newsletter-page-1.pdf"
+    mime_type = "application/pdf"
+
+
+def test_text_only_prompt_keeps_candidate_only_date_rule():
+    system, user = build_prompt_messages(request())
+    assert "원본 문서 사용 원칙" not in system["content"]
+    assert "dateCandidates에 없는 날짜를 새로 만들거나 추론해서" in system["content"]
+    assert "<attached_documents>" not in user["content"]
+
+
+def test_document_prompt_adds_principles_and_attachment_order():
+    system, user = build_prompt_messages(request(), attached_documents=[_Attached()])
+    assert "원본 문서 사용 원칙" in system["content"]
+    assert "원본과 original_text의 내용이 다르면 원본을 따른다" in system["content"]
+    assert "요일이 날짜와 맞지 않음" in system["content"]
+    assert "dateCandidates에 없는 날짜를 새로 만들거나 추론해서" not in system["content"]
+    assert "첨부된 원본 문서가 사실 판단의 기준이다" in system["content"]
+    assert "1. newsletter-page-1.pdf (application/pdf)" in user["content"]

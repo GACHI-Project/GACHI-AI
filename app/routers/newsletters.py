@@ -46,7 +46,7 @@ def extract_items(req: NewsletterExtractionRequest) -> NewsletterExtractionRespo
 
 @router.post("/prompt-preview", response_model=PromptPreviewResponse)
 def prompt_preview(req: NewsletterExtractionRequest) -> PromptPreviewResponse:
-    messages = build_prompt_messages(req)
+    messages = build_prompt_messages(req, attached_documents=req.documents)
     return PromptPreviewResponse(messages=messages, responseSchema=ANALYSIS_RESPONSE_SCHEMA)
 
 

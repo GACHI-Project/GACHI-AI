@@ -1,4 +1,9 @@
 import json
+from collections.abc import Sequence
+from typing import Protocol
+
+
+
 
 from app.constants import LANGUAGE_NAMES, SUPPORTED_LANGUAGE_CODES
 from app.schemas import NewsletterAnalysisRequest
@@ -142,16 +147,84 @@ ANALYSIS_RESPONSE_SCHEMA = {
     },
 }
 
+class AttachedDocument(Protocol):
+    file_name: str
+    mime_type: str
 
-def build_prompt_messages(request: NewsletterAnalysisRequest) -> list[dict[str, str]]:
+
+# 원본이 없을 때(첨부 실패, 이전 BE 요청, 텍스트 전용 테스트)는 기존 문구를 그대로 쓴다.
+_DATE_SELECTION_RULES_TEXT_ONLY = """- 구체적인 날짜는 제공된 dateCandidates 중 하나만 선택한다.
+- dateCandidates에 없는 날짜를 새로 만들거나 추론해서 confirmed로 반환하지 않는다."""
+
+# 원본이 실제로 첨부된 경우에만 쓰는 문구. OCR 오인식으로 빠진 날짜를 원본에서 읽을 수 있게 한다.
+_DATE_SELECTION_RULES_WITH_DOCUMENTS = """- 구체적인 날짜는 dateCandidates에서 먼저 찾는다.
+  대응 후보가 없거나 후보가 OCR 오인식으로 원본 문서와 다를 때만
+  아래 '원본 문서 사용 원칙'에 따라 원본 문서의 날짜를 사용한다.
+- 원본 문서에서도 확인되지 않는 날짜를 새로 만들거나 추론해서 confirmed로 반환하지 않는다."""
+
+_FACT_BASIS_RULE_TEXT_ONLY = "- original_text는 사실 판단의 기준이다."
+
+_FACT_BASIS_RULE_WITH_DOCUMENTS = (
+    "- 첨부된 원본 문서가 사실 판단의 기준이다. original_text는 원본의 OCR 전사본이며,\n"
+    "  원본과 다르면 원본을 따른다."
+)
+
+_DOCUMENT_USAGE_PRINCIPLES = """원본 문서 사용 원칙
+(원본 문서가 첨부된 요청에만 적용하며, 다른 규칙과 충돌하면 이 원칙이 우선한다):
+- 이 요청에는 가정통신문 원본(PDF 또는 이미지)이 <attached_documents>에 적힌 순서대로 첨부되어 있다.
+  original_text는 이 원본을 OCR로 옮긴 전사본이라 숫자/글자 오인식, 줄 순서 뒤섞임,
+  표 구조 손실, 문장 누락이 있을 수 있다.
+- 원본을 먼저 끝까지 보고 문서 구조(제목, 본문, 표, 신청서/회신서 영역, 강조 표시)를 파악한 뒤
+  original_text로 세부 문구를 대조한다.
+- 원본과 original_text의 내용이 다르면 원본을 따른다. 원본에서도 판독할 수 없는 부분은
+  추측하지 않고 original_text를 사용한다.
+- 이 원칙은 날짜뿐 아니라 title, summary, items, checklistItems, conversationTopics 전체에 적용한다.
+  표는 원본의 행/열 제목과 구역 배치를 기준으로 해석한다.
+  체크박스(□, ■, ☑ 등)의 선택 상태, 굵게/밑줄/색으로 강조된 문구, 절취선 아래 회신서/신청서
+  영역은 원본의 배치로 확인해 행동과 조건을 판단한다.
+  학교 로고, 장식 그림, 서식 틀처럼 내용과 무관한 요소는 무시한다.
+- 원본 문서가 첨부된 경우의 날짜 선택:
+  1. 원본의 날짜와 같은 날짜를 가리키는 후보가 있으면 그 후보를 selectedDateCandidate로 선택한다.
+     이때 후보의 index, candidateId, originalText, normalizedDate를 그대로 사용한다.
+  2. 원본에 날짜가 선명하게 보이는데 대응 후보가 없거나, 후보가 OCR 오인식으로 원본과 다르면
+     그 후보를 선택하지 않는다. selectedDateCandidate=null, datetime=원본에서 읽은 날짜,
+     dateStatus=confirmed로 반환하고 evidenceText에 원본의 날짜 문구를 그대로 포함한다.
+     이 경우에는 앞의 '대응 후보가 없으면 ambiguous' 규칙보다 이 규칙을 우선한다.
+  3. 원본에서도 날짜가 흐리거나 잘려 판독이 불확실하면 ambiguous로 반환한다.
+  4. 원본에 적힌 날짜 자체가 문서 맥락과 충돌하면 원본을 그대로 확정하지 않는다.
+     예: 요일이 날짜와 맞지 않음, 연도가 학년도나 같은 문서의 다른 일정과 맞지 않음,
+     지난해 문서를 다시 사용한 것으로 보임.
+     이때는 날짜를 임의로 고치지 말고 ambiguous로 반환하고
+     confirmationQuestion에 충돌 내용을 적는다.
+  5. 원본에 연도가 없으면 앞의 연도 판단 규칙(후보 연도, 문서 연도, referenceDate)을 그대로 따른다.
+  6. 발행일/서명일 제외, 기간의 마감일 선택, 시각 표기 등 다른 날짜 판단 원칙은 그대로 적용한다.
+- evidenceText와 detail에는 OCR 오인식 문자를 옮기지 말고 원본의 문구를 사용한다."""
+
+
+def build_prompt_messages(
+    request: NewsletterAnalysisRequest,
+    *,
+    attached_documents: Sequence[AttachedDocument] | None = None,
+) -> list[dict[str, str]]:
+    documents = list(attached_documents or [])
     return [
-        {"role": "system", "content": _build_system_prompt(request.language)},
-        {"role": "user", "content": _build_user_prompt(request)},
+        {
+            "role": "system",
+            "content": _build_system_prompt(request.language, has_documents=bool(documents)),
+        },
+        {"role": "user", "content": _build_user_prompt(request, documents)},
     ]
 
 
-def _build_system_prompt(language: str) -> str:
+def _build_system_prompt(language: str, *, has_documents: bool = False) -> str:
     language_name = _language_name(language)
+    date_selection_rules = (
+        _DATE_SELECTION_RULES_WITH_DOCUMENTS if has_documents else _DATE_SELECTION_RULES_TEXT_ONLY
+    )
+    fact_basis_rule = (
+        _FACT_BASIS_RULE_WITH_DOCUMENTS if has_documents else _FACT_BASIS_RULE_TEXT_ONLY
+    )
+    document_section = f"\n{_DOCUMENT_USAGE_PRINCIPLES}\n" if has_documents else ""
     return f"""
 역할: 학교 가정통신문 원문을 분석해서 저장 가능한 제목, 요약,
 주요 일정/마감/체크리스트 항목을 JSON으로 반환한다.
@@ -172,12 +245,12 @@ def _build_system_prompt(language: str) -> str:
 - titleI18n은 알림에서 사용할 문서 제목이며 KO/US/ZH/VI 네 언어 값을 모두 채운다.
 - summary는 보호자나 학생이 빠르게 확인할 수 있는 1~2문장으로 작성한다.
 - items의 구조는 /ai/newsletters/extract-items 응답 형식을 유지한다.
-- 구체적인 날짜는 제공된 dateCandidates 중 하나만 선택한다.
+{date_selection_rules}
 - dateCandidates에 없는 날짜를 새로 만들거나 추론해서 confirmed로 반환하지 않는다.
 - 실제 행사/마감과 날짜의 연결 근거가 명확할 때만 dateStatus를 confirmed로 설정한다.
 - 날짜 정보가 없거나 근거가 약하면 ambiguous 또는 missing을 사용한다.
 - evidenceText는 사용자가 볼 수 있는 근거/상세 설명 문구로 작성하되, 원문 의미를 벗어나지 않는다.
-
+{document_section}
 작업 순서 (중간 작업은 출력하지 않고 최종 JSON만 반환):
 1. 후보 목록을 고르기 전에 원문 전체의 본문, 표, 첨부 신청서를 끝까지 읽는다.
    실제 행사, 신청/제출, 납부/이체, 가정 준비 행동을 각각 찾는다.
@@ -392,7 +465,7 @@ def _build_system_prompt(language: str) -> str:
 - topic은 항상 한국어로 작성한다. (사용자 언어로의 번역은 이후 단계에서 별도로 처리한다.)
 
 한국어 작성 원칙 (title/summary/items[].title/checklistItems/conversationTopics):
-- original_text는 사실 판단의 기준이다.
+{fact_basis_rule}
 - translated_text는 참고하지 않는다. (단일 필드는 항상 한국어로 작성하므로 번역 초안이 필요 없다.)
 - 학교명, 기관명, 행사명, 고유명사는 원문 표기를 그대로 사용한다.
 - 날짜, 시간, 금액, 준비물, 제출 대상 같은 핵심 정보는 빠뜨리지 않는다.
@@ -412,7 +485,10 @@ def _build_system_prompt(language: str) -> str:
 """.strip()
 
 
-def _build_user_prompt(request: NewsletterAnalysisRequest) -> str:
+def _build_user_prompt(
+    request: NewsletterAnalysisRequest,
+    attached_documents: Sequence[AttachedDocument] = (),
+) -> str:
     translated_text = request.translated_text.strip() if request.translated_text else ""
     reference_date = request.reference_date.isoformat() if request.reference_date else "null"
     language_name = _language_name(request.language)
@@ -422,14 +498,31 @@ def _build_user_prompt(request: NewsletterAnalysisRequest) -> str:
         f"language: {request.language}",
         f"targetLanguageName: {language_name}",
         "",
-        "<date_candidates>",
-        _format_candidates(request),
-        "</date_candidates>",
-        "",
-        "<original_text>",
-        request.original_text.strip(),
-        "</original_text>",
     ]
+    if attached_documents:
+        sections.extend(
+            [
+                "<attached_documents>",
+                f"원본 문서 {len(attached_documents)}개가 이 메시지에 아래 순서대로 첨부되어 있다.",
+                *(
+                    f"{page}. {document.file_name} ({document.mime_type})"
+                    for page, document in enumerate(attached_documents, start=1)
+                ),
+                "</attached_documents>",
+                "",
+            ]
+        )
+    sections.extend(
+        [
+            "<date_candidates>",
+            _format_candidates(request),
+            "</date_candidates>",
+            "",
+            "<original_text>",
+            request.original_text.strip(),
+            "</original_text>",
+        ]
+    )
     if translated_text:
         sections.extend(
             [

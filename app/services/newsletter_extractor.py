@@ -19,6 +19,7 @@ from app.schemas import (
     TranslationRefineRequest,
     TranslationRefineResponse,
 )
+from app.services.newsletter_document import LoadedDocument
 from app.services.openai_adapter import OpenAINewsletterAdapter
 
 logger = logging.getLogger(__name__)
@@ -71,11 +72,12 @@ def extract_newsletter_items(
 
 def analyze_newsletter(
     request: NewsletterAnalysisRequest,
+    documents: list[LoadedDocument] | None = None,
 ) -> NewsletterAnalysisResponse:
     settings = get_openai_settings()
     if settings.enabled:
         logger.info("[NewsletterAnalysis] OpenAI 분석 모드로 실행합니다. model=%s", settings.model)
-        response = OpenAINewsletterAdapter(settings).analyze(request)
+        response = OpenAINewsletterAdapter(settings).analyze(request, documents)
         meta = dict(response.meta)
         meta.update(
             {
