@@ -34,8 +34,7 @@ def normalize_analysis_dates(
             #   1) 원본 문서가 실제로 첨부되어 분석됨 (첨부 실패 시에는 기존 규칙 그대로)
             #   2) 후보를 고르지 않음 (후보를 골랐는데 틀린 경우는 아래 기존 검증으로 강등)
             #   3) datetime이 올바른 날짜 형식
-            if documents_attached and selected is None and _date_part(
-                item.datetime) is not None:
+            if documents_attached and selected is None and _date_part(item.datetime) is not None:
                 warnings.append({"itemIndex": index, "code": DOCUMENT_ONLY_DATE})
             else:
                 candidate = (

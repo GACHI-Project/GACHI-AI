@@ -2,9 +2,6 @@ import json
 from collections.abc import Sequence
 from typing import Protocol
 
-
-
-
 from app.constants import LANGUAGE_NAMES, SUPPORTED_LANGUAGE_CODES
 from app.schemas import NewsletterAnalysisRequest
 from app.services.newsletter_date_source import source_span
@@ -147,6 +144,7 @@ ANALYSIS_RESPONSE_SCHEMA = {
     },
 }
 
+
 class AttachedDocument(Protocol):
     file_name: str
     mime_type: str
@@ -246,7 +244,6 @@ def _build_system_prompt(language: str, *, has_documents: bool = False) -> str:
 - summary는 보호자나 학생이 빠르게 확인할 수 있는 1~2문장으로 작성한다.
 - items의 구조는 /ai/newsletters/extract-items 응답 형식을 유지한다.
 {date_selection_rules}
-- dateCandidates에 없는 날짜를 새로 만들거나 추론해서 confirmed로 반환하지 않는다.
 - 실제 행사/마감과 날짜의 연결 근거가 명확할 때만 dateStatus를 confirmed로 설정한다.
 - 날짜 정보가 없거나 근거가 약하면 ambiguous 또는 missing을 사용한다.
 - evidenceText는 사용자가 볼 수 있는 근거/상세 설명 문구로 작성하되, 원문 의미를 벗어나지 않는다.

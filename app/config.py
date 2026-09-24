@@ -31,8 +31,7 @@ def _read_float(name: str, default: float, *, min_value: float | None = None) ->
 
 
 def _read_int(
-    name: str, default: int, *, min_value: int | None = None,
-    max_value: int | None = None
+    name: str, default: int, *, min_value: int | None = None, max_value: int | None = None
 ) -> int:
     value = os.getenv(name)
     if value is None or value.strip() == "":
@@ -89,8 +88,7 @@ class OpenAISettings:
             base_url=_read_str("OPENAI_BASE_URL", "https://api.openai.com/v1")
             or "https://api.openai.com/v1",
             timeout_seconds=_read_float("OPENAI_TIMEOUT_SECONDS", 60.0, min_value=0.001),
-            document_detail=_read_choice("OPENAI_DOCUMENT_DETAIL", "high",
-                                         DOCUMENT_DETAIL_CHOICES),
+            document_detail=_read_choice("OPENAI_DOCUMENT_DETAIL", "high", DOCUMENT_DETAIL_CHOICES),
             document_max_bytes=_read_int(
                 "OPENAI_DOCUMENT_MAX_BYTES",
                 DEFAULT_DOCUMENT_MAX_BYTES,

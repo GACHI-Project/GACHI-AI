@@ -186,13 +186,11 @@ def _document_only_response(datetime_value="2026-06-15"):
 
 
 def test_document_only_date_is_kept_when_documents_attached():
-    result = normalize_analysis_dates(request(), _document_only_response(),
-                                      documents_attached=True)
+    result = normalize_analysis_dates(request(), _document_only_response(), documents_attached=True)
     item = result.items[0]
     assert item.date_status == "confirmed"
     assert item.datetime == "2026-06-15"
-    assert {"itemIndex": 0, "code": "DOCUMENT_ONLY_DATE"} in result.meta[
-        "dateValidationWarnings"]
+    assert {"itemIndex": 0, "code": "DOCUMENT_ONLY_DATE"} in result.meta["dateValidationWarnings"]
 
 
 def test_document_only_date_is_downgraded_without_documents():
@@ -217,8 +215,7 @@ def test_forged_candidate_is_downgraded_even_when_documents_attached():
     raw = _valid_response()
     raw["items"][0]["selectedDateCandidate"]["candidateId"] = "invented"
     result = normalize_analysis_dates(
-        request(), NewsletterAnalysisResponse.model_validate(raw),
-        documents_attached=True
+        request(), NewsletterAnalysisResponse.model_validate(raw), documents_attached=True
     )
     assert result.items[0].date_status == "ambiguous"
 

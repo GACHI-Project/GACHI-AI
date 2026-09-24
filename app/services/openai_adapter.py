@@ -44,6 +44,7 @@ MAX_FILE_UPLOAD_ATTEMPTS = 2
 FILE_PURPOSE = "user_data"
 PDF_MIME_TYPE = "application/pdf"
 
+
 class OpenAIAdapterError(RuntimeError):
     pass
 
@@ -51,11 +52,13 @@ class OpenAIAdapterError(RuntimeError):
 class OpenAIConfigurationError(OpenAIAdapterError):
     pass
 
+
 @dataclass(frozen=True)
 class UploadedDocument:
     file_id: str
     file_name: str
     mime_type: str
+
 
 class OpenAINewsletterAdapter:
     def __init__(self, settings: OpenAISettings) -> None:
@@ -85,16 +88,14 @@ class OpenAINewsletterAdapter:
         uploaded_documents = self._upload_documents(loaded_documents)
         try:
             messages = self._attach_document_parts(
-                build_prompt_messages(request,
-                                        attached_documents=uploaded_documents),
+                build_prompt_messages(request, attached_documents=uploaded_documents),
                 uploaded_documents,
             )
             # 여기부터 분석 루프. 스키마 오류 재시도 때도 같은 file_id를 그대로 쓴다.
             last_validation_error: ValidationError | None = None
             for attempt in range(1, MAX_ANALYSIS_ATTEMPTS + 1):
-                response_body = self._post_json("/responses",
-                                                self._analysis_payload(messages))
-                #토큰 사용량 로그
+                response_body = self._post_json("/responses", self._analysis_payload(messages))
+                # 토큰 사용량 로그
                 self._log_usage(response_body, attempt, len(uploaded_documents))
                 parsed = self._extract_output_json(response_body)
                 try:
@@ -115,8 +116,7 @@ class OpenAINewsletterAdapter:
                         "[OpenAIAdapter] 응답 스키마 검증 실패. attempt=%s/%s, errors=%s",
                         attempt,
                         MAX_ANALYSIS_ATTEMPTS,
-                        self._summarize_validation_errors(exc,
-                                                            include_message=False),
+                        self._summarize_validation_errors(exc, include_message=False),
                     )
                     if attempt < MAX_ANALYSIS_ATTEMPTS:
                         messages = [
@@ -142,7 +142,7 @@ class OpenAINewsletterAdapter:
         if documents is not None:
             return documents
         if not request.documents:
-             return []
+            return []
         try:
             return load_documents(
                 request.documents,
@@ -158,8 +158,7 @@ class OpenAINewsletterAdapter:
             )
             return []
 
-    def _upload_documents(self, documents: list[LoadedDocument]) -> list[
-        UploadedDocument]:
+    def _upload_documents(self, documents: list[LoadedDocument]) -> list[UploadedDocument]:
         """전부 올리거나 하나도 안 올린다. 일부만 올라가면 페이지가 빠진 원본이 되기 때문이다."""
         uploaded: list[UploadedDocument] = []
         if not documents:
@@ -217,8 +216,7 @@ class OpenAINewsletterAdapter:
                 "purpose": FILE_PURPOSE,
                 # 삭제 요청이 실패해도 OpenAI에서 자동으로 지워지도록 만료 시간을 함께 건다.
                 "expires_after[anchor]": "created_at",
-                "expires_after[seconds]": str(
-                    self.settings.document_file_ttl_seconds),
+                "expires_after[seconds]": str(self.settings.document_file_ttl_seconds),
             },
             file_name=document.file_name,
             mime_type=document.mime_type,
@@ -252,11 +250,9 @@ class OpenAINewsletterAdapter:
         detail = self.settings.document_detail
         document_parts = [
             (
-                {"type": "input_file", "file_id": document.file_id,
-                    "detail": detail}
+                {"type": "input_file", "file_id": document.file_id, "detail": detail}
                 if document.mime_type == PDF_MIME_TYPE
-                else {"type": "input_image", "file_id": document.file_id,
-                        "detail": detail}
+                else {"type": "input_image", "file_id": document.file_id, "detail": detail}
             )
             for document in documents
         ]
@@ -276,8 +272,7 @@ class OpenAINewsletterAdapter:
                 attached.append(message)
         return attached
 
-    def _log_usage(self, response_body: dict[str, Any], attempt: int,
-                    document_count: int) -> None:
+    def _log_usage(self, response_body: dict[str, Any], attempt: int, document_count: int) -> None:
         usage = response_body.get("usage")
         if not isinstance(usage, dict):
             return
@@ -431,7 +426,6 @@ class OpenAINewsletterAdapter:
         # (파일 업로드·삭제에서도 같은 오류 처리를 쓰기 위함)
         return self._send_request(req)
 
-
     def _post_multipart(
         self,
         path: str,
@@ -467,7 +461,6 @@ class OpenAINewsletterAdapter:
         )
         return self._send_request(req)
 
-
     def _delete_file(self, file_id: str) -> None:
         req = urllib.request.Request(
             self.settings.base_url.rstrip("/") + f"/files/{file_id}",
@@ -475,7 +468,6 @@ class OpenAINewsletterAdapter:
             headers={"Authorization": f"Bearer {self.settings.api_key}"},
         )
         self._send_request(req)
-
 
     def _send_request(self, req: urllib.request.Request) -> dict[str, Any]:
 

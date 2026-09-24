@@ -207,10 +207,8 @@ class OpenAIAdapterDocumentTest(unittest.TestCase):
         content = user_message["content"]
         self.assertEqual(content[0]["type"], "input_text")
         self.assertIn("1. newsletter-page-1.pdf (application/pdf)", content[0]["text"])
-        self.assertEqual(content[1],
-                         {"type": "input_file", "file_id": "file-1", "detail": "high"})
-        self.assertEqual(content[2],
-                         {"type": "input_image", "file_id": "file-2", "detail": "high"})
+        self.assertEqual(content[1], {"type": "input_file", "file_id": "file-1", "detail": "high"})
+        self.assertEqual(content[2], {"type": "input_image", "file_id": "file-2", "detail": "high"})
         self.assertEqual(adapter.deleted_ids, ["file-1", "file-2"])
         self.assertEqual(response.meta["requestedDocumentCount"], 2)
         self.assertEqual(response.meta["attachedDocumentCount"], 2)
@@ -286,6 +284,7 @@ class OpenAIAdapterDocumentTest(unittest.TestCase):
         self.assertIsInstance(adapter.payloads[0]["input"][1]["content"], str)
         self.assertEqual(response.meta["requestedDocumentCount"], 1)
         self.assertEqual(response.meta["attachedDocumentCount"], 0)
+
 
 if __name__ == "__main__":
     unittest.main()

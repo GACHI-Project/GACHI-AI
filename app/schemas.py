@@ -47,6 +47,7 @@ class NewsletterDocument(BaseModel):
         yield "file_name", self.file_name
         yield "mime_type", self.mime_type
 
+
 class NewsletterAnalysisRequest(BaseModel):
     model_config = ConfigDict(populate_by_name=True)
 
