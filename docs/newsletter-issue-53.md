@@ -1,5 +1,91 @@
 # #53 인수인계: 가정통신문 추출 개선
 
+## 2026-09-24 이어받은 작업 요약 (원본 문서 첨부 + 재라벨링 기준 반영)
+
+이 절은 인수인계 이후 추가한 작업이다. 아래 "이어서 작업할 팀원에게"부터는 기존 인계 내용이며,
+평가 도구 사용법 중 달라진 부분은 이 절의 내용을 따른다.
+
+- 브랜치: 기존 `bugfix/#53-newsletter-extraction`에서 이어서 작업한다. 새 PR은 만들지 않았다.
+- 최신 코드 기준 AI 단위 테스트 98개 통과, ruff check/format 통과.
+- 실제 모델 평가: gpt-4.1, 8조건, 원본 없이/원본 포함 각 1회씩 2차례 실행했다.
+- 상세 기록
+  - 원본 첨부 평가: [newsletter-document-attachment.md](newsletter-document-attachment.md)
+  - 재라벨링 기준 프롬프트 반영(P1~P18): [newsletter-prompt-changes.md](newsletter-prompt-changes.md)
+
+### 원본 문서 첨부 기능
+
+OCR 오인식, 표/체크박스/강조 같은 배치 정보 손실을 보완하려고 원본 PDF/이미지를 OCR 텍스트와 함께 분석에 넘긴다.
+OCR은 제거하지 않는다. 전체 문서 탭, 번역, 본문 중복 해시, 날짜 후보 offset에 계속 필요하다.
+
+BE (GACHI-BE)
+- `NewsletterPipelineService`: OCR에 실제로 사용한 파일을 페이지 순서대로 모은다. PDF는 원본, 이미지는 EXIF 보정 PNG.
+- `AiNewsletterClient`: `documents[] {fileUrl, fileName, mimeType}`를 분석 요청에 추가한다.
+  fileUrl은 S3 Presigned URL이며 만료 시간은 `AI_SERVER_PRESIGNED_MINUTES`(기본 5분, 1~10080분 검증).
+- URL 생성 실패 시 documents를 빈 배열로 보내고 텍스트만으로 분석한다.
+- 요청 로그: INFO는 길이/개수 요약만, DEBUG는 body 전체이되 URL은 가린다.
+
+AI (GACHI-AI)
+- `schemas.py`: `NewsletterAnalysisRequest.documents` 추가. 기본값 빈 배열이라 이전 BE 요청도 그대로 동작한다.
+- `newsletter_document.py`(신규): Presigned URL 다운로드. https + `*.amazonaws.com`만 허용, 리다이렉트 차단, 크기 제한, 일시 오류 1회 재시도.
+- `openai_adapter.py`: OpenAI Files API 업로드(purpose `user_data`, `expires_after`) → PDF는 `input_file`, 이미지는 `input_image`로 첨부(`detail` 기본 high) → 분석 후 `finally`에서 삭제.
+  다운로드/업로드가 1회 재시도 후에도 실패하면 원본 없이 기존 텍스트 분석으로 계속한다.
+  토큰 사용량을 로그로 남기고 응답 meta에 `requestedDocumentCount`, `attachedDocumentCount`를 기록한다.
+- `newsletter_prompt.py`: 원본이 실제로 첨부된 경우에만 "원본 문서 사용 원칙"을 프롬프트 맨 끝에 넣는다.
+  OCR과 원본이 다르면 원본 우선, "후보가 없으면 ambiguous" 계열 규칙은 원본에서도 날짜를 확인할 수 없을 때만 적용한다.
+  원본이 없으면 이 원칙은 들어가지 않는다.
+- `newsletter_validation.py`: 원본이 첨부되고 후보 없이 원본에서 읽은 confirmed 날짜는 강등하지 않고 `DOCUMENT_ONLY_DATE` 경고로 남긴다.
+  후보를 골랐는데 틀린 경우의 기존 검증(`DATE_CANDIDATE_MISMATCH`, `SOURCE_DATE_CONFLICT`)은 그대로다.
+- 환경변수: `OPENAI_DOCUMENT_DETAIL`, `OPENAI_DOCUMENT_MAX_BYTES`, `OPENAI_DOCUMENT_DOWNLOAD_TIMEOUT_SECONDS`, `OPENAI_DOCUMENT_FILE_TTL_SECONDS` ([env.md](env.md))
+- 배포 순서: AI 서버를 먼저 배포해도 안전하다. documents가 없는 요청은 기존과 같이 동작한다.
+
+### 프롬프트 변경
+
+- 두 모드 공통: confirmed와 확인 요청(confirmationQuestion)을 함께 쓰지 않는다. 후보 연도가 문서 연도와 다르면 그 후보로 확정하지 않는다.
+- 재라벨링(001~020)에서 확정한 판단 기준 P1~P18 반영. 상세와 관찰 포인트는 [newsletter-prompt-changes.md](newsletter-prompt-changes.md).
+
+### 평가 도구 변경 (로컬 newsletter-prompt-check, 레포 밖)
+
+- `compare.py`의 REPO는 수정하지 않아도 된다. `GACHI_AI_REPO` 환경변수를 쓰며, 없으면 명령을 실행한 폴더를 레포로 본다.
+  아래 기존 안내의 "REPO를 자신의 레포 경로로 수정" 대신 환경변수를 설정한다.
+- `run_suite.py`에 옵션 추가
+  - `--with-documents`: `originals/<폴더>/`의 원본을 서버와 같은 방식으로 첨부해 분석한다. 결과 폴더는 `suite-results-docs-…`.
+  - `--delay-seconds N`: 유료 호출 사이 대기. 원본을 high로 첨부하면 호출당 1만 토큰 이상이라 대기 없이 연속 호출 시 429가 발생했다. 40초에서 8조건 모두 성공.
+- 원본 폴더: `originals/{wellbeing,fieldtrip,survey,album,supplies,family}/1.pdf`(album은 `1.png`).
+  album-year-conflict는 album, family 두 케이스는 family 원본을 공유한다.
+- `test_suite.py`의 한 테스트는 과거 결과 폴더를 직접 읽어서 폴더를 옮기면 실패한다. run_suite 동작과는 무관하다.
+
+```powershell
+cd <newsletter-prompt-check 경로>
+$secureKey = Read-Host "OpenAI API 키" -AsSecureString
+$env:OPENAI_API_KEY = [System.Net.NetworkCredential]::new("", $secureKey).Password
+$env:OPENAI_MODEL = "gpt-4.1"
+$env:GACHI_AI_REPO = "<GACHI-AI 레포 경로>"
+$py = "<GACHI-AI 레포 경로>\.venv\Scripts\python.exe"
+
+& $py -X utf8 .\run_suite.py --live --repeat 1 --delay-seconds 40
+& $py -X utf8 .\run_suite.py --live --repeat 1 --with-documents --delay-seconds 40
+```
+
+### 평가 결과 요약 (gpt-4.1, 각 1회)
+
+| 프롬프트 | 원본 없이 | 원본 포함 | 핵심 변화 |
+| --- | --- | --- | --- |
+| fe61a432 (원본 첨부 최초) | 5/8 | 6/8 | album의 금액/CMS 보존. 원본에서만 읽은 날짜 0건. album-year-conflict는 두 모드 모두 2026년 확정 |
+| f6c258d7 (원본 규칙 수정 + P1~P18) | 5/8 | 5/8 (수동 판정 7/8) | 원본 포함에서 album-year-conflict를 2025년으로, family-missing-end 마감 9/18 15:00을 원본 기준으로 확정 |
+
+- family-missing-end, album-year-conflict는 텍스트 전용 기준으로 채점되어 원본 포함 모드의 올바른 확정이 자동 채점에서는 실패로 나온다.
+- 원본 없이는 album-year-conflict 납부를 여전히 2026-12-30으로 확정한다. 원문은 '30일(화)'이고 2026-12-30은 수요일이다.
+- 원본 첨부 시 입력 토큰은 약 40% 늘어난다.
+
+### 다음 작업 우선순위
+
+1. 원본 없이 분석할 때 요일 불일치 날짜를 날짜 검증 코드에서 ambiguous로 강등하는 안전장치 검토
+2. 원본 첨부 시 후보가 원본과 같으면 후보를 선택하도록 프롬프트 보강 검토 (family-complete에서 후보 대신 원본 경로 사용)
+3. fieldtrip 안전 안내문 읽기 분리가 P3 영향인지 확인하고 rubric 정합성 확인
+4. family-missing-end, album-year-conflict에 원본 포함 모드용 채점 기준 추가 검토
+5. P1~P18은 001~020 라벨 기준 평가로 따로 효과 확인
+6. 주요 케이스 `--repeat 2~3` 반복 확인, 실제 BE 업로드 흐름(Presigned URL → AI 다운로드) 통합 확인
+
 ## 이어서 작업할 팀원에게
 
 - 기존 PR #54, `bugfix/#53-newsletter-extraction` 브랜치에서 이어서 작업한다.
