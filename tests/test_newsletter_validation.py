@@ -240,3 +240,10 @@ def test_document_prompt_adds_principles_and_attachment_order():
     assert "dateCandidates에 없는 날짜를 새로 만들거나 추론해서" not in system["content"]
     assert "첨부된 원본 문서가 사실 판단의 기준이다" in system["content"]
     assert "1. newsletter-page-1.pdf (application/pdf)" in user["content"]
+
+def test_document_principles_come_last_and_override_candidate_only_rules():
+    system = build_prompt_messages(request(), attached_documents=[_Attached()])[0]["content"]
+    header = "원본 문서 사용 원칙\n(원본 문서가 첨부된 요청에만 적용"
+    assert system.index(header) > system.index("알림용 다국어 map 생성 원칙")
+    assert "'원본에서도 날짜를 확인할 수 없을 때'에만 적용한다" in system
+    assert "틀린 후보를 선택한 뒤 확인 질문으로 정정을 요청하지 않는다" in system

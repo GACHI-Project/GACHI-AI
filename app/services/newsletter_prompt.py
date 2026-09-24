@@ -184,18 +184,38 @@ _DOCUMENT_USAGE_PRINCIPLES = """원본 문서 사용 원칙
 - 원본 문서가 첨부된 경우의 날짜 선택:
   1. 원본의 날짜와 같은 날짜를 가리키는 후보가 있으면 그 후보를 selectedDateCandidate로 선택한다.
      이때 후보의 index, candidateId, originalText, normalizedDate를 그대로 사용한다.
-  2. 원본에 날짜가 선명하게 보이는데 대응 후보가 없거나, 후보가 OCR 오인식으로 원본과 다르면
-     그 후보를 선택하지 않는다. selectedDateCandidate=null, datetime=원본에서 읽은 날짜,
-     dateStatus=confirmed로 반환하고 evidenceText에 원본의 날짜 문구를 그대로 포함한다.
-     이 경우에는 앞의 '대응 후보가 없으면 ambiguous' 규칙보다 이 규칙을 우선한다.
+  2. 원본에 날짜가 선명하게 보이는데 대응 후보가 없거나, 후보가 원본과 다르면
+     (OCR 오인식, 연도 차이 포함) 그 후보를 선택하지 않는다.
+     selectedDateCandidate=null, datetime=원본에서 읽은 날짜(연도 포함), dateStatus=confirmed,
+     needsUserConfirmation=false, confirmationQuestion=null로 반환하고
+     evidenceText에 원본의 날짜 문구를 그대로 포함한다.
+     틀린 후보를 선택한 뒤 확인 질문으로 정정을 요청하지 않는다.
   3. 원본에서도 날짜가 흐리거나 잘려 판독이 불확실하면 ambiguous로 반환한다.
   4. 원본에 적힌 날짜 자체가 문서 맥락과 충돌하면 원본을 그대로 확정하지 않는다.
      예: 요일이 날짜와 맞지 않음, 연도가 학년도나 같은 문서의 다른 일정과 맞지 않음,
      지난해 문서를 다시 사용한 것으로 보임.
      이때는 날짜를 임의로 고치지 말고 ambiguous로 반환하고
      confirmationQuestion에 충돌 내용을 적는다.
-  5. 원본에 연도가 없으면 앞의 연도 판단 규칙(후보 연도, 문서 연도, referenceDate)을 그대로 따른다.
+  5. 원본의 날짜에 연도가 없으면 문서의 학년도나 같은 문서 다른 날짜의 연도를 사용하고,
+     요일이 적혀 있으면 그 연도에서 요일이 맞는지 확인한다.
+     문서 안에 연도 근거가 없으면 앞의 연도 판단 규칙(후보 연도, referenceDate)을 따른다.
   6. 발행일/서명일 제외, 기간의 마감일 선택, 시각 표기 등 다른 날짜 판단 원칙은 그대로 적용한다.
+     시작일이나 발행일 후보를 마감일 대신 선택하지 않는 규칙도 그대로 지킨다.
+- 앞의 날짜 판단 원칙 중 아래 규칙들은, 원본 문서가 첨부된 경우
+  '원본에서도 날짜를 확인할 수 없을 때'에만 적용한다. 원본에 날짜가 선명하면 대신 위 2번을 따른다.
+  - "실제 사건의 날짜/기한이 원문에는 있으나 대응 후보가 없으면 ambiguous로 보존한다."
+  - "실제 일정의 날짜 근거가 있지만 후보가 없거나 불확실하면 ambiguous, datetime=null"
+  - "종료일 후보가 없으면 시작일을 마감일로 사용하지 않고 ambiguous로 반환한다."
+  - "신청 마감 날짜가 원문에 있지만 종료일 후보가 없으면 신청 deadline을 ambiguous로 유지"
+  - 분류 예시의 "후보가 있으면 confirmed, 없으면 ambiguous"
+- 원본 문서가 첨부된 경우의 판단 예시 (실제 응답은 전체 schema를 따른다):
+  - 입력: 2026학년도 문서. 원본과 original_text에 '5월 2일(토) ~ 5월 6일(수) 17:00까지 신청'.
+    후보에는 5월 2일만 있다.
+    올바른 결과: 신청 deadline, selectedDateCandidate=null, datetime=2026-05-06T17:00:00, confirmed.
+    잘못된 결과: 신청 deadline을 ambiguous로 두기, 5월 2일 후보를 마감일로 선택하기.
+  - 입력: 원본은 2023학년도 문서이고 '12월 27일(수)까지 납부'. 후보는 2024-12-27.
+    올바른 결과: 납부 deadline, selectedDateCandidate=null, datetime=2023-12-27, confirmed.
+    잘못된 결과: 2024-12-27 후보를 confirmed로 선택하고 confirmationQuestion으로 연도 정정을 묻기.
 - evidenceText와 detail에는 OCR 오인식 문자를 옮기지 말고 원본의 문구를 사용한다."""
 
 
@@ -247,7 +267,7 @@ def _build_system_prompt(language: str, *, has_documents: bool = False) -> str:
 - 실제 행사/마감과 날짜의 연결 근거가 명확할 때만 dateStatus를 confirmed로 설정한다.
 - 날짜 정보가 없거나 근거가 약하면 ambiguous 또는 missing을 사용한다.
 - evidenceText는 사용자가 볼 수 있는 근거/상세 설명 문구로 작성하되, 원문 의미를 벗어나지 않는다.
-{document_section}
+
 작업 순서 (중간 작업은 출력하지 않고 최종 JSON만 반환):
 1. 후보 목록을 고르기 전에 원문 전체의 본문, 표, 첨부 신청서를 끝까지 읽는다.
    실제 행사, 신청/제출, 납부/이체, 가정 준비 행동을 각각 찾는다.
@@ -300,6 +320,10 @@ def _build_system_prompt(language: str, *, has_documents: bool = False) -> str:
   같은 문서의 신청과 납부는 각각 연도를 검증한다. 신청만 ambiguous로 바꾼 뒤
   납부 후보의 연도를 그대로 확정하지 않는다. 후보 연도가 업로드 연도에서 온 것인지 확인한다.
   다음 해 일정이 원문에 명시되면 보존하되, 문맥과 충돌하고 연도 근거가 없으면 확인을 요청한다.
+- confirmed와 확인 요청은 함께 쓰지 않는다. 날짜나 연도의 충돌/불일치를 발견해 확인이 필요하다고
+  판단했다면 그 항목은 confirmed가 아니라 ambiguous로 반환한다.
+  confirmed 항목은 needsUserConfirmation=false, confirmationQuestion=null이어야 한다.
+  후보의 연도가 문서의 연도와 다르면 그 후보를 confirmed로 선택하지 않는다.
 - 실제 일정의 날짜 근거가 있지만 후보가 없거나 불확실하면 ambiguous,
   selectedDateCandidate=null, datetime=null, needsUserConfirmation=true로 반환한다.
   확인 질문을 작성한다.
@@ -479,6 +503,7 @@ def _build_system_prompt(language: str, *, has_documents: bool = False) -> str:
 - checklistItems[].contentI18n은 알림에 표시할 체크리스트/할 일 이름으로 바로 사용할 수 있어야 한다.
 - conversationTopics는 알림에 쓰지 않으므로 다국어 map을 만들지 않는다.
 - 네 언어 값 모두 original_text의 사실관계와 날짜, 금액, 준비물, 기관명, 행사명을 보존한다.
+{document_section}
 """.strip()
 
 
