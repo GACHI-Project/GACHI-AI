@@ -241,6 +241,7 @@ def test_document_prompt_adds_principles_and_attachment_order():
     assert "첨부된 원본 문서가 사실 판단의 기준이다" in system["content"]
     assert "1. newsletter-page-1.pdf (application/pdf)" in user["content"]
 
+
 def test_document_principles_come_last_and_override_candidate_only_rules():
     system = build_prompt_messages(request(), attached_documents=[_Attached()])[0]["content"]
     header = "원본 문서 사용 원칙\n(원본 문서가 첨부된 요청에만 적용"
