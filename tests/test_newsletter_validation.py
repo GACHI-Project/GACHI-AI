@@ -3,7 +3,12 @@ import json
 import pytest
 from test_openai_adapter import StubOpenAINewsletterAdapter, _valid_response
 
-from app.schemas import NewsletterAnalysisRequest, NewsletterAnalysisResponse
+from app.routers.newsletters import prompt_preview
+from app.schemas import (
+    NewsletterAnalysisRequest,
+    NewsletterAnalysisResponse,
+    NewsletterExtractionRequest,
+)
 from app.services.newsletter_prompt import build_prompt_messages
 from app.services.newsletter_validation import normalize_analysis_dates
 
@@ -230,6 +235,24 @@ def test_text_only_prompt_keeps_candidate_only_date_rule():
     assert "원본 문서 사용 원칙" not in system["content"]
     assert "dateCandidates에 없는 날짜를 새로 만들거나 추론해서" in system["content"]
     assert "<attached_documents>" not in user["content"]
+
+
+def test_prompt_preview_does_not_claim_unuploaded_documents_are_attached():
+    preview = prompt_preview(
+        NewsletterExtractionRequest(
+            originalText="2026. 6. 15 수영 실기교육",
+            documents=[
+                {
+                    "fileUrl": "https://bucket.s3.amazonaws.com/newsletter.pdf",
+                    "fileName": "newsletter.pdf",
+                    "mimeType": "application/pdf",
+                }
+            ],
+        )
+    )
+    system, user = preview.messages
+    assert "원본 문서 사용 원칙" not in system.content
+    assert "<attached_documents>" not in user.content
 
 
 def test_document_prompt_adds_principles_and_attachment_order():
