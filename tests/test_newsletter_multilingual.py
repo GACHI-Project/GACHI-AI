@@ -29,7 +29,7 @@ class NewsletterMultilingualPromptTest(unittest.TestCase):
             "conversationTopics[].topic은 사용자 언어(미국 영어)와 무관하게 항상 한국어로 작성한다",
             system_prompt,
         )
-        self.assertIn("체크리스트 문구는 BE에서 다시 번역하지 않고 바로 저장/표시", system_prompt)
+        self.assertIn("한국어 필드와 다국어 map은 같은 사실과 조건을 보존", system_prompt)
         self.assertIn("topic은 항상 한국어로 작성한다", system_prompt)
         translated_text_skip_phrase = (
             "translated_text는 참고하지 않는다. "
