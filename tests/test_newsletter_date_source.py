@@ -51,6 +51,17 @@ def candidate(text, value, day):
             None,
         ),
         ("발행 2025년 12월 17일\n행사 1월 8일", "1월 8일", "2026-01-08", "schedule", None),
+        ("납부 12월 30일(화)", "12월 30일", "2026-12-30", "deadline", "SOURCE_WEEKDAY_CONFLICT"),
+        ("납부 12월 30일(화)", "12월 30일", "2025-12-30", "deadline", None),
+        (
+            "납부 12월 30일(화)",
+            "12월 30일(화)",
+            "2026-12-30",
+            "deadline",
+            "SOURCE_WEEKDAY_CONFLICT",
+        ),
+        ("행사 2026.9.10.(목)", "2026.9.10", "2026-09-10", "schedule", None),
+        ("행사 2026.9.10.\n(금) 안내", "2026.9.10", "2026-09-10", "schedule", None),
     ],
 )
 def test_source_date_guards(text, value, day, kind, expected):
@@ -121,6 +132,30 @@ def test_source_conflict_preserves_actions_and_summary_without_extra_call():
     assert result.summary == raw["summary"]
     assert result.meta["dateValidationWarnings"][0]["code"] == "SOURCE_DATE_CONFLICT"
     assert value.normalized_date == date(2026, 12, 19)
+
+
+def test_weekday_conflict_downgrades_wrong_year_but_preserves_content():
+    text = "앨범비 납부 기간: 12월 29일(월) ~ 30일(화)"
+    value = candidate(text, "30일", "2026-12-30")
+    raw = _valid_response()
+    raw["items"][0].update(
+        type="deadline",
+        datetime="2026-12-30",
+        selectedDateCandidate={
+            "index": 0,
+            "candidateId": "source",
+            "originalText": "30일",
+            "normalizedDate": "2026-12-30",
+        },
+    )
+    result = StubOpenAINewsletterAdapter([{"output_text": json.dumps(raw)}]).analyze(
+        NewsletterAnalysisRequest(originalText=text, dateCandidates=[value])
+    )
+    assert result.items[0].date_status == "ambiguous"
+    assert result.items[0].checklist_items
+    assert result.meta["dateValidationWarnings"] == [
+        {"itemIndex": 0, "code": "SOURCE_WEEKDAY_CONFLICT"}
+    ]
 
 
 def test_analysis_schema_is_strict_compatible_at_every_object():

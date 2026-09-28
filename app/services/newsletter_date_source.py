@@ -10,6 +10,8 @@ _FULL_DATE = re.compile(
 )
 _MONTH_DAY = re.compile(r"(?P<month>\d{1,2})\s*[월./-]\s*(?P<day>\d{1,2})(?:\s*일)?\.?")
 _DAY = re.compile(r"(?P<day>\d{1,2})\s*일")
+_WEEKDAY = re.compile(r"^[ \t]*\.?[ \t]*\(([월화수목금토일])\)")
+_WEEKDAY_INDEX = {day: index for index, day in enumerate("월화수목금토일")}
 # Only inherit a year/month across a range separator, never from a school-year title.
 _RANGE_GAP = re.compile(r"\s*(?:\([^()\n]*\)\s*)*[~～〜–—]\s*$")
 _RANGE_END = re.compile(
@@ -40,8 +42,12 @@ def source_span(text: str, candidate: DateCandidate) -> tuple[int, int] | None:
 
 def source_date_warning(text: str, candidate: DateCandidate, item_type: str) -> str | None:
     value = candidate.original_text.strip()
-    match = _FULL_DATE.fullmatch(value) or _MONTH_DAY.fullmatch(value) or _DAY.fullmatch(value)
+    match = _FULL_DATE.match(value) or _MONTH_DAY.match(value) or _DAY.match(value)
     if not match:
+        return None
+    suffix = value[match.end() :]
+    in_value_weekday = _WEEKDAY.fullmatch(suffix) if suffix else None
+    if suffix and not in_value_weekday:
         return None
     parts = {key: int(value) for key, value in match.groupdict().items() if value}
     span = source_span(text, candidate)
@@ -57,6 +63,11 @@ def source_date_warning(text: str, candidate: DateCandidate, item_type: str) -> 
                 parts.setdefault("month", int(anchor["month"]))
     if any(getattr(candidate.normalized_date, key) != value for key, value in parts.items()):
         return "SOURCE_DATE_CONFLICT"
+    weekday = in_value_weekday
+    if weekday is None and span:
+        weekday = _WEEKDAY.match(text[span[1] : span[1] + 16])
+    if weekday and candidate.normalized_date.weekday() != _WEEKDAY_INDEX[weekday[1]]:
+        return "SOURCE_WEEKDAY_CONFLICT"
     if span and item_type == "deadline" and _RANGE_END.match(text[span[1] : span[1] + 70]):
         return "DEADLINE_RANGE_START"
     return None
