@@ -5,7 +5,9 @@
 - Presigned URL은 누구나 열 수 있는 링크이므로 로그에 절대 남기지 않는다.
 """
 
+import http.client
 import logging
+import re
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
@@ -15,9 +17,12 @@ from app.schemas import NewsletterDocument
 
 logger = logging.getLogger(__name__)
 
-# 내부 서버나 로컬 파일을 읽게 만드는 요청을 막기 위해 https + S3 도메인만 허용한다.
+# 내부 서버나 다른 AWS 서비스로 요청하지 않도록 HTTPS의 S3 호스트만 허용한다.
 ALLOWED_URL_SCHEME = "https"
-ALLOWED_HOST_SUFFIX = ".amazonaws.com"
+_S3_HOST = re.compile(
+    r"^(?:[a-z0-9][a-z0-9.-]*\.)?"
+    r"s3(?:[.-][a-z]{2}(?:-gov)?-[a-z]+-\d)?\.amazonaws\.com$"
+)
 # BE가 보내는 형식: PDF 원본, EXIF 보정한 PNG. JPEG는 원본 이미지 확장 대비.
 SUPPORTED_MIME_TYPES = frozenset({"application/pdf", "image/png", "image/jpeg"})
 # 일시적 네트워크 오류는 한 번만 다시 시도한다.
@@ -87,10 +92,20 @@ def _validate_document(document: NewsletterDocument, page: int) -> None:
             f"지원하지 않는 문서 형식입니다. page={page}, mimeType={document.mime_type}"
         )
 
-    parsed = urlparse(document.file_url)
-    host = (parsed.hostname or "").lower()
-    if parsed.scheme != ALLOWED_URL_SCHEME or not host.endswith(ALLOWED_HOST_SUFFIX):
-        # URL 전체는 서명이 포함되어 있으므로 scheme/host만 남긴다.
+    try:
+        parsed = urlparse(document.file_url)
+        host = (parsed.hostname or "").lower()
+        port = parsed.port
+    except ValueError:
+        raise DocumentLoadError(f"문서 주소 형식 오류. page={page}") from None
+    if (
+        parsed.scheme != ALLOWED_URL_SCHEME
+        or not _S3_HOST.fullmatch(host)
+        or port not in (None, 443)
+        or parsed.username is not None
+        or parsed.password is not None
+    ):
+        # URL 전체와 query는 서명이 포함되어 있으므로 로그나 오류에 남기지 않는다.
         raise DocumentLoadError(
             f"허용되지 않은 문서 주소입니다. page={page}, scheme={parsed.scheme}, host={host}"
         )
@@ -113,7 +128,11 @@ def _download_with_retry(
                     f"원본 문서 다운로드 실패. page={page}, status={exc.code}"
                 ) from exc
             _log_retry(page, attempt, f"status={exc.code}")
-        except (urllib.error.URLError, TimeoutError, OSError) as exc:
+        except (http.client.InvalidURL, ValueError) as exc:
+            raise DocumentLoadError(
+                f"원본 문서 주소 형식 오류. page={page}, reason={type(exc).__name__}"
+            ) from None
+        except (urllib.error.URLError, TimeoutError, OSError, http.client.HTTPException) as exc:
             if attempt == MAX_DOWNLOAD_ATTEMPTS:
                 raise DocumentLoadError(
                     f"원본 문서 다운로드 실패. page={page}, reason={type(exc).__name__}"

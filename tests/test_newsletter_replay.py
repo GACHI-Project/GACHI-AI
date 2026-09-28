@@ -41,3 +41,28 @@ def test_replay_counts_missing_and_invalid_responses_as_failures(tmp_path):
 
 def test_empty_directory_does_not_report_passed_cases(tmp_path):
     assert replay(tmp_path, "draft") == []
+
+
+def test_document_attached_replay_preserves_document_only_date(tmp_path):
+    (tmp_path / "source-input.json").write_text(
+        json.dumps(
+            {
+                "request": {"originalText": "2026. 6. 15 수영 실기교육 안내"},
+                "expected": {"typedDates": [["schedule", "2026-06-15"]]},
+            }
+        ),
+        encoding="utf-8",
+    )
+    raw = _valid_response()
+    raw["items"][0]["selectedDateCandidate"] = None
+    (tmp_path / "source-run-1-draft-raw.json").write_text(
+        json.dumps(raw, ensure_ascii=False), encoding="utf-8"
+    )
+
+    text_only = replay(tmp_path, "draft")
+    with_document = replay(tmp_path, "draft", documents_attached=True)
+
+    assert not text_only[0]["passed"]
+    assert text_only[0]["warnings"][0]["code"] == "DATE_CANDIDATE_MISMATCH"
+    assert with_document[0]["passed"]
+    assert with_document[0]["warnings"][0]["code"] == "DOCUMENT_ONLY_DATE"

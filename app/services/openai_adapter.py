@@ -1,5 +1,6 @@
 import json
 import logging
+import re
 import urllib.error
 import urllib.request
 import uuid
@@ -443,8 +444,9 @@ class OpenAINewsletterAdapter:
             body.extend(f'Content-Disposition: form-data; name="{name}"\r\n\r\n'.encode())
             body.extend(f"{value}\r\n".encode())
         body.extend(f"--{boundary}\r\n".encode())
+        safe_name = re.sub(r"[^A-Za-z0-9._-]", "_", file_name)[:255] or "document"
         body.extend(
-            f'Content-Disposition: form-data; name="file"; filename="{file_name}"\r\n'.encode()
+            f'Content-Disposition: form-data; name="file"; filename="{safe_name}"\r\n'.encode()
         )
         body.extend(f"Content-Type: {mime_type}\r\n\r\n".encode())
         body.extend(content)

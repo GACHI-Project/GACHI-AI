@@ -224,10 +224,13 @@ python -m compileall app을 실행한다. 실제 모델 평가는 API 비용이 
 
 ```powershell
 .\.venv\Scripts\python.exe scripts/replay_newsletter_results.py "결과폴더의 절대경로" --phase draft
+.\.venv\Scripts\python.exe scripts/replay_newsletter_results.py "원본 첨부 결과폴더의 절대경로" --phase draft --documents-attached
 ```
 
 - 각 `*-input.json`의 request/expected와 `*-run-*-draft-raw.json`을 읽는다.
 - `--phase review` 또는 `--phase final`로 과거 검토/최종 응답도 선택할 수 있다.
+- 원본 문서를 실제로 첨부한 결과에는 `--documents-attached`를 지정한다. 지정하지 않으면
+  텍스트 전용 날짜 검증이 적용되어 원본에서만 읽은 날짜가 잘못 강등될 수 있다.
 - API 호출 없이 기존 응답의 후처리 전후 검사, 실패 항목, 수동 검토 기준을 출력한다.
 - 응답 누락과 스키마 오류도 실패에 포함한다. 실패가 있거나 입력이 없으면 종료 코드 1이다.
 - 이 결과는 새 프롬프트의 모델 재평가가 아니다. 누락된 항목을 복원하지 않으므로 과거 실패가 남을 수 있다.

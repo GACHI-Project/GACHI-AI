@@ -1,3 +1,4 @@
+import http.client
 import io
 import urllib.error
 
@@ -52,6 +53,13 @@ def load(documents, opener, monkeypatch, max_total_bytes=1024):
         "https://169.254.169.254/latest/meta-data",
         "https://evil.example.com/page1.pdf",
         "https://amazonaws.com.evil.example.com/page1.pdf",
+        "https://load-balancer.elb.amazonaws.com/page1.pdf",
+        "https://api.execute-api.ap-northeast-2.amazonaws.com/page1.pdf",
+        "https://ec2.ap-northeast-2.amazonaws.com/page1.pdf",
+        "https://s3.evil-service.amazonaws.com/page1.pdf",
+        "https://gachi-bucket.s3.ap-northeast-2.amazonaws.com:8443/page1.pdf",
+        "https://gachi-bucket.s3.ap-northeast-2.amazonaws.com:bad/page1.pdf",
+        "https://user@gachi-bucket.s3.ap-northeast-2.amazonaws.com/page1.pdf",
     ],
 )
 def test_rejects_url_outside_https_s3_before_download(url, monkeypatch):
@@ -59,6 +67,21 @@ def test_rejects_url_outside_https_s3_before_download(url, monkeypatch):
     with pytest.raises(DocumentLoadError):
         load([document(url=url)], opener, monkeypatch)
     assert opener.calls == 0
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://gachi-bucket.s3.amazonaws.com/page1.pdf",
+        "https://gachi-bucket.s3.ap-northeast-2.amazonaws.com/page1.pdf",
+        "https://gachi-bucket.s3-ap-northeast-2.amazonaws.com/page1.pdf",
+        "https://s3.ap-northeast-2.amazonaws.com/gachi-bucket/page1.pdf",
+    ],
+)
+def test_accepts_standard_s3_hosts(url, monkeypatch):
+    opener = FakeOpener([b"pdf-bytes"])
+    assert load([document(url=url)], opener, monkeypatch)[0].content == b"pdf-bytes"
+    assert opener.calls == 1
 
 
 def test_rejects_unsupported_mime_type_before_download(monkeypatch):
@@ -84,6 +107,21 @@ def test_retries_once_on_temporary_network_error(monkeypatch):
     loaded = load([document()], opener, monkeypatch)
     assert loaded[0].content == b"pdf-bytes"
     assert opener.calls == 2
+
+
+def test_retries_http_transport_error_then_loads_document(monkeypatch):
+    opener = FakeOpener([http.client.IncompleteRead(b"partial"), b"pdf-bytes"])
+    loaded = load([document()], opener, monkeypatch)
+    assert loaded[0].content == b"pdf-bytes"
+    assert opener.calls == 2
+
+
+@pytest.mark.parametrize("error", [http.client.InvalidURL("bad"), ValueError("bad")])
+def test_malformed_download_url_falls_back_without_retry(error, monkeypatch):
+    opener = FakeOpener([error, b"never"])
+    with pytest.raises(DocumentLoadError):
+        load([document()], opener, monkeypatch)
+    assert opener.calls == 1
 
 
 def test_does_not_retry_client_error_such_as_expired_url(monkeypatch):

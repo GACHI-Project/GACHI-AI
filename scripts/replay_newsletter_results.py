@@ -68,7 +68,7 @@ def evaluate(response: NewsletterAnalysisResponse, expected: dict) -> dict[str, 
     return checks
 
 
-def replay(directory: Path, phase: str) -> list[dict]:
+def replay(directory: Path, phase: str, *, documents_attached: bool = False) -> list[dict]:
     rows = []
     for source in sorted(directory.glob("*-input.json")):
         case = json.loads(source.read_text(encoding="utf-8-sig"))
@@ -84,7 +84,9 @@ def replay(directory: Path, phase: str) -> list[dict]:
                 raw = NewsletterAnalysisResponse.model_validate_json(
                     output.read_text(encoding="utf-8-sig")
                 )
-                result = normalize_analysis_dates(request, raw)
+                result = normalize_analysis_dates(
+                    request, raw, documents_attached=documents_attached
+                )
                 before = evaluate(raw, case["expected"])
                 after = evaluate(result, case["expected"])
                 rows.append(
@@ -106,8 +108,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("directory", type=Path)
     parser.add_argument("--phase", choices=["draft", "review", "final"], default="draft")
+    parser.add_argument("--documents-attached", action="store_true")
     args = parser.parse_args()
-    rows = replay(args.directory, args.phase)
+    rows = replay(args.directory, args.phase, documents_attached=args.documents_attached)
     print(
         json.dumps(
             {

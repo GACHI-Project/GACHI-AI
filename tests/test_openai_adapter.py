@@ -192,6 +192,29 @@ def _request_with_document_url() -> NewsletterAnalysisRequest:
     )
 
 
+def test_multipart_upload_escapes_untrusted_file_name(monkeypatch):
+    adapter = StubOpenAINewsletterAdapter([])
+    captured = []
+
+    def capture(request):
+        captured.append(request)
+        return {"id": "file-test"}
+
+    monkeypatch.setattr(adapter, "_send_request", capture)
+    adapter._post_multipart(
+        "/files",
+        fields={"purpose": "user_data"},
+        file_name='evil"\r\nX-Injected: yes.pdf',
+        mime_type="application/pdf",
+        content=b"%PDF-1.4",
+    )
+
+    body = captured[0].data
+    assert b'filename="evil___X-Injected__yes.pdf"' in body
+    assert b"\r\nX-Injected:" not in body
+    assert b"%PDF-1.4" in body
+
+
 def _ok() -> dict:
     return {"output_text": json.dumps(_valid_response(), ensure_ascii=False)}
 
