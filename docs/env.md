@@ -24,7 +24,7 @@ BE가 `documents`(S3 Presigned URL 목록)를 보내면 AI 서버가 원본 PDF/
 - `OPENAI_DOCUMENT_DOWNLOAD_TIMEOUT_SECONDS`: S3 다운로드 timeout 초. 기본값은 `30`
 - `OPENAI_DOCUMENT_FILE_TTL_SECONDS`: OpenAI에 올린 파일의 자동 만료 시간(삭제 실패 대비). `3600~2592000`, 기본값은 `3600`
 
-`fileUrl`은 `https`이면서 `*.amazonaws.com` 주소만 허용하고, 리다이렉트는 따라가지 않는다. 
+`fileUrl`은 `https`의 S3 호스트(`s3.amazonaws.com`, 리전별 S3 호스트 및 그 버킷 서브도메인)만 허용하고, 리다이렉트는 따라가지 않는다.
 다운로드나 업로드가 1회 재시도 후에도 실패하면 분석을 실패시키지 않고 원본 없이 기존 텍스트 분석으로 계속한다. 
 이때 프롬프트와 날짜 검증도 기존 규칙(후보에서만 날짜 선택)을 그대로 적용한다. 
 응답 `meta.requestedDocumentCount`와 `meta.attachedDocumentCount`로 원본 첨부 여부를 확인할 수 있고, 

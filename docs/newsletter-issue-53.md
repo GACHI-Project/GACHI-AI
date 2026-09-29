@@ -26,7 +26,7 @@ BE (GACHI-BE)
 
 AI (GACHI-AI)
 - `schemas.py`: `NewsletterAnalysisRequest.documents` 추가. 기본값 빈 배열이라 이전 BE 요청도 그대로 동작한다.
-- `newsletter_document.py`(신규): Presigned URL 다운로드. https + `*.amazonaws.com`만 허용, 리다이렉트 차단, 크기 제한, 일시 오류 1회 재시도.
+- `newsletter_document.py`(신규): Presigned URL 다운로드. https의 S3 호스트(`s3.amazonaws.com`, 리전별 S3 호스트 및 그 버킷 서브도메인)만 허용, 리다이렉트 차단, 크기 제한, 일시 오류 1회 재시도.
 - `openai_adapter.py`: OpenAI Files API 업로드(purpose `user_data`, `expires_after`) → PDF는 `input_file`, 이미지는 `input_image`로 첨부(`detail` 기본 high) → 분석 후 `finally`에서 삭제.
   다운로드/업로드가 1회 재시도 후에도 실패하면 원본 없이 기존 텍스트 분석으로 계속한다.
   토큰 사용량을 로그로 남기고 응답 meta에 `requestedDocumentCount`, `attachedDocumentCount`를 기록한다.
