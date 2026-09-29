@@ -1,4 +1,5 @@
 import json
+from datetime import date
 
 import pytest
 from test_openai_adapter import StubOpenAINewsletterAdapter, _valid_response
@@ -127,10 +128,17 @@ def test_forged_candidate_is_not_confirmed(field, value):
 
 def test_missing_preserves_actions_without_calendar_date():
     raw = _valid_response()
-    raw["items"][0].update(type="reminder", dateStatus="missing")
+    raw["items"][0].update(
+        type="reminder",
+        dateStatus="missing",
+        endDatetime="2026-06-15T14:00:00",
+        periodStartDatetime="2026-06-15T09:00:00",
+    )
     item = analyze(raw).items[0]
     assert item.checklist_items
     assert item.datetime is None
+    assert item.end_datetime is None
+    assert item.period_start_datetime is None
     assert item.selected_date_candidate is None
     assert item.needs_user_confirmation is False
 
@@ -140,13 +148,20 @@ def test_missing_preserves_actions_without_calendar_date():
 def test_ambiguous_clears_candidate_but_preserves_context(question, has_candidate):
     raw = _valid_response()
     original = raw["items"][0]
-    original.update(dateStatus="ambiguous", confirmationQuestion=question)
+    original.update(
+        dateStatus="ambiguous",
+        confirmationQuestion=question,
+        endDatetime="2026-06-15T14:00:00",
+        periodStartDatetime="2026-06-15T09:00:00",
+    )
     if not has_candidate:
         original["selectedDateCandidate"] = None
     result = analyze(raw)
     item = result.items[0]
     assert item.selected_date_candidate is None
     assert item.datetime is None
+    assert item.end_datetime is None
+    assert item.period_start_datetime is None
     assert item.needs_user_confirmation is True
     assert item.confirmation_question == (question or "날짜를 확인해 주세요.")
     assert item.evidence_text == original["evidenceText"]
@@ -223,6 +238,158 @@ def test_forged_candidate_is_downgraded_even_when_documents_attached():
         request(), NewsletterAnalysisResponse.model_validate(raw), documents_attached=True
     )
     assert result.items[0].date_status == "ambiguous"
+
+
+def test_schedule_end_time_is_preserved_with_matching_date():
+    req = request().model_copy(update={"original_text": "2026. 6. 15 11:00~14:00 수영 실기교육"})
+    raw = _valid_response()
+    raw["items"][0].update(
+        datetime="2026-06-15T11:00:00",
+        endDatetime="2026-06-15T14:00:00",
+    )
+    item = normalize_analysis_dates(req, NewsletterAnalysisResponse.model_validate(raw)).items[0]
+    assert item.date_status == "confirmed"
+    assert item.end_datetime == "2026-06-15T14:00:00"
+    assert item.period_start_datetime is None
+
+
+def test_deadline_period_start_is_preserved_without_creating_second_item():
+    text = "2026. 6. 15 18:00 마감, 2026. 6. 10 10:00 접수 시작"
+    start = text.index("2026. 6. 10")
+    req = request().model_copy(
+        update={
+            "original_text": text,
+            "date_candidates": [
+                request().date_candidates[0],
+                request()
+                .date_candidates[0]
+                .model_copy(
+                    update={
+                        "candidate_id": "dc_2",
+                        "original_text": "2026. 6. 10",
+                        "normalized_date": date(2026, 6, 10),
+                        "start_offset": start,
+                        "end_offset": start + 11,
+                    }
+                ),
+            ],
+        }
+    )
+    raw = _valid_response()
+    raw["items"][0].update(
+        type="deadline",
+        datetime="2026-06-15T18:00:00",
+        periodStartDatetime="2026-06-10T10:00:00",
+    )
+    result = normalize_analysis_dates(req, NewsletterAnalysisResponse.model_validate(raw))
+    assert len(result.items) == 1
+    assert result.items[0].period_start_datetime == "2026-06-10T10:00:00"
+    assert result.items[0].end_datetime is None
+
+
+def test_auxiliary_candidate_with_wrong_source_date_is_cleared():
+    candidate = (
+        request()
+        .date_candidates[0]
+        .model_copy(update={"candidate_id": "dc_2", "normalized_date": date(2026, 6, 10)})
+    )
+    req = request().model_copy(
+        update={"date_candidates": [request().date_candidates[0], candidate]}
+    )
+    raw = _valid_response()
+    raw["items"][0].update(type="deadline", periodStartDatetime="2026-06-10")
+    item = normalize_analysis_dates(req, NewsletterAnalysisResponse.model_validate(raw)).items[0]
+    assert item.datetime == "2026-06-15"
+    assert item.period_start_datetime is None
+
+
+def test_auxiliary_time_without_source_evidence_is_cleared():
+    raw = _valid_response()
+    raw["items"][0].update(endDatetime="2026-06-15T14:00:00")
+    item = analyze(raw).items[0]
+    assert item.datetime == "2026-06-15"
+    assert item.end_datetime is None
+
+
+def test_auxiliary_time_for_another_date_is_not_evidence():
+    text = "2026. 6. 15 수영 실기교육, 2026. 6. 16 14:00 상담"
+    start = text.index("2026. 6. 16")
+    candidate = (
+        request()
+        .date_candidates[0]
+        .model_copy(
+            update={
+                "candidate_id": "dc_2",
+                "original_text": "2026. 6. 16",
+                "normalized_date": date(2026, 6, 16),
+                "start_offset": start,
+                "end_offset": start + 11,
+            }
+        )
+    )
+    req = request().model_copy(
+        update={"original_text": text, "date_candidates": [request().date_candidates[0], candidate]}
+    )
+    raw = _valid_response()
+    raw["items"][0].update(endDatetime="2026-06-15T14:00:00")
+    item = normalize_analysis_dates(req, NewsletterAnalysisResponse.model_validate(raw)).items[0]
+    assert item.end_datetime is None
+
+
+def test_offset_aware_auxiliary_times_use_absolute_order():
+    raw = _valid_response()
+    raw["items"][0].update(
+        datetime="2026-06-15T11:00:00+00:00",
+        endDatetime="2026-06-15T12:00:00+09:00",
+    )
+    result = normalize_analysis_dates(
+        request(), NewsletterAnalysisResponse.model_validate(raw), documents_attached=True
+    )
+    assert result.items[0].end_datetime is None
+
+
+@pytest.mark.parametrize(
+    "item_type,primary,field,value",
+    [
+        ("schedule", "2026-06-15T11:00:00", "endDatetime", "2026-06-15T10:00:00"),
+        ("schedule", "2026-06-15T11:00:00", "endDatetime", "2026-06-15T99:00:00"),
+        ("schedule", "2026-06-15T11:00:00", "periodStartDatetime", "2026-06-15T09:00:00"),
+        ("deadline", "2026-06-15T18:00:00", "periodStartDatetime", "2026-06-16"),
+    ],
+)
+def test_invalid_auxiliary_time_is_cleared_without_losing_primary(item_type, primary, field, value):
+    raw = _valid_response()
+    raw["items"][0].update(type=item_type, datetime=primary, **{field: value})
+    item = analyze(raw).items[0]
+    assert item.date_status == "confirmed"
+    assert item.datetime == primary
+    attribute = "end_datetime" if field == "endDatetime" else "period_start_datetime"
+    assert getattr(item, attribute) is None
+
+
+def test_date_only_end_does_not_invent_midnight():
+    raw = _valid_response()
+    raw["items"][0].update(datetime="2026-06-15T11:00:00", endDatetime="2026-06-15")
+    assert analyze(raw).items[0].end_datetime == "2026-06-15"
+
+
+def test_text_only_auxiliary_date_requires_a_candidate():
+    raw = _valid_response()
+    raw["items"][0].update(
+        type="deadline",
+        datetime="2026-06-15T18:00:00",
+        periodStartDatetime="2026-06-10T10:00:00",
+    )
+    item = analyze(raw).items[0]
+    assert item.date_status == "confirmed"
+    assert item.period_start_datetime is None
+
+
+def test_prompt_defines_single_deadline_and_auxiliary_time_fields():
+    prompt = build_prompt_messages(request())[0]["content"]
+    assert "endDatetime=2026-09-18T14:00:00" in prompt
+    assert "periodStartDatetime=2026-09-10T10:00:00" in prompt
+    assert "접수 시작 일정은 별도로 만들지 않는다" in prompt
 
 
 class _Attached:

@@ -91,6 +91,8 @@ class ExtractedItem(BaseModel):
     )
     date_status: DateStatus = Field(alias="dateStatus")
     datetime: str | None = None
+    end_datetime: str | None = Field(default=None, alias="endDatetime")
+    period_start_datetime: str | None = Field(default=None, alias="periodStartDatetime")
     timezone: str
     evidence_text: str = Field(alias="evidenceText")
     confidence: float = Field(ge=0.0, le=1.0)

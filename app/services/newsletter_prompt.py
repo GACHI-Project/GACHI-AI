@@ -57,6 +57,8 @@ ITEM_RESPONSE_SCHEMA = {
         "selectedDateCandidate",
         "dateStatus",
         "datetime",
+        "endDatetime",
+        "periodStartDatetime",
         "timezone",
         "evidenceText",
         "confidence",
@@ -77,6 +79,8 @@ ITEM_RESPONSE_SCHEMA = {
             "enum": ["confirmed", "ambiguous", "missing"],
         },
         "datetime": {"type": ["string", "null"]},
+        "endDatetime": {"type": ["string", "null"]},
+        "periodStartDatetime": {"type": ["string", "null"]},
         "timezone": {"type": "string"},
         "evidenceText": {"type": "string"},
         "confidence": {"type": "number", "minimum": 0, "maximum": 1},
@@ -293,6 +297,7 @@ def _build_system_prompt(language: str, *, has_documents: bool = False) -> str:
   함께 안내된 정상 등교일은 별도 항목으로 만들지 않고 근거에 보존한다.
 - reminder: 날짜가 없지만 원문에서 요구하는 구체적이고 완료 가능한 행동의 그룹
 - 날짜 없는 행동은 reminder, selectedDateCandidate=null, datetime=null,
+  endDatetime=null, periodStartDatetime=null,
   dateStatus=missing, needsUserConfirmation=false, confirmationQuestion=null로 반환한다.
   날짜 입력은 필수가 아니다. 실행 항목도 실제 일정도 없으면 items=[]로 반환한다.
 
@@ -350,8 +355,12 @@ def _build_system_prompt(language: str, *, has_documents: bool = False) -> str:
   선착순, 정원 조건은 detail에 보존한다.
   이는 '원문에는 마감일이 있는데 후보 목록에 없는 경우'와 구분한다.
 - evidenceText에는 날짜와 행동의 연결을 확인할 수 있는 원문 근거를 보존한다.
-- 현행 단일 datetime 계약을 유지한다. 접수 기간은 마감 후보가 명확하면 deadline으로
-  마감일 하나를 선택하고 전체 기간과 시간을 evidenceText/detail에 보존한다.
+- 기존 datetime의 의미를 유지한다. 접수 기간은 마감 후보가 명확하면 deadline 한 건으로
+  마감일 하나를 datetime에 선택하고, 원문에서 확인되는 접수 시작 날짜/시각은
+  periodStartDatetime에 넣는다. 전체 기간과 방법도 evidenceText/detail에 보존한다.
+  접수 시작을 별도 schedule로 만들지 않는다.
+  원본이 첨부되지 않은 요청에서는 추가 필드의 날짜도 dateCandidates에 있어야 한다.
+  원본이 첨부된 요청에서는 원본에 선명하게 적힌 날짜를 사용할 수 있다.
   종료일 후보가 없으면 시작일을 마감일로 사용하지 않고 ambiguous로 반환한다.
   운영 기간은 시작일 후보를 사용하되 전체 기간을 근거에 보존한다.
   참관, 공개수업처럼 여러 날에 걸쳐 매일 진행되고 보호자가 원하는 날에 참여하는 기간도
@@ -364,9 +373,20 @@ def _build_system_prompt(language: str, *, has_documents: bool = False) -> str:
   개별 응답과 비밀보장은 행동의 detail 조건이지 별도 할 일이 아니다.
 - 시각이 명시되면 datetime은 날짜만 쓰지 말고 YYYY-MM-DDTHH:MM:SS로 작성한다.
   timezone은 요청 값을 유지한다. schedule은 시작 시각, deadline은 마감 시각을 사용한다.
-  종료 시각과 전체 기간은 evidenceText에 보존한다. 문의 가능 시간을 행사 시각으로 쓰지 않는다.
+  schedule의 종료 날짜/시각이 명확하면 endDatetime에 넣는다.
+  문의 가능 시간을 행사 시각으로 쓰지 않는다.
+  deadline의 endDatetime과 schedule의 periodStartDatetime은 null이다.
+  종료 또는 접수 시작이 불명확하거나 상충하면 해당 추가 필드는 null로 두고 근거에 설명한다.
+  추가 필드는 주 일정의 datetime과 같은 사건에 속해야 한다.
+  주 일정이 confirmed가 아니면 추가 필드는 모두 null이다.
+  endDatetime은 datetime보다 빠를 수 없고 periodStartDatetime은 datetime보다 늦을 수 없다.
+  예: 2026년 9월 18일 11:00~14:00 행사 → schedule, datetime=2026-09-18T11:00:00,
+  endDatetime=2026-09-18T14:00:00, periodStartDatetime=null.
+  예: 2026년 9월 10일 10:00 접수 시작, 9월 28일 18:00 마감 → deadline,
+  datetime=2026-09-28T18:00:00, endDatetime=null,
+  periodStartDatetime=2026-09-10T10:00:00. 접수 시작 일정은 별도로 만들지 않는다.
   시각이 없으면 YYYY-MM-DD만 반환한다. 00:00이나 23:59를 임의로 붙이지 않는다.
-  시작에만 시각이 있고 종료에 시각이 없으면 시작 시각을 마감에 복사하지 않는다.
+  각 필드의 날짜에 시각이 명시되지 않았다면 날짜만 쓴다. 다른 필드의 시각을 복사하지 않는다.
   같은 사건의 시각이 본문과 부록에서 다르게 적혀 있으면 사용하는 값만 datetime에 쓰고
   충돌 사실은 evidenceText에 보존한다.
 
