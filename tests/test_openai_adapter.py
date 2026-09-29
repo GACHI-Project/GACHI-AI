@@ -34,6 +34,8 @@ def _valid_response() -> dict:
                 },
                 "dateStatus": "confirmed",
                 "datetime": "2026-06-15",
+                "endDatetime": None,
+                "periodStartDatetime": None,
                 "timezone": "Asia/Seoul",
                 "evidenceText": "2026. 6. 15 수영 실기교육",
                 "confidence": 0.9,

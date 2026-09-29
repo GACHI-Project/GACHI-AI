@@ -21,11 +21,15 @@ def normalize_analysis_dates(
         if item.date_status == DateStatus.MISSING:
             item.selected_date_candidate = None
             item.datetime = None
+            item.end_datetime = None
+            item.period_start_datetime = None
             item.needs_user_confirmation = False
             item.confirmation_question = None
         elif item.date_status == DateStatus.AMBIGUOUS:
             item.selected_date_candidate = None
             item.datetime = None
+            item.end_datetime = None
+            item.period_start_datetime = None
             item.needs_user_confirmation = True
             item.confirmation_question = item.confirmation_question or "날짜를 확인해 주세요."
         else:
@@ -58,12 +62,34 @@ def normalize_analysis_dates(
                 if warning:
                     item.date_status = DateStatus.AMBIGUOUS
                     item.datetime = None
+                    item.end_datetime = None
+                    item.period_start_datetime = None
                     item.selected_date_candidate = None
                     item.needs_user_confirmation = True
                     item.confirmation_question = (
                         "원문의 날짜와 날짜 후보가 일치하는지 확인해 주세요."
                     )
                     warnings.append({"itemIndex": index, "code": warning})
+            if item.date_status == DateStatus.CONFIRMED:
+                for field, allowed_type, code in (
+                    ("end_datetime", "schedule", "INVALID_END_DATETIME"),
+                    ("period_start_datetime", "deadline", "INVALID_PERIOD_START_DATETIME"),
+                ):
+                    value = getattr(item, field)
+                    if value is None:
+                        continue
+                    auxiliary = _parse_datetime(value)
+                    supported_date = documents_attached or (
+                        auxiliary is not None
+                        and any(
+                            candidate.normalized_date == auxiliary.date()
+                            for candidate in request.date_candidates
+                        )
+                    )
+                    ordered = _is_ordered(item.datetime, value, field)
+                    if item.type != allowed_type or not supported_date or not ordered:
+                        setattr(item, field, None)
+                        warnings.append({"itemIndex": index, "code": code})
         items.append(item)
 
     meta = dict(response.meta)
@@ -76,13 +102,36 @@ def normalize_analysis_dates(
 
 
 def _date_part(value: str | None) -> date | None:
+    parsed = _parse_datetime(value)
+    return parsed.date() if parsed is not None else None
+
+
+def _parse_datetime(value: str | None) -> datetime | None:
     if not value:
         return None
     try:
         if len(value) == 10:
-            return date.fromisoformat(value)
+            return datetime.combine(date.fromisoformat(value), datetime.min.time())
         if len(value) > 10 and value[10] == "T":
-            return datetime.fromisoformat(value).date()
+            parsed = datetime.fromisoformat(value)
+            return parsed.replace(tzinfo=None)
     except ValueError:
         pass
     return None
+
+
+def _is_ordered(primary_value: str | None, auxiliary_value: str, field: str) -> bool:
+    primary = _parse_datetime(primary_value)
+    auxiliary = _parse_datetime(auxiliary_value)
+    if primary is None or auxiliary is None:
+        return False
+    if primary.date() != auxiliary.date():
+        return (
+            auxiliary.date() > primary.date()
+            if field == "end_datetime"
+            else auxiliary.date() < primary.date()
+        )
+    # A date-only value does not state a time of day, so do not interpret it as midnight.
+    if len(primary_value or "") == 10 or len(auxiliary_value) == 10:
+        return True
+    return auxiliary >= primary if field == "end_datetime" else auxiliary <= primary
