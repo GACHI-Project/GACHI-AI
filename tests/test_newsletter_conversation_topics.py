@@ -37,6 +37,11 @@ def test_conversation_topic_prompt_keeps_grounding_and_tense_rules():
     assert "conversationTopics=[]로\n  고정" in prompt
     assert "행정 절차를\n  자녀 질문으로 바꾸는 것도 금지" in prompt
     assert "급식, 하교 시간, 비용, 제출물" in prompt
+    assert "운영 정보에 '기대돼?'" in prompt
+    assert '"개학식 날 급식이 나오는 거 기대돼?"' in prompt
+    assert '"단축수업 날 일찍 끝나서 좋아?"' in prompt
+    assert "운영 정보를 소재로 한 추가 질문은 모두 버린다" in prompt
+    assert "기대·선호를 묻는\n  문장이어도 삭제" in prompt
     assert "학교안전공제회 청구 절차" in prompt
     assert 'conversationTopics=[{"topic":"운동회에서 어떤 경기가 가장 기대돼?"}]' in prompt
     assert '"운동회 날 점심에는 무슨 음식을 먹고 싶니?"' in prompt
