@@ -20,12 +20,7 @@
             "evidenceText": "종업 및 방학일: 2025년 1월 9일(목) (전학년 4교시, 12:10분~ 하교 ※ 급식 미실시)",
             "needsUserConfirmation": false,
             "confirmationQuestion": null,
-            "checklistItems": [
-              {
-                "content": "종업식 당일 급식 미실시 확인",
-                "detail": "전 학년 4교시 후 12:10부터 하교"
-              }
-            ],
+            "checklistItems": [],
             "endDatetime": null,
             "periodStartDatetime": null
           },
@@ -89,6 +84,19 @@
             "checklistItems": [],
             "endDatetime": "2025-01-24",
             "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "돌봄교실 운영",
+            "dateStatus": "confirmed",
+            "datetime": "2025-01-10T08:00:00+09:00",
+            "endDatetime": "2025-02-28T18:30:00+09:00",
+            "periodStartDatetime": null,
+            "timezone": "Asia/Seoul",
+            "evidenceText": "돌봄교실 참여학생 1~4학년 / 2025. 1. 10.(금) ~2025. 2. 28.(금) (08:00~18:30) * 토, 일, 공휴일 운영 안함",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": []
           },
           {
             "type": "schedule",
@@ -178,18 +186,18 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "종업식 및 방학식: 근거 없는 기본 시각 제거",
-          "겨울방학 기간: 근거 없는 기본 시각 제거",
-          "방과후학교 설날 연휴 휴강: 근거 없는 기본 시각 제거",
-          "개학일: 근거 없는 기본 시각 제거",
-          "Jump Up in English Camp: 근거 없는 기본 시각 제거",
-          "늘봄학교 운영: 근거 없는 기본 시각 제거",
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 1페이지 대조: 돌봄교실 운영 기간과 08:00~18:30 시각 누락 보완.",
+          "방과후학교 행의 2024년은 같은 문서의 2025년 및 요일과 충돌하므로 ambiguous 유지.",
+          "프로그램 표는 현재 방학 운영 안내이며 합격 발표 후 연간 일정표가 아님. 해당 대상 조건을 근거에 보존.",
+          "12:10은 하교 시각이며 종업식 시작 시각으로 사용하지 않음. 급식 미실시를 별도 확인 과제로 만들지 않음."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "e0cafcb8a7160b05c3c8ac3ec806f405345d15abab8ba5e9bce9db9af30c73bc"
       }
     },
     {
@@ -251,15 +259,17 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "건강상태조사 및 응급환자 관리 동의서 제출: 근거 없는 기본 시각 제거",
-          "발병 여부가 정해지지 않은 일반 감염병 대응 안내는 현재 체크리스트에서 제외",
-          "머리말 2023년과 하단 발행일 2022년의 충돌을 원본으로 재검수 필요",
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "HWP에서 내보낸 PDF 2페이지 대조: 머리말 2023, 개인정보 보유기간 2023~2024, 서명란 2023으로 제출 사건은 2023년임.",
+          "하단 2022.3.2.는 발행일 충돌로 documentDate=null 유지. 제출기한에 시각이 없어 날짜만 사용.",
+          "향후 감염병에 걸렸을 때의 일반 대응은 현재 제출 과제에서 제외."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "d21521f1ca5f68dcb5215c4e9f2cafb1a88ef5093b72685da7a0213a852b230b"
       }
     },
     {
@@ -284,19 +294,18 @@
             "checklistItems": [
               {
                 "content": "학년 티셔츠와 운동복 착용",
-                "detail": null
+                "contentPatterns": [
+                  "티셔츠",
+                  "운동복"
+                ]
               },
               {
                 "content": "운동화, 물, 개인 돗자리 준비",
-                "detail": null
-              },
-              {
-                "content": "학부모는 8시 50분부터 학교 입장",
-                "detail": "가능하면 대중교통이나 도보 이용"
-              },
-              {
-                "content": "사진과 영상을 온라인에 게시·유포하지 않기",
-                "detail": "개인정보 및 초상권 보호"
+                "contentPatterns": [
+                  "운동화",
+                  "물",
+                  "돗자리"
+                ]
               }
             ],
             "endDatetime": "2025-09-23T12:10:00+09:00",
@@ -314,15 +323,18 @@
             "checklistItems": [
               {
                 "content": "학년 티셔츠와 운동복 착용",
-                "detail": null
+                "contentPatterns": [
+                  "티셔츠",
+                  "운동복"
+                ]
               },
               {
                 "content": "운동화, 물, 개인 돗자리 준비",
-                "detail": null
-              },
-              {
-                "content": "우천 시 체육관으로 장소 변경 확인",
-                "detail": "등하교 시간은 같고 4교시 후 급식, 5교시는 정상 수업"
+                "contentPatterns": [
+                  "운동화",
+                  "물",
+                  "돗자리"
+                ]
               }
             ],
             "endDatetime": "2025-09-24T12:10:00+09:00",
@@ -347,12 +359,16 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 1페이지 대조: 1~3학년 9/23, 4~6학년 9/24, 두 행사 모두 09:00~12:10.",
+          "준비물은 각 학년 행사에 동일하게 연결. 입장 가능 시각, 우천 장소, 사진 유포 금지는 안내 조건이며 별도 확인 과제에서 제외."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "3e0681d68aeed28db4c67ef3c2334daf370af2d28fab399c0ab8efaab9445078"
       }
     },
     {
@@ -377,36 +393,13 @@
             "checklistItems": [
               {
                 "content": "체육복과 운동화 준비",
-                "detail": null
-              },
-              {
-                "content": "가능하면 평가 기간에 결석하지 않기",
-                "detail": null
-              },
-              {
-                "content": "건강 상태가 좋지 않으면 담임교사 또는 보건교사에게 알리기",
-                "detail": "측정 시 지나치게 무리하지 않기"
+                "contentPatterns": [
+                  "체육복",
+                  "운동화"
+                ]
               }
             ],
             "endDatetime": "2026-04-24",
-            "periodStartDatetime": null
-          },
-          {
-            "type": "reminder",
-            "title": "저체력 판정 학생 여름방학 건강체력교실 참석",
-            "dateStatus": "missing",
-            "datetime": null,
-            "timezone": "Asia/Seoul",
-            "evidenceText": "평가 결과 저체력(4, 5등급) 판정 학생은 여름방학 건강체력교실에 꼭 참석(★)해야 하며 추가로 재측정하여야 합니다.",
-            "needsUserConfirmation": false,
-            "confirmationQuestion": null,
-            "checklistItems": [
-              {
-                "content": "대상으로 안내받으면 건강체력교실 참석",
-                "detail": "추가 재측정 포함"
-              }
-            ],
-            "endDatetime": null,
             "periodStartDatetime": null
           }
         ]
@@ -423,13 +416,16 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "학생건강체력평가(PAPS): 근거 없는 기본 시각 제거",
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 1페이지 대조: 4/13~4/24 각 학급 체육 시간, 명시된 시각 없음.",
+          "체육복과 운동화 준비만 현재 구체적 과제. 결석 자제와 평소 운동은 일반 권고, 저체력 교실은 추후 판정 조건으로 제외."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "5e91aabfc4c797b5d0772132f1f3e059626f5f65f258be67fbd4c54a80182b9c"
       }
     },
     {
@@ -441,42 +437,23 @@
       "expected": {
         "title": "2026학년도 초등 3학년 방과후 교육비 지원 안내",
         "summary": "3학년 방과후학교 프로그램 수강료를 연간 50만 원까지 지원하는 제도와 유의사항을 안내합니다.",
-        "items": [
-          {
-            "type": "reminder",
-            "title": "초등 3학년 방과후 교육비 지원 확인",
-            "dateStatus": "missing",
-            "datetime": null,
-            "timezone": "Asia/Seoul",
-            "evidenceText": "2026학년도부터 초등 3학년 대상으로 방과후교실 프로그램을 수강할 경우 수강 학생당 연간 50만원이 지원됩니다. 2026학년도 1기 방과후교실 프로그램 신청 시 참조 부탁드립니다.",
-            "needsUserConfirmation": false,
-            "confirmationQuestion": null,
-            "checklistItems": [
-              {
-                "content": "1기 방과후교실 신청 시 지원 대상 확인",
-                "detail": "2026학년도 3학년 전체, 연간 50만 원 이내"
-              },
-              {
-                "content": "출석률과 중복지원 제한 확인",
-                "detail": "특별한 사유 없이 출석률 50% 미만이면 다음 분기 지원 제외; 자유수강권·다자녀 지원금과 중복 시 순차 소진"
-              }
-            ],
-            "endDatetime": null,
-            "periodStartDatetime": null
-          }
-        ]
+        "items": []
       },
       "sampleId": "pilot_005",
       "schemaVersion": "gachi-newsletter-evaluation-v3",
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 2페이지 대조: 연간 50만원 지원 혜택과 출석률/중복지원 조건 안내.",
+          "지원 신청서 제출이나 신청 기간을 요구하지 않으며 1기 프로그램 신청 시 참고하라는 안내를 독립 과제로 만들지 않음. items=[] 확정."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "5d6719c7393b4723d38d12cad8a8a6397d3fc77f22f144767dfda0d7f60f74ee"
       }
     },
     {
@@ -511,16 +488,7 @@
             "evidenceText": "2026. 5. 4. (월) / 재량휴업일 / 방과후 교실, 맞춤형 교실, 컴퓨터 교실은 운영하지 않습니다. 돌봄 교실은 사전 수요조사 결과를 바탕으로 희망 학생에 한해 운영됩니다.",
             "needsUserConfirmation": false,
             "confirmationQuestion": null,
-            "checklistItems": [
-              {
-                "content": "방과후·맞춤형·컴퓨터 교실 미운영 확인",
-                "detail": null
-              },
-              {
-                "content": "돌봄교실 신청 여부 확인",
-                "detail": "사전 수요조사에서 희망한 학생만 운영"
-              }
-            ],
+            "checklistItems": [],
             "endDatetime": null,
             "periodStartDatetime": null
           }
@@ -543,14 +511,16 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "공휴일 휴업: 근거 없는 기본 시각 제거",
-          "재량휴업일: 근거 없는 기본 시각 제거",
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 1페이지 대조: 5/1 공휴일과 5/4 재량휴업일은 실제 휴업 일정.",
+          "돌봄은 이미 시행한 사전 수요조사 희망자 운영이며 새 신청 요구가 아님. 미운영/희망 여부 확인 과제 제거."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "f148ddc5f01e2580d1d3e1eb362d630c74b6825ce59dbc16703dca84b8cf7112"
       }
     },
     {
@@ -599,13 +569,16 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "교육용 스마트기기 보급 방식 설문 참여: 근거 없는 기본 시각 제거",
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 1페이지 대조: 7/10~7/13 설문은 마감 한 건, 시작은 periodStartDatetime.",
+          "학생용 3~6학년 각 1반과 학부모용 설문 구분, 학부모 설문 첫째 기준 1회 조건 보존."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "7dec445816d867681f06d5634c433c17c1f9bf56940dc0345cc431c52fbd6d25"
       }
     },
     {
@@ -620,37 +593,21 @@
         "items": [
           {
             "type": "reminder",
-            "title": "봄철 화재 예방과 대피 수칙 확인",
+            "title": "자녀와 화재 안전 교육 영상 보기",
             "dateStatus": "missing",
             "datetime": null,
             "timezone": "Asia/Seoul",
-            "evidenceText": "자녀의 안전을 위해 아래의 봄철 화재 예방 행동 수칙을 숙지하시어, 가정에서도 학부모님들의 적극적인 지도를 부탁드립니다.",
+            "evidenceText": "자녀와 함께 하는 화재 안전 교육 (제목 클릭해 영상 접속하기. 자녀와 함께 꼭 보세요)",
             "needsUserConfirmation": false,
             "confirmationQuestion": null,
             "checklistItems": [
               {
-                "content": "사용하지 않는 전열기구 플러그 뽑기",
-                "detail": "문어발식 콘센트 사용 금지"
-              },
-              {
-                "content": "외출·취침 전 가스 밸브 확인",
-                "detail": null
-              },
-              {
-                "content": "가정에 소화기 비치하고 사용법 익히기",
-                "detail": null
-              },
-              {
-                "content": "산행·야외 활동 시 인화물질 가져가지 않기",
-                "detail": "불은 지정된 장소에서만 사용"
-              },
-              {
-                "content": "화재 시 큰 소리로 알리고 계단으로 대피",
-                "detail": "젖은 수건으로 코와 입을 가리고 낮은 자세로 이동한 뒤 119 신고"
-              },
-              {
                 "content": "자녀와 화재 안전 교육 영상 보기",
-                "detail": "안내문 링크 참고"
+                "contentPatterns": [
+                  "자녀",
+                  "(영상|동영상)",
+                  "(보기|보세요|시청)"
+                ]
               }
             ],
             "endDatetime": null,
@@ -663,12 +620,16 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 1페이지 대조: 일반 안전 수칙을 개별 현재 할 일로 추출하지 않음.",
+          "자녀와 함께 꼭 보세요라는 명시적 영상 시청 요청만 날짜 없는 reminder로 보존. 3/13 발행일 제외."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "fee55c12b0b169dd14744428eb5bdb666ae5d2e1061cafba9405081f20a38c9c"
       }
     },
     {
@@ -680,26 +641,7 @@
       "expected": {
         "title": "제16기 학교운영위원회 위원 선출 안내",
         "summary": "학교운영위원회의 역할과 구성, 학부모위원 선출 시기 및 자격을 안내합니다.",
-        "items": [
-          {
-            "type": "schedule",
-            "title": "학부모위원 선출",
-            "dateStatus": "confirmed",
-            "datetime": "2026-03-21",
-            "timezone": "Asia/Seoul",
-            "evidenceText": "선출 시기: 학부모 및 교원위원은 2026. 3. 21일까지 / 학부모위원은 학부모 중에서 민주적 대의 절차에 따라 학부모전체회의에서 직접 선출",
-            "needsUserConfirmation": false,
-            "confirmationQuestion": null,
-            "checklistItems": [
-              {
-                "content": "학부모위원 참여 또는 후보 등록 관련 후속 안내 확인",
-                "detail": "세부 일정은 추후 가정통신문 및 학교 홈페이지로 안내"
-              }
-            ],
-            "endDatetime": null,
-            "periodStartDatetime": null
-          }
-        ]
+        "items": []
       },
       "sampleId": "pilot_009",
       "legacyDateCandidates": [
@@ -723,15 +665,16 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "학부모위원 선출: 근거 없는 기본 시각 제거",
-          "제16기 학교운영위원 임기: 근거 없는 기본 시각 제거",
-          "위원 임기는 실행 행동이 없는 설명 정보이므로 items에서 제외",
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 2페이지 대조: 3/21까지 선출은 선출 완료 시기이며 해당일의 실제 투표 시각/일정이 아님.",
+          "세부 선출 일정은 추후 안내라고 명시됨. 후보 등록이나 투표를 지금 요구하지 않아 items=[] 확정. 위원 임기와 발행일 제외."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "2e675c9e0fec0200b2d9761c65580a31b64d09ec5ee703995d4d65357b832406"
       }
     },
     {
@@ -753,12 +696,7 @@
             "evidenceText": "7.20.(월) 급식 실시 / 1, 2학년 5교시 후 13:40 하교 / 3, 4학년 5교시 후 13:40 하교 / 5학년 4교시 후 13:00 하교 / 6학년 5교시 후 13:40 하교",
             "needsUserConfirmation": false,
             "confirmationQuestion": null,
-            "checklistItems": [
-              {
-                "content": "자녀 학년에 맞는 하교 시간 확인",
-                "detail": "1·2·3·4·6학년 13:40, 5학년 13:00"
-              }
-            ],
+            "checklistItems": [],
             "endDatetime": null,
             "periodStartDatetime": null
           },
@@ -771,16 +709,7 @@
             "evidenceText": "7.21.(화) 방학식, 급식 실시 / 1, 2학년 4교시 후 12:50 하교 / 3, 4학년 5교시 후 13:40 하교 / 5학년 4교시 후 13:00 하교 / 6학년 5교시 후 13:40 하교",
             "needsUserConfirmation": false,
             "confirmationQuestion": null,
-            "checklistItems": [
-              {
-                "content": "자녀 학년에 맞는 방학식 하교 시간 확인",
-                "detail": "1·2학년 12:50, 5학년 13:00, 3·4·6학년 13:40"
-              },
-              {
-                "content": "맞춤형교실·방과후교실 시간표 유지 확인",
-                "detail": "프로그램 운영 시간표 변동 없음"
-              }
-            ],
+            "checklistItems": [],
             "endDatetime": null,
             "periodStartDatetime": null
           },
@@ -793,12 +722,7 @@
             "evidenceText": "개학식 8.20.(목) 정상시수운영, 급식 실시 / 1, 2학년 5교시 수업 13:40 하교 / 3, 4, 5, 6학년 6교시 수업 14:30 하교",
             "needsUserConfirmation": false,
             "confirmationQuestion": null,
-            "checklistItems": [
-              {
-                "content": "개학일 정상 등교와 급식 여부 확인",
-                "detail": "1·2학년 13:40, 3~6학년 14:30 하교"
-              }
-            ],
+            "checklistItems": [],
             "endDatetime": null,
             "periodStartDatetime": null
           }
@@ -826,15 +750,17 @@
       "input": null,
       "offsetEncoding": "codepoint",
       "metadata": {
-        "annotationStatus": "draft",
-        "labelVersion": "3-draft",
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
         "inputStatus": "pending_actual_ocr",
         "reviewNotes": [
-          "1학기 말 단축수업: 근거 없는 기본 시각 제거",
-          "방학식: 근거 없는 기본 시각 제거",
-          "개학식: 근거 없는 기본 시각 제거",
-          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
-        ]
+          "원본 JPG 전체 대조: 7/20 단축수업, 7/21 방학식, 8/20 개학식은 실제 일정.",
+          "표의 시각은 학년별 하교 시각이며 행사 시작/종료 시각으로 보편 적용하지 않음. 날짜만 보존.",
+          "학교 운영 정보와 하교 시각 확인을 임의의 독립 과제로 만들지 않음. 학년별 시각은 원문/요약 검수 대상."
+        ],
+        "reviewMethod": "assistant_visual_source_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "4d2f95c0c4cdd35568d3c70564abcf7f9510c7c1be20426f1b6bb93d52d2d5e2"
       }
     }
   ]

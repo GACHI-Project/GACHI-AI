@@ -60,4 +60,5 @@ OCR 입력이 없는 과거 라벨은 정답 근거를 합성해 평가하지 �
 - `docs/newsletter-extraction.md`: 가정통신문 분석 구현 경계와 유지 결정
 - `docs/newsletter-labeling-guide.md`: 정답 데이터 라벨링 기준
 - `docs/newsletter-evaluation.md`: 라벨링 데이터 기반 분석 평가 실행 방법
-- `docs/newsletter-pilot-migration.md`: pilot 라벨 이전 내역과 남은 검수 항목
+- `docs/newsletter-pilot-migration.md`: pilot 라벨 이전 내역과 원본 대조 검수 기록
+- `docs/newsletter-pilot-validation.md`: pilot 실제 OCR 및 모델 비교 검증 기록

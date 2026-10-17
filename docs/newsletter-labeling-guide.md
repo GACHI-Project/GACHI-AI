@@ -60,5 +60,8 @@ selectedDateCandidateId는 BE 입력 연결 후 대응 후보가 유일할 때�
 
 `metadata.annotationStatus`는 draft 또는 reviewed다. 이전만 마친 라벨은 draft를 유지한다.
 모델 confidence는 정답의 확신도가 아니므로 완전 일치로 채점하지 않는다.
-labelVersion과 변경 이유를 기록한다. 기존 pilot 이전 및 검수 대기 항목은
+labelVersion, 변경 이유와 검수 방법을 기록한다. 원본 대조를 AI가 보조한 검수는
+`reviewMethod=assistant_visual_source_review`처럼 명시한다. reviewed가 사람 여러 명의 독립 검수나
+합의를 보장하지는 않는다. 논문에서 사람 정답셋으로 사용할 경우 담당자의 최종 승인을 받는다.
+기존 pilot 이전 및 검수 내역은
 `newsletter-pilot-migration.md`에 정리한다.

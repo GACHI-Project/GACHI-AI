@@ -208,12 +208,12 @@ def test_invalid_order_and_patterns_rejected_before_calls(changes):
         parse_sample(record(gold_item(**changes)))
 
 
-def test_pilot_migration_keeps_drafts_and_has_current_temporal_contract():
+def test_reviewed_pilot_keeps_actual_ocr_separate_and_has_current_temporal_contract():
     path = Path(__file__).resolve().parents[1] / "data/newsletter-pilot/pilot-labels-v3.json"
     samples = json.loads(path.read_text(encoding="utf-8"))["samples"]
     assert len(samples) == 10
     assert all(sample["input"] is None for sample in samples)
-    assert all(sample["metadata"]["annotationStatus"] == "draft" for sample in samples)
+    assert all(sample["metadata"]["annotationStatus"] == "reviewed" for sample in samples)
     sports = samples[2]["expected"]["items"]
     assert sports[0]["endDatetime"] == "2025-09-23T12:10:00+09:00"
     assert samples[6]["expected"]["items"][0]["periodStartDatetime"] == "2026-07-10"
@@ -439,3 +439,45 @@ def test_validation_reports_safe_sample_id_and_code(tmp_path, capsys):
 def test_invalid_expected_contract_rejected(changes):
     with pytest.raises(ValueError):
         parse_sample(record(gold_item(**changes)))
+
+
+def test_model_delay_only_between_samples_and_never_for_baseline(monkeypatch):
+    calls = []
+    monkeypatch.setattr(evaluator.time, "sleep", calls.append)
+    monkeypatch.setattr(evaluator, "analyze_newsletter", lambda *_a, **_kw: response())
+    samples = [parse_sample(record()), parse_sample(record(sampleId="pilot_002"))]
+    report = evaluator.evaluate_samples(samples, mode="openai", delay_seconds=40)
+    assert calls == [40]
+    assert report["delay_seconds"] == 40
+    calls.clear()
+    evaluator.evaluate_samples(samples, mode="baseline", delay_seconds=40)
+    assert calls == []
+
+
+@pytest.mark.parametrize("delay", [-1, float("nan"), float("inf")])
+def test_invalid_delay_rejected_before_model_call(delay, monkeypatch):
+    monkeypatch.setattr(evaluator, "analyze_newsletter", lambda *_a, **_kw: pytest.fail("no calls"))
+    with pytest.raises(ValueError, match="INVALID_DELAY_SECONDS"):
+        evaluator.evaluate_samples([parse_sample(record())], mode="openai", delay_seconds=delay)
+
+
+def test_pilot_source_review_has_no_synthesized_input_and_no_invented_tasks():
+    from scripts.newsletter_eval_data import parse_label_item
+
+    path = Path(__file__).resolve().parents[1] / "data/newsletter-pilot/pilot-labels-v3.json"
+    samples = json.loads(path.read_text(encoding="utf-8"))["samples"]
+    assert len(samples) == 10
+    by_id = {sample["sampleId"]: sample for sample in samples}
+    for sample in samples:
+        assert sample["input"] is None
+        assert sample["metadata"]["annotationStatus"] == "reviewed"
+        assert sample["metadata"]["reviewMethod"] == "assistant_visual_source_review"
+        assert sample["metadata"]["reviewNotes"]
+        for item in sample["expected"]["items"]:
+            parse_label_item(item)
+    assert by_id["pilot_005"]["expected"]["items"] == []
+    assert by_id["pilot_009"]["expected"]["items"] == []
+    assert len(by_id["pilot_004"]["expected"]["items"]) == 1
+    fire = by_id["pilot_008"]["expected"]["items"][0]
+    assert fire["type"] == "reminder" and fire["datetime"] is None
+    assert len(fire["checklistItems"]) == 1

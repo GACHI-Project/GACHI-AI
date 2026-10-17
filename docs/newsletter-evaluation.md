@@ -18,8 +18,9 @@ python -X utf8 scripts/prepare_newsletter_dataset.py 기존라벨.json --output 
 ```
 
 배열, samples 배열 또는 개별 JSON을 읽는다. 이미 이전한 pilot 10건은
-`data/newsletter-pilot/pilot-labels-v3.json`에 있다. 원본 대조가 완료되지 않았으므로 초안이며
-OCR 입력은 null로 유지한다. 기존 `data/newsletter-labels`의 입력 없는 라벨은 더 이상
+`data/newsletter-pilot/pilot-labels-v3.json`에 있다. 원본 대조 내역과 검수 방법은
+`newsletter-pilot-migration.md`에 기록했다. OCR 입력은 별도 연결 전까지 null로 유지한다.
+기존 `data/newsletter-labels`의 입력 없는 라벨은 더 이상
 근거문을 합성해서 평가하지 않는다. 이 파일들도 같은 도구로 이전하고 실제 OCR을 연결해야 한다.
 준비 도구는 기존 출력 파일이나 원본 라벨을 덮어쓰지 않는다.
 
@@ -71,9 +72,9 @@ API 키는 별도로 안전하게 설정한다. 기존에 사용하던 모델을
 $env:OPENAI_MODEL = "gpt-4.1"
 $env:OPENAI_DOCUMENT_DETAIL = "high"
 # 텍스트 전용
-python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/pilot-ready.json --mode openai --report-output reports/pilot-text.json
+python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/pilot-ready.json --mode openai --delay-seconds 40 --report-output reports/pilot-text.json
 # 원본 포함
-python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/pilot-ready.json --mode openai --with-documents --report-output reports/pilot-documents.json
+python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/pilot-ready.json --mode openai --with-documents --delay-seconds 40 --report-output reports/pilot-documents.json
 ```
 
 원본 포함은 로컬 파일을 LoadedDocument로 만들어 기존 adapter에 전달한다.
@@ -81,6 +82,8 @@ python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/pilot
 원본 검증만 하려면 `--mode openai --with-documents --validate-only`를 사용한다. 이때도 API 호출은 없다.
 baseline은 이미지를 읽지 않으므로 `--with-documents`와 함께 사용할 수 없다.
 모델 응답의 attachedDocumentCount가 요청 수와 다르면 텍스트 fallback을 정상 결과로 채점하지 않는다.
+`--delay-seconds`는 실제 모델 샘플 사이의 대기 시간이다. 첫 호출 전이나 baseline에서는 대기하지 않는다.
+진행 상황은 sampleId와 순서만 출력하며 원문이나 인증 정보를 출력하지 않는다.
 호출/첨부 실패는 실패 샘플로 남기며 실행 종료 코드는 1이다. 비밀값이 포함될 수 있는 예외 원문은 저장하지 않는다.
 
 ## 정답 형식
@@ -133,6 +136,9 @@ baseline은 이미지를 읽지 않으므로 `--with-documents`와 함께 사용
 기준일, 모델, 문서 detail 설정, 실제 첨부 수와 문서 해시를 기록한다.
 리포트는 원문 및 예측을 포함할 수 있으므로 Git에서 제외된 reports/에 비공개 보관한다.
 `--fail-under-f1 0.75`로 항목 F1 기준을 강제할 수 있지만 시간/체크리스트 전체 통과를 뜻하지는 않는다.
+기준을 지정하지 않은 실행의 종료 코드 0은 호출/입출력 경로가 성공했다는 뜻이지
+모든 분석이 정답이라는 뜻이 아니다. 실제 pilot 실행 관찰과 자동 점수의 한계는
+`newsletter-pilot-validation.md`를 참고한다.
 
 ## 테스트
 

@@ -7,9 +7,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import os
 import subprocess
 import sys
+import time
 from datetime import UTC, datetime
 from pathlib import Path
 
@@ -87,7 +89,11 @@ def reproducibility(samples: list[LabelSample], mode: str, with_documents: bool)
 
 
 def evaluate_samples(
-    samples: list[LabelSample], *, mode: str, with_documents: bool = False
+    samples: list[LabelSample],
+    *,
+    mode: str,
+    with_documents: bool = False,
+    delay_seconds: float = 0,
 ) -> dict:
     if not samples:
         raise ValueError("EMPTY_DATASET")
@@ -95,6 +101,8 @@ def evaluate_samples(
         raise ValueError("INVALID_MODE")
     if with_documents and mode != "openai":
         raise ValueError("DOCUMENTS_REQUIRE_OPENAI_MODE")
+    if not math.isfinite(delay_seconds) or delay_seconds < 0:
+        raise ValueError("INVALID_DELAY_SECONDS")
     settings = get_openai_settings()
     documents = (
         {
@@ -108,7 +116,10 @@ def evaluate_samples(
     os.environ["OPENAI_ENABLED"] = "true" if mode == "openai" else "false"
     rows = []
     try:
-        for sample in samples:
+        for index, sample in enumerate(samples):
+            if index and mode == "openai" and delay_seconds:
+                time.sleep(delay_seconds)
+            print(f"Analyzing {sample.sample_id} ({index + 1}/{len(samples)}) ...", flush=True)
             try:
                 response = analyze_newsletter(
                     sample.request, documents=documents.get(sample.sample_id)
@@ -151,6 +162,7 @@ def evaluate_samples(
         "failed_sample_count": sum(bool(row["error"]) for row in rows),
         "samples": rows,
         "reproducibility": reproducibility(samples, mode, with_documents),
+        "delay_seconds": delay_seconds,
     }
     metrics = (
         "item_precision",
@@ -188,10 +200,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--validate-only", action="store_true")
     parser.add_argument("--report-output", type=Path)
     parser.add_argument("--fail-under-f1", type=float)
+    parser.add_argument("--delay-seconds", type=float, default=0)
     args = parser.parse_args(argv)
     try:
         if args.fail_under_f1 is not None and not 0 <= args.fail_under_f1 <= 1:
             raise ValueError("INVALID_F1_THRESHOLD")
+        if not math.isfinite(args.delay_seconds) or args.delay_seconds < 0:
+            raise ValueError("INVALID_DELAY_SECONDS")
         samples = load_samples(args.dataset, allow_drafts=args.allow_drafts)
         if args.with_documents and args.mode != "openai":
             raise ValueError("DOCUMENTS_REQUIRE_OPENAI_MODE")
@@ -201,7 +216,12 @@ def main(argv: list[str] | None = None) -> int:
                     load_local_documents(sample, max_bytes=get_openai_settings().document_max_bytes)
             print(f"Validated samples={len(samples)}; no API calls")
             return 0
-        report = evaluate_samples(samples, mode=args.mode, with_documents=args.with_documents)
+        report = evaluate_samples(
+            samples,
+            mode=args.mode,
+            with_documents=args.with_documents,
+            delay_seconds=args.delay_seconds,
+        )
     except EvaluationInputError as exc:
         print(f"입력 검증 실패: {exc}", file=sys.stderr)
         return 2
