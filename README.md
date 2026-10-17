@@ -37,10 +37,14 @@ Windows PowerShell에서는 다음처럼 가상환경을 활성화합니다.
 라벨링된 가정통신문 JSON으로 baseline 또는 OpenAI adapter 결과를 평가할 수 있습니다.
 
 ```powershell
-python scripts/evaluate_newsletter_labels.py data/newsletter-labels --report-output reports/newsletter-eval-baseline.json
+python scripts/evaluate_newsletter_labels.py local-newsletter-eval/pilot-ready.json --report-output reports/newsletter-eval-baseline.json
 ```
 
 기본 모드는 비용이 발생하지 않는 baseline입니다. 실제 OpenAI 호출은 `--mode openai`를 명시한 경우에만 실행합니다.
+
+평가 전에 BE OCR 결과를 `scripts/prepare_newsletter_dataset.py`로 라벨과 연결해야 합니다.
+OCR 입력이 없는 과거 라벨은 정답 근거를 합성해 평가하지 않습니다.
+입력 준비, 원본 첨부, pilot 검수 상태는 아래 평가 및 이전 문서를 참고하세요.
 
 ## 작업 규칙
 
@@ -56,3 +60,4 @@ python scripts/evaluate_newsletter_labels.py data/newsletter-labels --report-out
 - `docs/newsletter-extraction.md`: 가정통신문 분석 구현 경계와 유지 결정
 - `docs/newsletter-labeling-guide.md`: 정답 데이터 라벨링 기준
 - `docs/newsletter-evaluation.md`: 라벨링 데이터 기반 분석 평가 실행 방법
+- `docs/newsletter-pilot-migration.md`: pilot 라벨 이전 내역과 남은 검수 항목

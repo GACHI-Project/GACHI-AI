@@ -1,0 +1,841 @@
+{
+  "schemaVersion": "gachi-newsletter-evaluation-v3",
+  "samples": [
+    {
+      "documentId": "pilot_001",
+      "sourceFile": "(가통) 2024 겨울방학 교육활동 안내.pdf",
+      "documentTitle": "2024학년도 종업 및 겨울방학 교육활동 안내",
+      "documentDate": "2025-01-03",
+      "school": "서울대왕초등학교",
+      "expected": {
+        "title": "2024학년도 종업 및 겨울방학 교육활동 안내",
+        "summary": "종업식과 겨울방학 기간, 개학일 및 방학 중 교육활동 일정을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "종업식 및 방학식",
+            "dateStatus": "confirmed",
+            "datetime": "2025-01-09",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "종업 및 방학일: 2025년 1월 9일(목) (전학년 4교시, 12:10분~ 하교 ※ 급식 미실시)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "종업식 당일 급식 미실시 확인",
+                "detail": "전 학년 4교시 후 12:10부터 하교"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "겨울방학 기간",
+            "dateStatus": "confirmed",
+            "datetime": "2025-01-10",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "방학기간: 2025년 1월 10일(금) ~ 2월 28일(금)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": "2025-02-28",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "방과후학교 설날 연휴 휴강",
+            "dateStatus": "confirmed",
+            "datetime": "2025-01-28",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "방과후학교 휴강: 2025년 1월 28일(화)~1월 30일(목) 설날연휴",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": "2025-01-30",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "개학일",
+            "dateStatus": "confirmed",
+            "datetime": "2025-03-04",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "개학일: 2025년 3월 4일(화) (※급식 실시, 4교시, 실내화, 책가방, 필기구 준비)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "실내화 준비",
+                "detail": null
+              },
+              {
+                "content": "책가방과 필기구 준비",
+                "detail": "급식 실시, 4교시 운영"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "Jump Up in English Camp",
+            "dateStatus": "confirmed",
+            "datetime": "2025-01-13",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "Jump Up in English Camp / 4, 5학년 / 2025. 1. 13.(월)~2025. 1. 24.(금)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": "2025-01-24",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "방과후학교 운영 기간 연도 확인",
+            "dateStatus": "ambiguous",
+            "datetime": null,
+            "timezone": "Asia/Seoul",
+            "evidenceText": "방과후학교 / 1~5학년 / 2024. 1. 13.(월)~2024. 2. 15.(토)",
+            "needsUserConfirmation": true,
+            "confirmationQuestion": "방과후학교 운영 연도가 원문대로 2024년인지, 문서의 다른 일정과 같은 2025년인지 확인해 주세요.",
+            "checklistItems": [],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "디딤돌방학 아카데미",
+            "dateStatus": "confirmed",
+            "datetime": "2025-01-15T10:30:00+09:00",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "디딤돌방학 아카데미 / 교육복지 1~6학년 / 2025. 1. 15.(수) ~ 1.24.(금) 10:30~14:30",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": "2025-01-24T14:30:00+09:00",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "늘봄학교 운영",
+            "dateStatus": "confirmed",
+            "datetime": "2025-01-13",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "늘봄학교 / 1학년 / 2025. 1. 13(월)~2025. 2. 14(금)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": "2025-02-14",
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_001",
+      "legacyDateCandidates": [
+        {
+          "candidateId": "dc_1",
+          "originalText": "2025년 1월 9일(목)",
+          "normalizedDate": "2025-01-09"
+        },
+        {
+          "candidateId": "dc_2",
+          "originalText": "2025년 1월 10일(금) ~ 2월 28일(금)",
+          "normalizedDate": "2025-01-10"
+        },
+        {
+          "candidateId": "dc_3",
+          "originalText": "2025년 1월 28일(화)~1월 30일(목)",
+          "normalizedDate": "2025-01-28"
+        },
+        {
+          "candidateId": "dc_4",
+          "originalText": "2025년 3월 4일(화)",
+          "normalizedDate": "2025-03-04"
+        },
+        {
+          "candidateId": "dc_5",
+          "originalText": "2025. 1. 13.(월)~2025. 1. 24.(금)",
+          "normalizedDate": "2025-01-13"
+        },
+        {
+          "candidateId": "dc_6",
+          "originalText": "2024. 1. 13.(월)~2024. 2. 15.(토)",
+          "normalizedDate": "2024-01-13"
+        },
+        {
+          "candidateId": "dc_7",
+          "originalText": "2025. 1. 15.(수) ~ 1.24.(금)",
+          "normalizedDate": "2025-01-15"
+        },
+        {
+          "candidateId": "dc_8",
+          "originalText": "2025. 1. 13(월)~2025. 2. 14(금)",
+          "normalizedDate": "2025-01-13"
+        }
+      ],
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "종업식 및 방학식: 근거 없는 기본 시각 제거",
+          "겨울방학 기간: 근거 없는 기본 시각 제거",
+          "방과후학교 설날 연휴 휴강: 근거 없는 기본 시각 제거",
+          "개학일: 근거 없는 기본 시각 제거",
+          "Jump Up in English Camp: 근거 없는 기본 시각 제거",
+          "늘봄학교 운영: 근거 없는 기본 시각 제거",
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_002",
+      "sourceFile": "(2023 가정통신문)재학생 건강상태조사서 및 응급환자관리동의서.hwp",
+      "documentTitle": "건강상태조사 및 응급환자 관리 동의서",
+      "documentDate": null,
+      "documentDateNote": "머리말과 본문은 2023년이나 하단 발행일은 2022. 3. 2.로 충돌하여 확정하지 않음",
+      "school": "서울자양초등학교",
+      "expected": {
+        "title": "건강상태조사 및 응급환자 관리 동의서",
+        "summary": "2~6학년 학생의 건강 상태와 응급 연락·처치 동의를 작성해 제출하는 안내입니다.",
+        "items": [
+          {
+            "type": "deadline",
+            "title": "건강상태조사 및 응급환자 관리 동의서 제출",
+            "dateStatus": "confirmed",
+            "datetime": "2023-03-07",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "아래 사항을 작성하여 3월 7일(화)까지 담임선생님께 제출하시기 바랍니다.",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "개인정보 수집 동의 여부 표시",
+                "detail": "학년·반, 성별, 아동명, 학부모 전화번호 수집 동의"
+              },
+              {
+                "content": "응급 연락처와 응급 후송·투약 동의 작성",
+                "detail": "보호자 연락처와 2차 연락처, 서명 포함"
+              },
+              {
+                "content": "건강상태와 학교에서 유의할 사항 작성",
+                "detail": "질병, 알레르기, 투약 금지 약물과 부작용 포함"
+              },
+              {
+                "content": "건강생활 행동 문항 작성",
+                "detail": "학생이 해당 칸에 표시"
+              },
+              {
+                "content": "담임선생님께 제출",
+                "detail": "2~6학년 대상"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_002",
+      "legacyDateCandidates": [
+        {
+          "candidateId": "dc_1",
+          "originalText": "3월 7일(화)까지",
+          "normalizedDate": "2023-03-07"
+        }
+      ],
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "건강상태조사 및 응급환자 관리 동의서 제출: 근거 없는 기본 시각 제거",
+          "발병 여부가 정해지지 않은 일반 감염병 대응 안내는 현재 체크리스트에서 제외",
+          "머리말 2023년과 하단 발행일 2022년의 충돌을 원본으로 재검수 필요",
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_003",
+      "sourceFile": "(가정통신문) 2025학년도 가을 운동회 안내.pdf",
+      "documentTitle": "2025학년도 가을 운동회 안내",
+      "documentDate": "2025-09-10",
+      "school": "서울대왕초등학교",
+      "expected": {
+        "title": "2025학년도 가을 운동회 안내",
+        "summary": "학년군별 운동회 일시와 준비물, 학부모 참관 유의사항을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "1~3학년 가을 운동회",
+            "dateStatus": "confirmed",
+            "datetime": "2025-09-23T09:00:00+09:00",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "1, 2, 3학년 / 9. 23.(화) / 1~4교시 (9:00~12:10) ※ 5교시 정상 수업",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "학년 티셔츠와 운동복 착용",
+                "detail": null
+              },
+              {
+                "content": "운동화, 물, 개인 돗자리 준비",
+                "detail": null
+              },
+              {
+                "content": "학부모는 8시 50분부터 학교 입장",
+                "detail": "가능하면 대중교통이나 도보 이용"
+              },
+              {
+                "content": "사진과 영상을 온라인에 게시·유포하지 않기",
+                "detail": "개인정보 및 초상권 보호"
+              }
+            ],
+            "endDatetime": "2025-09-23T12:10:00+09:00",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "4~6학년 가을 운동회",
+            "dateStatus": "confirmed",
+            "datetime": "2025-09-24T09:00:00+09:00",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "4, 5, 6학년 / 9. 24.(수) / 1~4교시 (9:00~12:10) ※ 5교시 정상 수업",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "학년 티셔츠와 운동복 착용",
+                "detail": null
+              },
+              {
+                "content": "운동화, 물, 개인 돗자리 준비",
+                "detail": null
+              },
+              {
+                "content": "우천 시 체육관으로 장소 변경 확인",
+                "detail": "등하교 시간은 같고 4교시 후 급식, 5교시는 정상 수업"
+              }
+            ],
+            "endDatetime": "2025-09-24T12:10:00+09:00",
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_003",
+      "legacyDateCandidates": [
+        {
+          "candidateId": "dc_1",
+          "originalText": "9. 23.(화)",
+          "normalizedDate": "2025-09-23"
+        },
+        {
+          "candidateId": "dc_2",
+          "originalText": "9. 24.(수)",
+          "normalizedDate": "2025-09-24"
+        }
+      ],
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_004",
+      "sourceFile": "(가정통신문) 2026학년도 학생건강체력평가(paps)실시 안내.pdf",
+      "documentTitle": "4~6학년 학생건강체력평가(PAPS) 실시 안내",
+      "documentDate": "2026-03-30",
+      "school": "서울자양초등학교",
+      "expected": {
+        "title": "4~6학년 학생건강체력평가(PAPS) 실시 안내",
+        "summary": "4~6학년 PAPS 평가 기간과 장소, 준비물 및 건강 유의사항을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "학생건강체력평가(PAPS)",
+            "dateStatus": "confirmed",
+            "datetime": "2026-04-13",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "일시: 2026. 4. 13.(월) ~4.24.(금) 중 각 학급 체육 시간 / 장소: 체육관 / 대상: 본교 4, 5, 6학년 학생 전체",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "체육복과 운동화 준비",
+                "detail": null
+              },
+              {
+                "content": "가능하면 평가 기간에 결석하지 않기",
+                "detail": null
+              },
+              {
+                "content": "건강 상태가 좋지 않으면 담임교사 또는 보건교사에게 알리기",
+                "detail": "측정 시 지나치게 무리하지 않기"
+              }
+            ],
+            "endDatetime": "2026-04-24",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "reminder",
+            "title": "저체력 판정 학생 여름방학 건강체력교실 참석",
+            "dateStatus": "missing",
+            "datetime": null,
+            "timezone": "Asia/Seoul",
+            "evidenceText": "평가 결과 저체력(4, 5등급) 판정 학생은 여름방학 건강체력교실에 꼭 참석(★)해야 하며 추가로 재측정하여야 합니다.",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "대상으로 안내받으면 건강체력교실 참석",
+                "detail": "추가 재측정 포함"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_004",
+      "legacyDateCandidates": [
+        {
+          "candidateId": "dc_1",
+          "originalText": "2026. 4. 13.(월) ~4.24.(금)",
+          "normalizedDate": "2026-04-13"
+        }
+      ],
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "학생건강체력평가(PAPS): 근거 없는 기본 시각 제거",
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_005",
+      "sourceFile": "(가정통신문)2026학년도 초등3학년 방과후 교육비 지원 안내.pdf",
+      "documentTitle": "2026학년도 초등 3학년 방과후 교육비 지원 안내",
+      "documentDate": "2026-02-19",
+      "school": "서울대왕초등학교",
+      "expected": {
+        "title": "2026학년도 초등 3학년 방과후 교육비 지원 안내",
+        "summary": "3학년 방과후학교 프로그램 수강료를 연간 50만 원까지 지원하는 제도와 유의사항을 안내합니다.",
+        "items": [
+          {
+            "type": "reminder",
+            "title": "초등 3학년 방과후 교육비 지원 확인",
+            "dateStatus": "missing",
+            "datetime": null,
+            "timezone": "Asia/Seoul",
+            "evidenceText": "2026학년도부터 초등 3학년 대상으로 방과후교실 프로그램을 수강할 경우 수강 학생당 연간 50만원이 지원됩니다. 2026학년도 1기 방과후교실 프로그램 신청 시 참조 부탁드립니다.",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "1기 방과후교실 신청 시 지원 대상 확인",
+                "detail": "2026학년도 3학년 전체, 연간 50만 원 이내"
+              },
+              {
+                "content": "출석률과 중복지원 제한 확인",
+                "detail": "특별한 사유 없이 출석률 50% 미만이면 다음 분기 지원 제외; 자유수강권·다자녀 지원금과 중복 시 순차 소진"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_005",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_006",
+      "sourceFile": "(가정통신문)공휴일(5월 1일)지정 및 재량휴업일(5월 4일)에 따른 학사 운영 안내.pdf",
+      "documentTitle": "공휴일(5월 1일) 지정 및 재량휴업일(5월 4일)에 따른 학사 운영 안내",
+      "documentDate": "2026-04-27",
+      "school": "서울대왕초등학교",
+      "expected": {
+        "title": "5월 공휴일 및 재량휴업일 학사 운영 안내",
+        "summary": "5월 1일 공휴일과 5월 4일 재량휴업일의 학교·돌봄 운영 여부를 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "공휴일 휴업",
+            "dateStatus": "confirmed",
+            "datetime": "2026-05-01",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "2026. 5. 1. (금) / 공휴일(개교기념일, 노동절) / 올해부터 법정공휴일로 지정됨",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "재량휴업일",
+            "dateStatus": "confirmed",
+            "datetime": "2026-05-04",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "2026. 5. 4. (월) / 재량휴업일 / 방과후 교실, 맞춤형 교실, 컴퓨터 교실은 운영하지 않습니다. 돌봄 교실은 사전 수요조사 결과를 바탕으로 희망 학생에 한해 운영됩니다.",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "방과후·맞춤형·컴퓨터 교실 미운영 확인",
+                "detail": null
+              },
+              {
+                "content": "돌봄교실 신청 여부 확인",
+                "detail": "사전 수요조사에서 희망한 학생만 운영"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_006",
+      "legacyDateCandidates": [
+        {
+          "candidateId": "dc_1",
+          "originalText": "2026. 5. 1. (금)",
+          "normalizedDate": "2026-05-01"
+        },
+        {
+          "candidateId": "dc_2",
+          "originalText": "2026. 5. 4. (월)",
+          "normalizedDate": "2026-05-04"
+        }
+      ],
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "공휴일 휴업: 근거 없는 기본 시각 제거",
+          "재량휴업일: 근거 없는 기본 시각 제거",
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_007",
+      "sourceFile": "(가정통신문)교육용 스마트기기 보급 방식 의견 수렴을 위한 설문조사 참여.pdf",
+      "documentTitle": "교육용 스마트기기 보급 방식 의견 수렴을 위한 설문조사 참여 안내",
+      "documentDate": "2026-07-10",
+      "school": "서울자양초등학교",
+      "expected": {
+        "title": "교육용 스마트기기 보급 방식 설문조사 안내",
+        "summary": "학생과 학부모가 교육용 스마트기기 보급 방식 설문에 온라인으로 참여하는 안내입니다.",
+        "items": [
+          {
+            "type": "deadline",
+            "title": "교육용 스마트기기 보급 방식 설문 참여",
+            "dateStatus": "confirmed",
+            "datetime": "2026-07-13",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "설문 기간: 2026. 7. 10.(금) ~ 2026. 7. 13.(월) / 아래 온라인 설문 조사 링크(URL 또는 QR코드)를 통해 접속하여 참여",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "학생용 설문 참여",
+                "detail": "본교 3~6학년 1반 학생 대상, 약 4분"
+              },
+              {
+                "content": "학부모용 설문 참여",
+                "detail": "약 7분; 자녀가 2명 이상이면 첫째 기준으로 1회만 참여"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": "2026-07-10"
+          }
+        ]
+      },
+      "sampleId": "pilot_007",
+      "legacyDateCandidates": [
+        {
+          "candidateId": "dc_1",
+          "originalText": "2026. 7. 10.(금) ~ 2026. 7. 13.(월)",
+          "normalizedDate": "2026-07-13"
+        }
+      ],
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "교육용 스마트기기 보급 방식 설문 참여: 근거 없는 기본 시각 제거",
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_008",
+      "sourceFile": "(가정통신문)봄철 화재 예방 행동 수칙 안내.pdf",
+      "documentTitle": "봄철 화재 예방 행동 수칙 안내",
+      "documentDate": "2026-03-13",
+      "school": "서울자양초등학교",
+      "expected": {
+        "title": "봄철 화재 예방 행동 수칙 안내",
+        "summary": "가정과 야외의 화재 예방법, 화재 발생 시 대피 요령을 안내합니다.",
+        "items": [
+          {
+            "type": "reminder",
+            "title": "봄철 화재 예방과 대피 수칙 확인",
+            "dateStatus": "missing",
+            "datetime": null,
+            "timezone": "Asia/Seoul",
+            "evidenceText": "자녀의 안전을 위해 아래의 봄철 화재 예방 행동 수칙을 숙지하시어, 가정에서도 학부모님들의 적극적인 지도를 부탁드립니다.",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "사용하지 않는 전열기구 플러그 뽑기",
+                "detail": "문어발식 콘센트 사용 금지"
+              },
+              {
+                "content": "외출·취침 전 가스 밸브 확인",
+                "detail": null
+              },
+              {
+                "content": "가정에 소화기 비치하고 사용법 익히기",
+                "detail": null
+              },
+              {
+                "content": "산행·야외 활동 시 인화물질 가져가지 않기",
+                "detail": "불은 지정된 장소에서만 사용"
+              },
+              {
+                "content": "화재 시 큰 소리로 알리고 계단으로 대피",
+                "detail": "젖은 수건으로 코와 입을 가리고 낮은 자세로 이동한 뒤 119 신고"
+              },
+              {
+                "content": "자녀와 화재 안전 교육 영상 보기",
+                "detail": "안내문 링크 참고"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_008",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_009",
+      "sourceFile": "(가정통신문)제 16기 학교운영위원회 학부모위원 선거 홍보.pdf",
+      "documentTitle": "제16기 서울대왕초등학교운영위원회 위원 선출 안내",
+      "documentDate": "2026-03-04",
+      "school": "서울대왕초등학교",
+      "expected": {
+        "title": "제16기 학교운영위원회 위원 선출 안내",
+        "summary": "학교운영위원회의 역할과 구성, 학부모위원 선출 시기 및 자격을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "학부모위원 선출",
+            "dateStatus": "confirmed",
+            "datetime": "2026-03-21",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "선출 시기: 학부모 및 교원위원은 2026. 3. 21일까지 / 학부모위원은 학부모 중에서 민주적 대의 절차에 따라 학부모전체회의에서 직접 선출",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "학부모위원 참여 또는 후보 등록 관련 후속 안내 확인",
+                "detail": "세부 일정은 추후 가정통신문 및 학교 홈페이지로 안내"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_009",
+      "legacyDateCandidates": [
+        {
+          "candidateId": "dc_1",
+          "originalText": "2026. 3. 21일까지",
+          "normalizedDate": "2026-03-21"
+        },
+        {
+          "candidateId": "dc_2",
+          "originalText": "2026. 3. 30일까지",
+          "normalizedDate": "2026-03-30"
+        },
+        {
+          "candidateId": "dc_3",
+          "originalText": "2026. 4. 1.~2028. 3. 31.",
+          "normalizedDate": "2026-04-01"
+        }
+      ],
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "학부모위원 선출: 근거 없는 기본 시각 제거",
+          "제16기 학교운영위원 임기: 근거 없는 기본 시각 제거",
+          "위원 임기는 실행 행동이 없는 설명 정보이므로 items에서 제외",
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_010",
+      "sourceFile": "(가정통신문) 2026학년도 1학기말 하교 시간 및 개학일 일정 안내001.jpg",
+      "documentTitle": "2026학년도 1학기 말 하교 시간 및 개학식 일정 안내",
+      "documentDate": "2026-07-02",
+      "school": "서울가재울초등학교",
+      "expected": {
+        "title": "2026학년도 1학기 말 하교 시간 및 개학식 일정 안내",
+        "summary": "1학기 말 단축수업, 방학식과 개학식의 학년별 하교 시간을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "1학기 말 단축수업",
+            "dateStatus": "confirmed",
+            "datetime": "2026-07-20",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "7.20.(월) 급식 실시 / 1, 2학년 5교시 후 13:40 하교 / 3, 4학년 5교시 후 13:40 하교 / 5학년 4교시 후 13:00 하교 / 6학년 5교시 후 13:40 하교",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "자녀 학년에 맞는 하교 시간 확인",
+                "detail": "1·2·3·4·6학년 13:40, 5학년 13:00"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "방학식",
+            "dateStatus": "confirmed",
+            "datetime": "2026-07-21",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "7.21.(화) 방학식, 급식 실시 / 1, 2학년 4교시 후 12:50 하교 / 3, 4학년 5교시 후 13:40 하교 / 5학년 4교시 후 13:00 하교 / 6학년 5교시 후 13:40 하교",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "자녀 학년에 맞는 방학식 하교 시간 확인",
+                "detail": "1·2학년 12:50, 5학년 13:00, 3·4·6학년 13:40"
+              },
+              {
+                "content": "맞춤형교실·방과후교실 시간표 유지 확인",
+                "detail": "프로그램 운영 시간표 변동 없음"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "개학식",
+            "dateStatus": "confirmed",
+            "datetime": "2026-08-20",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "개학식 8.20.(목) 정상시수운영, 급식 실시 / 1, 2학년 5교시 수업 13:40 하교 / 3, 4, 5, 6학년 6교시 수업 14:30 하교",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "개학일 정상 등교와 급식 여부 확인",
+                "detail": "1·2학년 13:40, 3~6학년 14:30 하교"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      },
+      "sampleId": "pilot_010",
+      "legacyDateCandidates": [
+        {
+          "candidateId": "dc_1",
+          "originalText": "7.20.(월)",
+          "normalizedDate": "2026-07-20"
+        },
+        {
+          "candidateId": "dc_2",
+          "originalText": "7.21.(화)",
+          "normalizedDate": "2026-07-21"
+        },
+        {
+          "candidateId": "dc_3",
+          "originalText": "8.20.(목)",
+          "normalizedDate": "2026-08-20"
+        }
+      ],
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "draft",
+        "labelVersion": "3-draft",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "1학기 말 단축수업: 근거 없는 기본 시각 제거",
+          "방학식: 근거 없는 기본 시각 제거",
+          "개학식: 근거 없는 기본 시각 제거",
+          "원본에서 시간/기간, 연도 충돌, 조건부 행동을 검수한 뒤 reviewed로 변경"
+        ]
+      }
+    }
+  ]
+}

@@ -194,6 +194,7 @@ cython_debug/
 
 # Newsletter evaluation
 reports/
+local-newsletter-eval/
 data/newsletter-labels/*.pdf
 data/newsletter-labels/*.jpg
 data/newsletter-labels/*.jpeg
