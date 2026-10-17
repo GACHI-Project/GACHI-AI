@@ -97,6 +97,28 @@ def test_missing_reference_date_is_not_replaced_by_document_date():
         parse_sample(raw)
 
 
+@pytest.mark.parametrize("missing_input", [None, {}])
+def test_unconnected_ocr_cli_reports_missing_text_before_reference_date(
+    missing_input, tmp_path, capsys
+):
+    raw = record(input=missing_input)
+    path = tmp_path / "unconnected.json"
+    path.write_text(json.dumps(raw), encoding="utf-8")
+    assert evaluator.main([str(path), "--validate-only"]) == 2
+    output = capsys.readouterr().err
+    assert "pilot_001: MISSING_OCR_TEXT" in output
+    assert "MISSING_REFERENCE_DATE" not in output
+
+
+@pytest.mark.parametrize("text", [None, "", "  ", 123])
+def test_missing_ocr_text_takes_precedence_over_missing_reference_date(text):
+    raw = record()
+    raw["input"]["originalText"] = text
+    raw["input"].pop("referenceDate")
+    with pytest.raises(ValueError, match="MISSING_OCR_TEXT"):
+        parse_sample(raw)
+
+
 @pytest.mark.parametrize(
     "change",
     [{"startOffset": 1}, {"endOffset": 900}, {"candidateId": None}, {"normalizedDate": "invalid"}],
@@ -182,6 +204,30 @@ def test_timezone_is_applied_consistently_to_date_and_time_subscores():
     assert result["datetime_accuracy"] == 1
     assert result["date_accuracy"] == 1
     assert result["time_accuracy"] == 1
+
+
+@pytest.mark.parametrize("zone", ["KST", "Unknown/Timezone"])
+def test_unknown_timezone_is_a_temporal_mismatch(zone):
+    assert not temporal_equal("2026-09-28T18:00:00", "2026-09-28T18:00:00", right_zone=zone)
+    result = evaluate_sample(parse_sample(record()), response(gold_item(timezone=zone)))
+    assert result["error"] is None
+    assert result["matched_item_count"] == 1
+    assert result["datetime_accuracy"] == 0
+    assert result["date_accuracy"] == 0
+    assert result["time_accuracy"] == 0
+    assert result["period_start_datetime_accuracy"] == 0
+    assert result["type_accuracy"] == 1
+
+
+def test_unknown_prediction_timezone_does_not_mark_whole_sample_as_failed(monkeypatch):
+    monkeypatch.setattr(
+        evaluator, "analyze_newsletter", lambda *_a, **_kw: response(gold_item(timezone="KST"))
+    )
+    report = evaluator.evaluate_samples([parse_sample(record())], mode="baseline")
+    assert report["failed_sample_count"] == 0
+    assert report["samples"][0]["error"] is None
+    assert report["datetime_accuracy"] == 0
+    assert report["item_f1"] == 1
 
 
 def test_empty_gold_reports_extra_checklist_actions():

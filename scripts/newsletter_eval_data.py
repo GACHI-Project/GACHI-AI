@@ -158,6 +158,9 @@ def parse_sample(raw: dict[str, Any], index: int = 1, *, allow_drafts: bool = Fa
         }
     if not isinstance(request_data, dict):
         raise ValueError("INVALID_INPUT")
+    text = request_data.get("originalText")
+    if not isinstance(text, str) or not text.strip():
+        raise ValueError("MISSING_OCR_TEXT: 실제 BE originalText가 필요합니다")
     if not request_data.get("referenceDate"):
         raise ValueError("MISSING_REFERENCE_DATE: documentDate는 업로드 기준일이 아닙니다")
     if not isinstance(request_data.get("dateCandidates"), list):

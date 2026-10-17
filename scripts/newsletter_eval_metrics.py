@@ -7,7 +7,7 @@ from dataclasses import asdict
 from datetime import date, datetime
 from difflib import SequenceMatcher
 from typing import Any
-from zoneinfo import ZoneInfo
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from app.schemas import NewsletterAnalysisResponse
 from scripts.newsletter_eval_data import LabelItem, LabelSample, parse_label_item
@@ -41,7 +41,7 @@ def temporal_equal(
 ) -> bool:
     try:
         return temporal(left, left_zone) == temporal(right, right_zone)
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, ZoneInfoNotFoundError):
         return False
 
 
@@ -65,7 +65,7 @@ def part_equal(expected: LabelItem, predicted: LabelItem, *, time_only: bool) ->
             time_only=time_only,
             target_zone=expected.timezone,
         )
-    except (ValueError, TypeError):
+    except (ValueError, TypeError, ZoneInfoNotFoundError):
         return False
 
 
