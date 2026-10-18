@@ -20,6 +20,8 @@ python -X utf8 scripts/prepare_newsletter_dataset.py 기존라벨.json --output 
 배열, samples 배열 또는 개별 JSON을 읽는다. 이미 이전한 pilot 10건은
 `data/newsletter-pilot/pilot-labels-v3.json`에 있다. 원본 대조 내역과 검수 방법은
 `newsletter-pilot-migration.md`에 기록했다. OCR 입력은 별도 연결 전까지 null로 유지한다.
+2차 pilot 10건(pilot_011~020)은 처음부터 v3 스키마로 작성한
+`data/newsletter-pilot/pilot-labels-new.json`에 있으며 이전 단계 없이 2번의 BE 결과 연결부터 진행한다.
 기존 `data/newsletter-labels`의 입력 없는 라벨은 더 이상
 근거문을 합성해서 평가하지 않는다. 이 파일들도 같은 도구로 이전하고 실제 OCR을 연결해야 한다.
 준비 도구는 기존 출력 파일이나 원본 라벨을 덮어쓰지 않는다.
