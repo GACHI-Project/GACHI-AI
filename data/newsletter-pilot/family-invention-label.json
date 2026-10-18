@@ -1,0 +1,55 @@
+{
+  "schemaVersion": "gachi-newsletter-evaluation-v3",
+  "sampleId": "family_invention_live_check",
+  "sourceFile": "2026학년도 광주우산초등학교 발명교육센터 가족발명교실 신청 안내.pdf",
+  "documentDate": "2026-09-10",
+  "input": null,
+  "offsetEncoding": "codepoint",
+  "metadata": {
+    "annotationStatus": "draft",
+    "labelVersion": "3-draft",
+    "inputStatus": "pending_actual_ocr",
+    "reviewNotes": [
+      "BE #213의 실제 OCR 결과와 연결하는 회귀 검증용 라벨",
+      "9.18. 마감 후보 누락은 입력에 그대로 보존하며 원본 첨부 여부별 성능 차이를 확인",
+      "날짜 정답은 원본의 마감 및 교육일을 기준으로 하며 후보 누락에 맞춰 변경하지 않음"
+    ]
+  },
+  "expected": {
+    "title": "학부모와 함께하는 가족발명교실 신청 안내",
+    "summary": "가족발명교실 신청 기간과 교육 일시, 신청 방법 및 모집 조건을 안내합니다.",
+    "items": [
+      {
+        "type": "deadline",
+        "title": "가족발명교실 신청",
+        "dateStatus": "confirmed",
+        "datetime": "2026-09-18T15:00:00",
+        "endDatetime": null,
+        "periodStartDatetime": "2026-09-14T11:00:00",
+        "timezone": "Asia/Seoul",
+        "needsUserConfirmation": false,
+        "evidenceText": "신청기간: 2026.9.14.(월) (11:00부터 접수가능) ~ 9.18.(금) 15:00",
+        "checklistItems": [
+          {
+            "content": "밴드 공지글의 설문조사에 응답하여 신청",
+            "contentPatterns": ["설문", "응답|신청"],
+            "detail": "관내 초등학생, 중학생과 보호자 6팀, 가정당 1팀 최대 4명, 선착순 모집",
+            "detailPatterns": ["6팀", "4명", "선착순"]
+          }
+        ]
+      },
+      {
+        "type": "schedule",
+        "title": "가족발명교실 교육",
+        "dateStatus": "confirmed",
+        "datetime": "2026-10-03T09:00:00",
+        "endDatetime": "2026-10-03T12:00:00",
+        "periodStartDatetime": null,
+        "timezone": "Asia/Seoul",
+        "needsUserConfirmation": false,
+        "evidenceText": "교육일시: 2026.10.3.(토) 9:00~12:00",
+        "checklistItems": []
+      }
+    ]
+  }
+}
