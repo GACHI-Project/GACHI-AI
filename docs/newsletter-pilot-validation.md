@@ -105,3 +105,76 @@ BE 저장소의 `local-newsletter-ocr/pilot-issue64/`에 sampleId별 OCR 결과 
 각 보고서에는 실행 코드 커밋과 dirty 상태, 평가기/프롬프트 해시, 데이터 해시, 원본 해시,
 모델, 첨부 설정, 실제 첨부 수, 기준일과 라벨 버전이 기록된다.
 검증은 기존 커밋 위의 작업 트리에서 수행했으므로 보고서의 codeCommit만 보지 말고 해시도 함께 확인한다.
+
+## 2차 pilot 실제 입력 검증 (pilot_011~020)
+
+### 조건과 범위
+
+- 검증일: 2026-10-18.
+- 1차 pilot 10건과 원본 SHA-256이 겹치지 않는 신규 가정통신문 10건을 사용했다.
+  서울서일초 7건, 숭의초 1건, 세종초 2건이며 모두 PDF, 총 14페이지다.
+- 정답은 `data/newsletter-pilot/pilot-labels-new.json`(라벨 v3.1)이다.
+  원본 이미지 대조로 작성한 AI 보조 초안을 담당자가 원본 전체 페이지와 다시 대조해 수정한 뒤 reviewed로 변경했다.
+  `reviewMethod=assistant_draft_human_visual_review`이며 1인 검수다. 여러 명의 독립 라벨링이나 합의 검수는 아니다.
+  라벨 결정 내역은 `newsletter-pilot-migration.md`에 기록했다.
+- BE OCR은 `newsletterOcrBatch` manifest로 sampleId `pilot_011`~`pilot_020`을 지정해 추출했다.
+  기준일은 1차와 같은 2026-10-18이다. 10건 모두 SUCCESS이며 PARTIAL/FAILED는 0건이다.
+- 입력 연결, 텍스트 validate-only, 원본 포함 validate-only를 모두 통과했다.
+- 모델 조건은 gpt-4.1, 원본 포함, detail=high, 샘플 간 40초 대기다.
+  운영 서비스와 같은 원본 포함 조건만 1회 실행했다. OCR 전용과 baseline은 실행하지 않았다.
+- 운영 프롬프트, BE 날짜 추출기, 평가기 코드는 수정하지 않았다.
+
+### 원본 포함 모델 결과
+
+- 실제 모델 분석 10건 완료, 호출/응답 검증 실패 0건.
+- 모든 문서의 requested_document_count=1, attached_document_count=1이다. 텍스트 fallback은 없었다.
+- 항목 precision 0.82, recall 0.95, F1 0.80.
+- date accuracy 1.0, time accuracy 0.8889, datetime accuracy 0.8889,
+  end datetime accuracy 0.8889, period start datetime accuracy 1.0.
+- type accuracy 0.9444, date status accuracy 0.9444, needs user confirmation accuracy 0.9444.
+- checklist precision 0.60, recall 0.825, F1 0.6033.
+- 날짜/분류 정확도는 매칭 항목이 있는 9개 문서 기준이다. pilot_015는 정답이 items=[]이므로 제외된다.
+  pilot_015는 예측 1건으로 문서 F1=0이 되어 항목 F1 평균을 낮춘다.
+- title/summary 일치와 checklist detail 정확도는 진단 값이며 의미 정답률로 해석하지 않는다.
+
+| 샘플 | 원본 포함 결과의 원본 대조 관찰 |
+| --- | --- |
+| pilot_011 | 가정 구매 개인 준비물 reminder와 학년별·학급별 상이 조건을 모두 보존했다. |
+| pilot_012 | 캠프 8/12~8/14 날짜는 정확하나 활동표의 13:00~15:50 시각 없이 날짜만 반환했다. 기한 없는 선착순 신청을 reminder 대신 ambiguous deadline(확인 요청)으로 반환했고, 참가 신청서 작성·서명을 별도 행동으로 추가했다. |
+| pilot_013 | 1·2학기 제출 기간과 2학기 2027년 연도가 모두 정확하다. 촬영과 제출을 두 행동으로 나눠 체크리스트 추가 및 학기 간 중복으로 기록됐으나 의미상 오류는 아니다. |
+| pilot_014 | 9/2 09:00~11:30과 검사 전날 주의사항 2개가 정확하다. 정답에서 제외한 월경 중 사전 알림을 체크리스트로 추가했다. |
+| pilot_015 | 정답은 items=[]이나 '자녀와 함께 안전 규칙 읽어보기' reminder 1건을 추출해 문서 F1=0이다. |
+| pilot_016 | 7/7 마감이 정확하다. 프롬프트의 독립 행동 규칙대로 작성·서명·제출 3개 행동으로 나눠, 하나로 통합한 정답 대비 추가 2건으로 기록됐다. |
+| pilot_017 | 상담 기간 9/1~2027-02-12와 메일 신청 행동이 모두 정확하다. |
+| pilot_018 | 체험학습 9/17 09:00~11:40과 준비물은 정확하나 9/14~9/16 사전 안전 교육 일정과 가정 안전 지도 요청이 누락됐다. 준비물을 한 행동으로 묶어 자동 체크리스트 recall은 0.25다. |
+| pilot_019 | 학급 임원 선출 8/24가 정확하다. 정답에서 임기 설명으로 제외한 전교 임원 학급별 활동 기간 4건을 일정으로 과잉 추출했다. |
+| pilot_020 | 여행 9/2~9/4와 8/31 자동이체(체크리스트 없음)가 정확하다. 일정표의 07:30 집결과 19:40 귀가 시각 없이 날짜만 반환했다. 준비물 전체를 '개인 준비물 챙기기' 한 행동의 detail에 담아 contentPatterns 대응에 실패해 자동 체크리스트 점수는 0이다. |
+
+### 라벨 결정과 자동 점수의 관계
+
+- pilot_012와 pilot_020의 시각 불일치는 본문 일시에는 없고 활동표·일정표에만 있는 시각을 정답에 포함한 결정에서 생겼다.
+- pilot_014(월경 알림 제외), pilot_015(items=[]), pilot_016(체크리스트 1개 통합), pilot_019(임원 활동 기간 제외)는
+  서비스 관점의 검수 결정이며 프롬프트의 일부 규칙과 판단이 다를 수 있다.
+  이 차이는 프롬프트 개선 검토 대상으로 남긴다.
+- 체크리스트 자동 점수는 행동 묶음 단위에 민감하다. pilot_018과 pilot_020은 준비물이 의미상 보존되었지만 자동 점수가 낮다.
+- 점수를 맞추기 위해 정답을 모델 응답에 맞춰 변경하지 않았다.
+
+### 로컬 증거와 재현
+
+AI 저장소 기준 로컬 파일(Git 제외):
+
+- 연결된 입력/정답: `local-newsletter-eval/new-ready.json`
+- 원본 포함: `reports/new-documents.json`
+
+BE 저장소의 `local-newsletter-ocr/input/`에 원본 10개, `local-newsletter-ocr/results/`에 sampleId별 OCR 결과 10개가 있다.
+평가 당시 라벨 파일이 커밋 전 상태였으므로 codeCommit만으로는 사용한 라벨을 식별할 수 없다.
+아래 해시로 평가에 사용한 파일을 확인한다.
+
+- 정답 라벨 `data/newsletter-pilot/pilot-labels-new.json` SHA-256: `3dab351ed4991c9ac60e8988a44ff4ca730572342ade6535d4ac1930e0cbd7ee`
+- 평가 입력 `local-newsletter-eval/new-ready.json` SHA-256:
+  `e7f989a91e778f15ae76f8b9b0ca0e08275ca9d3cd7f0648a1f8553a32a6ced6`
+  (보고서의 `datasets[].sha256`은 라벨 파일이 아니라 이 연결 파일 전체의 해시다.)
+- codeCommit: `3d952a8eb5b0651e7390fbef697bfcc2526bbe45`
+  (workingTreeStatus: `AM data/newsletter-pilot/pilot-labels-new.json`)
+- promptSha256: `4b3fce6703da78fb2746734540e8452e7ceaaf4fdf8ef5c8d64e1ca1271892cc`
+- evaluatorSha256: `47f146457c118fcfdf2b67042f69b892ff8411e5ccb6d8b38bdbb8ea1d74d946`

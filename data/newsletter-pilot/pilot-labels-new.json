@@ -1,0 +1,600 @@
+{
+  "schemaVersion": "gachi-newsletter-evaluation-v3",
+  "samples": [
+    {
+      "documentId": "pilot_011",
+      "sourceFile": "pilot_011.pdf",
+      "documentTitle": "2026학년도 2학기 학습준비물 안내",
+      "documentDate": "2026-09-02",
+      "school": "서울서일초등학교",
+      "sampleId": "pilot_011",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 1페이지 대조: 학교 지원 물품 목록은 구매 대상이 아니므로 할 일에서 제외.",
+          "'가정에서 직접 구매가 필요한' 개인물품만 날짜 없는 reminder로 보존(프롬프트의 표 제공/준비 주체 구분 규칙). 준비 기한은 문서에 없음. 9/2 발행일은 일정으로 만들지 않음.",
+          "'학년별, 학급별로 상이할 수 있음'은 별도 확인 행동이 아니라 detail에 보존."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "f2fddc3e6af291e9f1e9374a60cf1818d6f3548be4ce502e89bdacfed7b8c0f7"
+      },
+      "expected": {
+        "title": "2026학년도 2학기 학습준비물 안내",
+        "summary": "2학기 학년별로 학교에서 지원하는 학습준비물과 가정에서 직접 구매해야 하는 개인 학습준비물을 안내합니다.",
+        "items": [
+          {
+            "type": "reminder",
+            "title": "가정 구매 학습준비물 준비",
+            "dateStatus": "missing",
+            "datetime": null,
+            "timezone": "Asia/Seoul",
+            "evidenceText": "가정에서 직접 구매가 필요한 학습준비물 / 학년공통: 공책, 연필, 지우개, 풀, 가위, 색연필, 색사인펜, 자 등 개인물품",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "공책, 연필, 지우개 등 개인 학습준비물 준비",
+                "contentPatterns": [
+                  "(공책|연필|지우개|개인)"
+                ],
+                "detail": "학년공통: 공책, 연필, 지우개, 풀, 가위, 색연필, 색사인펜, 자 등 개인물품. 학습준비물은 학년별, 학급별로 상이할 수 있음"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_012",
+      "sourceFile": "pilot_012.pdf",
+      "documentTitle": "3·4학년 문해력 수리력 향상 캠프 신청 안내",
+      "documentDate": "2026-07-13",
+      "school": "서울서일초등학교",
+      "sampleId": "pilot_012",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 3페이지 대조: 캠프는 8/12~8/14 3일, 표의 1교시 시작 13:00과 4교시 종료 15:50을 시작/종료 시각으로 사용.",
+          "두 캠프는 날짜와 시간이 같아 한 일정으로 묶음. 신청 기한이 문서에 없어 신청은 날짜 없는 reminder로 분리.",
+          "회신용 참가 신청서 양식은 이알리미 신청 방법의 일부로 보고 별도 서명 과제를 만들지 않음.",
+          "신청 기간과 접수 시작 시각이 모두 없어 프롬프트 규칙(날짜 없는 행동은 reminder/missing)에 따라 reminder 확정. 캠프 시각은 활동표의 13:00~15:50을 명시 시각으로 보고 유지(pilot_003과 동일 방식)."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "67064dab8e7fe0f33239f3a2401a1b0f8b9fe049cb308b8e137123daad10557f"
+      },
+      "expected": {
+        "title": "3·4학년 문해력 수리력 향상 캠프 신청 안내",
+        "summary": "3·4학년 희망 학생을 대상으로 8월 12일부터 14일까지 운영하는 여름방학 문해력·수리력 캠프와 이알리미 선착순 신청 방법을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "여름방학 문해력·수리력 향상 캠프",
+            "dateStatus": "confirmed",
+            "datetime": "2026-08-12T13:00:00+09:00",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "가. 일시: 2026.8.12.(수)~8.14.(금) / 1교시 13:00~13:40 … 4교시 15:10~15:50 / 다. 장소: 수리력 캠프(4-1반 교실), 문해력 캠프(4-3반 교실)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": "2026-08-14T15:50:00+09:00",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "reminder",
+            "title": "문해력·수리력 캠프 참가 신청",
+            "dateStatus": "missing",
+            "datetime": null,
+            "timezone": "Asia/Seoul",
+            "evidenceText": "라. 신청 방법: 이알리미 선착순 마감(문해력, 수리력 캠프 동시 신청 불가능) / 바. 캠프기간에 모두 참여할 수 있는 학생이 신청할 수 있도록 해주세요!",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "이알리미로 캠프 참가 신청",
+                "contentPatterns": [
+                  "(이알리미|e알리미|E알리미)",
+                  "신청"
+                ],
+                "detail": "문해력·수리력 캠프 중 하나만 신청 가능, 선착순 마감, 캠프별 15명 내외, 3일 모두 참여 가능한 학생만 신청"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_013",
+      "sourceFile": "pilot_013.pdf",
+      "documentTitle": "줄넘기 인증제 안내",
+      "documentDate": "2026-06-30",
+      "school": "숭의초등학교",
+      "sampleId": "pilot_013",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 1페이지 대조: 1학기 7/6~7/10, 2학기 2027-01-25~01-29 제출 기간은 각각 마감 한 건이며 시작일은 periodStartDatetime.",
+          "2학기 연도 2027과 요일(월/금) 일치 확인. 학년말 인증서 발급과 급수 기준표는 할 일에서 제외."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "84e6a01dcfe896c339123a266249c65e566426830b96fe1e9ffb5faef1d3943b"
+      },
+      "expected": {
+        "title": "줄넘기 인증제 안내",
+        "summary": "전교생 대상 줄넘기 인증제의 참여 방법과 1·2학기 영상 제출 기간, 학년별 인증 기준을 안내합니다.",
+        "items": [
+          {
+            "type": "deadline",
+            "title": "1학기 줄넘기 인증 영상 제출",
+            "dateStatus": "confirmed",
+            "datetime": "2026-07-10",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "2. 참가방법: 가정에서 촬영한 영상을 담임선생님 개인 메신저(하이톡)로 제출 / 3. 제출기간 1) 1학기 2026년 7월 6일(월) ~ 7월 10일(금)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "줄넘기 영상을 촬영해 담임선생님 하이톡으로 제출",
+                "contentPatterns": [
+                  "영상",
+                  "제출"
+                ],
+                "detail": "학급 단톡방 예시 영상을 참고해 양식에 맞게 제출, 발모아 넘기만 실시"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": "2026-07-06"
+          },
+          {
+            "type": "deadline",
+            "title": "2학기 줄넘기 인증 영상 제출",
+            "dateStatus": "confirmed",
+            "datetime": "2027-01-29",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "3. 제출기간 2) 2학기 2027년 1월 25일(월) ~1월 29일(금)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "줄넘기 영상을 촬영해 담임선생님 하이톡으로 제출",
+                "contentPatterns": [
+                  "영상",
+                  "제출"
+                ],
+                "detail": "학급 단톡방 예시 영상을 참고해 양식에 맞게 제출, 발모아 넘기만 실시"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": "2027-01-25"
+          }
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_014",
+      "sourceFile": "pilot_014.pdf",
+      "documentTitle": "2026학년도 2,3,5,6학년 소변검사 실시 안내",
+      "documentDate": "2026-08-26",
+      "school": "서울서일초등학교",
+      "sampleId": "pilot_014",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 1페이지 대조: 9/2 09:00~11:30 학급별 순차 진행. 검사 전날 식이·운동 주의사항은 이 검사에 직접 연결된 준비 행동으로 보존.",
+          "아침 식사 평소대로, 결석 시 미실시, 이상 통보 시 정밀검사, 결과 안내는 안내 조건 또는 추후 조건으로 제외.",
+          "월경 중 학생의 사전 알림은 해당 학생에게만 적용되는 주의사항으로 보고 체크리스트에서 제외 확정."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "613508662b3a7627ef3663ca3af7a2ae37a31f74254b5c59a2546c3ae4a65db9"
+      },
+      "expected": {
+        "title": "2026학년도 2,3,5,6학년 소변검사 실시 안내",
+        "summary": "2,3,5,6학년 대상 소변검사를 9월 2일 학급별로 실시하며 검사 전날 주의사항과 결과 안내 방법을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "2,3,5,6학년 소변검사",
+            "dateStatus": "confirmed",
+            "datetime": "2026-09-02T09:00:00+09:00",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "1. 대상: 2,3,5,6학년 / 2. 일시: 2026년 9월 2일 (수) 09:00~11:30 학급별 순차 진행",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "검사 전날 채소·과일·비타민C·사탕 많이 먹지 않기",
+                "contentPatterns": [
+                  "(채소|과일|비타민|사탕)"
+                ]
+              },
+              {
+                "content": "검사 전날 심한 운동이나 과로 피하기",
+                "contentPatterns": [
+                  "(운동|과로)"
+                ]
+              }
+            ],
+            "endDatetime": "2026-09-02T11:30:00+09:00",
+            "periodStartDatetime": null
+          }
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_015",
+      "sourceFile": "pilot_015.pdf",
+      "documentTitle": "학교 버스 안전 규칙 안내",
+      "documentDate": "2026-03-05",
+      "school": "세종초등학교",
+      "sampleId": "pilot_015",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 1페이지 대조: 버스 규칙 8개, 위반 단계별 조치, 주정차 금지는 일반 규칙 안내로 보고 items=[] 확정.",
+          "'가정에서 자녀들과 함께 살펴보시고 협조 부탁'은 특정 자료 읽기 과제가 아닌 일반 협조 요청으로 판단. 3/5 발행일 제외."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "c5abcc94e0cd6e824f4e4e12369a2e105d68395766df96aa87a7401cf17da9c2"
+      },
+      "expected": {
+        "title": "학교 버스 안전 규칙 안내",
+        "summary": "학교 버스 탑승 시 지켜야 할 안전 규칙과 위반 시 승차 제한 기준, 등·하교 차량 주정차 금지를 안내합니다.",
+        "items": []
+      }
+    },
+    {
+      "documentId": "pilot_016",
+      "sourceFile": "pilot_016.pdf",
+      "documentTitle": "6학년 『서초 졸업영상 제작 클래스』 개인정보 제공 동의 안내",
+      "documentDate": "2026-07-03",
+      "school": "서울서일초등학교",
+      "sampleId": "pilot_016",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 1페이지 대조: 7/7 제출 마감, 시각 없음. 7/3 발행일 제외.",
+          "검수 결정: 동의 표시·서명·제출은 하나의 동의서 제출 절차로 보고 체크리스트 1개로 통합, 동의 표시와 서명은 detail에 보존. 보유기간 2년, 제공 항목은 안내 정보로 제외."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "f80f5239154d2ab0bd01a43529dffbadb3abcf91f9896f65aa50f79edac3b597"
+      },
+      "expected": {
+        "title": "6학년 『서초 졸업영상 제작 클래스』 개인정보 제공 동의 안내",
+        "summary": "6학년 서초 졸업영상 제작 클래스 참여를 위한 개인정보(초상권 포함) 제3자 제공 동의서를 7월 7일까지 담임선생님께 제출하도록 안내합니다.",
+        "items": [
+          {
+            "type": "deadline",
+            "title": "졸업영상 제작 클래스 개인정보 동의서 제출",
+            "dateStatus": "confirmed",
+            "datetime": "2026-07-07",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "아래 내용을 확인하시고 개인정보 동의서를 2026년 7월 7일(화)까지 담임선생님께 제출해 주시기 바랍니다.",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "개인정보 제공 동의서 제출",
+                "contentPatterns": [
+                  "동의서",
+                  "제출"
+                ],
+                "detail": "동의 여부 표시 후 학생과 보호자 서명, 7월 7일까지 담임선생님께 제출. 미동의 시 프로그램 참여와 졸업 영상물 제공이 제한될 수 있음"
+              }
+            ],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_017",
+      "sourceFile": "pilot_017.pdf",
+      "documentTitle": "2026학년도 2학기 학생 보호자 상담 신청 안내",
+      "documentDate": "2026-08-31",
+      "school": "서울서일초등학교",
+      "sampleId": "pilot_017",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 1페이지 대조: 상담 기간 9/1~2027-02-12 수시 운영을 기간 일정 한 건으로 보존. 신청 마감일이 따로 없어 deadline으로 만들지 않음.",
+          "메일 신청은 희망자 조건부 행동이므로 기간 일정의 체크리스트에 연결. 상담 제한 사항은 안내 정보로 제외."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "c8c32d7bec2b695cfc8309cd38a18f911cf433f62b5177344dd30fdc1bc7b2fd"
+      },
+      "expected": {
+        "title": "2026학년도 2학기 학생 보호자 상담 신청 안내",
+        "summary": "2학기에는 학생 보호자 상담을 수시로 운영하며 희망 보호자는 학교 메일로 신청하고 담임교사와 일정을 조율하는 방법과 유의 사항을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "2학기 학생 보호자 수시 상담",
+            "dateStatus": "confirmed",
+            "datetime": "2026-09-01",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "1. 상담 기간: 2026. 9. 1.(화) ~ 2027. 2. 12.(금) 2학기 중 수시 / 3. 상담 신청: 학교 메일(seoiles@sen.go.kr) 통해 희망하는 학생 보호자가 신청",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "상담 희망 시 학교 메일로 상담 신청",
+                "contentPatterns": [
+                  "메일",
+                  "신청"
+                ],
+                "detail": "seoiles@sen.go.kr; 제목에 학생 학년 반 이름, 내용에 상담 요청 내용·희망 일시·상담 방법 기재; 담임교사와 일정 조율 후 유선 또는 대면 상담",
+                "detailPatterns": [
+                  "seoiles@sen\\.go\\.kr"
+                ]
+              }
+            ],
+            "endDatetime": "2027-02-12",
+            "periodStartDatetime": null
+          }
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_018",
+      "sourceFile": "pilot_018.pdf",
+      "documentTitle": "2026학년도 5학년 현장체험학습(예술의전당) 안내",
+      "documentDate": "2026-08-31",
+      "school": "서울서일초등학교",
+      "sampleId": "pilot_018",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 2페이지 대조: 9/17 09:00~11:40 체험학습, 9/14~9/16 각 학급 사전 안전 교육은 실제 운영 일정으로 보존. 8/31 발행일 제외.",
+          "준비물은 pilot_003처럼 착용/준비로 묶음. 2페이지 '가정에서도 함께 지도 부탁드립니다' 요청은 체험학습 체크리스트에 연결하고 개별 안전 수칙은 제외.",
+          "점심 학교 급식, 6교시 후 정상 하교, 우천 시 진행은 안내 조건으로 제외."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "23f72579f7ce95cb747e185f520e0a205d1a198483475ba555440ba311c8ac50"
+      },
+      "expected": {
+        "title": "2026학년도 5학년 현장체험학습(예술의전당) 안내",
+        "summary": "5학년이 9월 17일 예술의전당 서울서예박물관 그림책 원화전을 관람하는 현장체험학습의 일정, 준비물, 사전 안전 교육과 가정 안전 지도 사항을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "5학년 현장체험학습(예술의전당)",
+            "dateStatus": "confirmed",
+            "datetime": "2026-09-17T09:00:00+09:00",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "1. 날짜: 2026. 9. 17.(목) 9:00~11:40 / 2. 장소: 예술의전당 서울서예박물관 / 5. 준비물: 간편복, 운동화, 물, 보조가방, 마스크, 필요시 개인 상비약 등",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "간편복과 운동화 착용",
+                "contentPatterns": [
+                  "간편복",
+                  "운동화"
+                ]
+              },
+              {
+                "content": "물, 보조가방, 마스크 준비",
+                "contentPatterns": [
+                  "물",
+                  "가방",
+                  "마스크"
+                ]
+              },
+              {
+                "content": "필요시 개인 상비약 준비",
+                "contentPatterns": [
+                  "상비약"
+                ]
+              },
+              {
+                "content": "자녀와 현장체험학습 안전 지도 사항 함께 살펴보기",
+                "contentPatterns": [
+                  "안전",
+                  "(지도|살펴|읽|확인)"
+                ]
+              }
+            ],
+            "endDatetime": "2026-09-17T11:40:00+09:00",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "schedule",
+            "title": "현장체험학습 사전 안전 교육",
+            "dateStatus": "confirmed",
+            "datetime": "2026-09-14",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "사전 안전 교육은 2026. 9. 14.(월) ~ 9. 16.(수) 각 학급에서 실시됩니다.",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": "2026-09-16",
+            "periodStartDatetime": null
+          }
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_019",
+      "sourceFile": "pilot_019.pdf",
+      "documentTitle": "2026학년도 2학기 학급 및 전교 임원 선출 안내(3~6학년)",
+      "documentDate": "2026-08-20",
+      "school": "서울서일초등학교",
+      "sampleId": "pilot_019",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 1페이지 대조: 선출일 '8월 24일 월요일'은 연도 표기가 없으나 발행일 2026.8.20., 표의 2026.08.24. 시작일, 요일이 모두 일치해 2026-08-24 confirmed.",
+          "전교 임원 학급별 활동 기간 표는 임기/순번 설명으로 현재 할 일이나 일정에서 제외(pilot_009 기준과 동일)."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "770bef80d0694acd91d701604011c252ffc3c4d13ae6722e49ca69ced4563995"
+      },
+      "expected": {
+        "title": "2026학년도 2학기 학급 및 전교 임원 선출 안내(3~6학년)",
+        "summary": "3~6학년 2학기 학급 임원을 8월 24일에 선출하고 5~6학년 학급회장이 기간별로 돌아가며 전교 임원으로 활동하는 일정을 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "3~6학년 학급 임원 선출",
+            "dateStatus": "confirmed",
+            "datetime": "2026-08-24",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "1. 3~6학년 학급 임원 선출 날짜: 8월 24일 월요일 (8월 등교일에 각 학급에서 세부 내용 안내)",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      }
+    },
+    {
+      "documentId": "pilot_020",
+      "sourceFile": "pilot_020.pdf",
+      "documentTitle": "2026학년도 6학년 소규모테마형교육여행 안내",
+      "documentDate": "2026-08-25",
+      "school": "세종초등학교",
+      "sampleId": "pilot_020",
+      "schemaVersion": "gachi-newsletter-evaluation-v3",
+      "input": null,
+      "offsetEncoding": "codepoint",
+      "metadata": {
+        "annotationStatus": "reviewed",
+        "labelVersion": "3.1",
+        "inputStatus": "pending_actual_ocr",
+        "reviewNotes": [
+          "원본 2페이지 대조: 여행 9/2~9/4. 뒷면 일정표의 학교 집결 07:30을 시작, 귀가 19:40을 종료 시각으로 사용.",
+          "8/31 CMS 자동이체는 프롬프트 규칙대로 납부 deadline으로 보존. 잔액 확인 등 별도 행동 요구가 없어 checklistItems=[]이고 금액과 방식은 evidenceText에 보존. 8/25 발행일 제외.",
+          "준비물은 복장/수영/소지품/개인용품/이름 쓰기 5개 그룹으로 묶음. 일정표의 세부 일정은 개별 항목으로 만들지 않음."
+        ],
+        "reviewMethod": "assistant_draft_human_visual_review",
+        "reviewDate": "2026-10-18",
+        "sourceOriginalSha256": "007ba2ce21adb8fcd8965fec8f24e578518c19d8e177c38cff5263e6b80d4949"
+      },
+      "expected": {
+        "title": "2026학년도 6학년 소규모테마형교육여행 안내",
+        "summary": "6학년 제주도 2박 3일 소규모테마형교육여행의 일정, 경비 995,300원과 8월 31일 CMS 자동이체, 준비물과 일자별 일정표를 안내합니다.",
+        "items": [
+          {
+            "type": "schedule",
+            "title": "6학년 제주도 소규모테마형교육여행",
+            "dateStatus": "confirmed",
+            "datetime": "2026-09-02T07:30:00+09:00",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "1. 일시: 2026. 9. 2.(수) ~ 9. 4.(금) 2박 3일 / 2. 장소: 제주도 일대 / 일정표 9/2 07:30-07:40 학교 집결 및 출발 … 9/4 18:30-19:40 학교로 이동 및 귀가",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [
+              {
+                "content": "일자별 복장과 여벌 옷 준비",
+                "contentPatterns": [
+                  "(교복|체육복|자유복|옷)"
+                ],
+                "detail": "1일차 학교 교복, 2일차 자유복(단정한 옷 1벌 포함), 3일차 학교 체육복, 여벌 옷 1벌 이상, 잠옷 1벌, 양말 3개 이상, 속옷 3벌 이상"
+              },
+              {
+                "content": "수영복과 수영모 준비",
+                "contentPatterns": [
+                  "수영"
+                ],
+                "detail": "호텔 수영장 이용을 선택한 경우, 캡모자 가능, 아쿠아슈즈 선택"
+              },
+              {
+                "content": "작은 가방, 필기도구, 우산, 운동화, 모자, 비닐봉지, 세면도구 준비",
+                "contentPatterns": [
+                  "(가방|필기도구|우산|세면)"
+                ]
+              },
+              {
+                "content": "개인 상비약, 물통, 용돈, 마스크 준비",
+                "contentPatterns": [
+                  "(상비약|물통|용돈|마스크)"
+                ]
+              },
+              {
+                "content": "모든 물품에 유성펜으로 이름 쓰기",
+                "contentPatterns": [
+                  "이름"
+                ]
+              }
+            ],
+            "endDatetime": "2026-09-04T19:40:00+09:00",
+            "periodStartDatetime": null
+          },
+          {
+            "type": "deadline",
+            "title": "교육여행 경비 CMS 자동이체",
+            "dateStatus": "confirmed",
+            "datetime": "2026-08-31",
+            "timezone": "Asia/Seoul",
+            "evidenceText": "3. 금액: 금구십구만오천삼백원 (₩995,300) / 4. 이체: 2026년 8월 31일(월) CMS 통장에서 자동이체",
+            "needsUserConfirmation": false,
+            "confirmationQuestion": null,
+            "checklistItems": [],
+            "endDatetime": null,
+            "periodStartDatetime": null
+          }
+        ]
+      }
+    }
+  ]
+}
