@@ -167,5 +167,14 @@ AI 저장소 기준 로컬 파일(Git 제외):
 - 원본 포함: `reports/new-documents.json`
 
 BE 저장소의 `local-newsletter-ocr/input/`에 원본 10개, `local-newsletter-ocr/results/`에 sampleId별 OCR 결과 10개가 있다.
-보고서의 codeCommit은 `3d952a8e`이고 workingTreeStatus는 `AM data/newsletter-pilot/pilot-labels-new.json`이다.
-promptSha256은 `4b3fce67…`, evaluatorSha256은 `47f14645…`다. 1차 원본 포함 결과와 비교할 때는 해시를 함께 확인한다.
+평가 당시 라벨 파일이 커밋 전 상태였으므로 codeCommit만으로는 사용한 라벨을 식별할 수 없다.
+아래 해시로 평가에 사용한 파일을 확인한다.
+
+- 정답 라벨 `data/newsletter-pilot/pilot-labels-new.json` SHA-256: `3dab351ed4991c9ac60e8988a44ff4ca730572342ade6535d4ac1930e0cbd7ee`
+- 평가 입력 `local-newsletter-eval/new-ready.json` SHA-256:
+  `e7f989a91e778f15ae76f8b9b0ca0e08275ca9d3cd7f0648a1f8553a32a6ced6`
+  (보고서의 `datasets[].sha256`은 라벨 파일이 아니라 이 연결 파일 전체의 해시다.)
+- codeCommit: `3d952a8eb5b0651e7390fbef697bfcc2526bbe45`
+  (workingTreeStatus: `AM data/newsletter-pilot/pilot-labels-new.json`)
+- promptSha256: `4b3fce6703da78fb2746734540e8452e7ceaaf4fdf8ef5c8d64e1ca1271892cc`
+- evaluatorSha256: `47f146457c118fcfdf2b67042f69b892ff8411e5ccb6d8b38bdbb8ea1d74d946`
