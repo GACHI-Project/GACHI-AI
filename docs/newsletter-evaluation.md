@@ -32,7 +32,22 @@ python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/new-r
 ```
 
 준비 도구는 출력 파일을 새로 생성하므로 같은 출력 파일이 이미 있으면 실패한다.
-라벨을 수정한 뒤 다시 연결할 때는 기존 `new-ready.json`을 삭제하고 실행한다.기존 `data/newsletter-labels`의 입력 없는 라벨은 더 이상
+라벨을 수정한 뒤 다시 연결할 때는 기존 `new-ready.json`을 삭제하고 실행한다.
+
+3차 pilot 10건(pilot_021~030)도 처음부터 v3 스키마로 작성한
+`data/newsletter-pilot/pilot-labels-3rd.json`에 있으며 이전 단계 없이 BE 결과 연결부터 진행한다.
+3차 OCR 결과는 BE의 `local-newsletter-ocr/results-3rd/`에 있고, 1·2차 결과와 다른 출력 파일을 지정한다.
+
+```powershell
+python -X utf8 scripts/prepare_newsletter_dataset.py data/newsletter-pilot/pilot-labels-3rd.json --ocr-results ../GACHI-BE/local-newsletter-ocr/results-3rd --output local-newsletter-eval/3rd-ready.json
+python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/3rd-ready.json --validate-only
+python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/3rd-ready.json --mode openai --with-documents --validate-only
+python -X utf8 scripts/evaluate_newsletter_labels.py local-newsletter-eval/3rd-ready.json --mode openai --with-documents --delay-seconds 40 --report-output reports/3rd-documents.json
+```
+
+라벨을 수정한 뒤 다시 연결할 때는 기존 `3rd-ready.json`을 삭제하고 실행한다.
+
+기존 `data/newsletter-labels`의 입력 없는 라벨은 더 이상
 근거문을 합성해서 평가하지 않는다. 이 파일들도 같은 도구로 이전하고 실제 OCR을 연결해야 한다.
 준비 도구는 기존 출력 파일이나 원본 라벨을 덮어쓰지 않는다.
 
