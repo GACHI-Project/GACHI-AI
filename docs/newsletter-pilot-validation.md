@@ -178,3 +178,86 @@ BE 저장소의 `local-newsletter-ocr/input/`에 원본 10개, `local-newsletter
   (workingTreeStatus: `AM data/newsletter-pilot/pilot-labels-new.json`)
 - promptSha256: `4b3fce6703da78fb2746734540e8452e7ceaaf4fdf8ef5c8d64e1ca1271892cc`
 - evaluatorSha256: `47f146457c118fcfdf2b67042f69b892ff8411e5ccb6d8b38bdbb8ea1d74d946`
+
+
+## 3차 pilot 실제 입력 검증 (pilot_021~030)
+
+### 조건과 범위
+
+- 검증일: 2026-11-04 (보고서 generatedAt `2026-11-04T15:03:31Z`, KST 2026-11-05 00:03).
+- 1·2차 pilot 20건과 겹치지 않는 신규 가정통신문 10건을 사용했다.
+  서울서일초 5건, 서울구암초 2건, 경기초 2건, 세종초 1건이며 모두 PDF, 총 11페이지다.
+  pilot_021(2025-05-01 발행)은 2025년 문서다.
+- 정답은 `data/newsletter-pilot/pilot-labels-3rd.json`(라벨 v3.1)이다.
+  원본 이미지 대조로 작성한 AI 보조 초안을 담당자가 모델 실행 전에 원본과 다시 대조해 수정한 뒤 reviewed로 변경했다.
+  `reviewMethod=assistant_draft_human_visual_review`이며 1인 검수다. 여러 명의 독립 라벨링이나 합의 검수는 아니다.
+  라벨 결정 내역은 `newsletter-pilot-migration.md`에 기록했다.
+- BE OCR은 `newsletterOcrBatch` manifest로 sampleId `pilot_021`~`pilot_030`을 지정해 추출했다.
+  기준일은 1·2차와 같은 2026-10-18이다. 10건 모두 SUCCESS이며 PARTIAL/FAILED는 0건이다.
+  첫 LIVE 실행은 실행 환경 설정 누락으로 OCR 호출 전에 전부 실패했다. 결과 폴더를 비운 뒤 다시 실행했다.
+- 입력 연결, 텍스트 validate-only, 원본 포함 validate-only를 모두 통과했다.
+- 모델 조건은 gpt-4.1, 원본 포함, detail=high, 샘플 간 40초 대기다.
+  2차와 같이 원본 포함 조건만 1회 실행했다. OCR 전용과 baseline은 실행하지 않았다.
+  첫 모델 실행은 API 키를 불러오지 못해 10건 모두 `OpenAIConfigurationError`로 호출 전에 실패했다.
+  이 보고서는 삭제하고 키를 설정한 뒤 다시 실행했으며, 실패 실행에서는 모델 호출이 없었다.
+- 운영 프롬프트, BE 날짜 추출기, 평가기 코드는 수정하지 않았다. 프롬프트와 평가기 해시는 2차와 같다.
+
+### 원본 포함 모델 결과
+
+- 실제 모델 분석 10건 완료, 호출/응답 검증 실패 0건.
+- 모든 문서의 requested_document_count=1, attached_document_count=1이다. 텍스트 fallback은 없었다.
+- 항목 precision 0.85, recall 0.95, F1 0.8333.
+- date accuracy 1.0, time accuracy 1.0, datetime accuracy 1.0,
+  end datetime accuracy 0.8889, period start datetime accuracy 1.0.
+- type accuracy 1.0, date status accuracy 1.0, needs user confirmation accuracy 1.0.
+- checklist precision 0.50, recall 0.95, F1 0.5533.
+- 위 값은 문서별 점수의 평균이다. 개수 기준으로는 항목 정답 12, 예측 13, 매칭 11(P 0.85, R 0.92, F1 0.88)이고,
+  체크리스트 정답 9, 예측 29, 대응 8(P 0.28, R 0.89, F1 0.42)이다.
+- 날짜/분류 정확도는 매칭 항목이 있는 9개 문서 기준이다. pilot_029는 정답이 items=[]이므로 제외된다.
+  pilot_029는 예측 1건으로 문서 F1=0이 되어 항목 F1 평균을 낮춘다.
+- title/summary 일치와 checklist detail 정확도는 진단 값이며 의미 정답률로 해석하지 않는다.
+
+| 샘플 | 원본 포함 결과의 원본 대조 관찰 |
+| --- | --- |
+| pilot_021 | 만족도 회신 마감을 날짜 후보 없이 원본에서 2025-08-11로 확정해 2025년 연도를 정확히 복원했다. 검진 기간 5/15~8/7을 별도 deadline으로 만들지 않고 만족도 일정의 체크리스트(지정 병원 검진)와 detail에 담아 항목 recall 0.5다. 행동과 기간은 의미상 보존됐다. |
+| pilot_022 | 운영 시작 4/13 08:20은 정확하나 종료 6/19 08:50(endDatetime)을 누락했다. 정답에서 제외한 운동화 착용, 가방 보관, 트랙 안전 수칙 등 5개를 체크리스트로 과잉 추출했다. |
+| pilot_023 | 결과서 제출 3/6 마감과 안과 검진·결과서 제출 행동이 정확하다. 원문 안내에 근거한 '결과서 다운로드하기'를 추가했다. 이 행동이 '시력검사' 패턴으로 안과 검진 정답에 먼저 대응되어 실제 안과 방문 행동이 추가로 기록됐다. |
+| pilot_024 | 3/10 13:00 마감과 해당 학생 조건이 정확하다. 조사서 작성과 e-알리미 제출을 두 행동으로 나눠 추가 1건으로 기록됐으나 의미상 오류는 아니다. |
+| pilot_025 | 신청 마감 8/26 09:00(시작 8/24)와 캠프 8/27 14:45~16:20, 신청 행동이 모두 정확하다. |
+| pilot_026 | 7/2 16:00 마감과 신청 기준·제외 기준 조건이 정확하다. |
+| pilot_027 | 7/8 마감과 캠프 7/27~7/31 09:00~12:00이 정확하다. 참가 여부 제출과 개인정보 동의 서명을 두 행동으로 나눠 추가 1건으로 기록됐다. detail에 학부모 휴대폰 번호 등 신청서 기재 항목이 빠져 detail 정확도는 0이다. |
+| pilot_028 | 6/16 마감(시작 6/12)과 설문 제출 행동이 정확하다. detail에 설문 대상은 있으나 학년·반·학생명과 사유 기재 조건이 빠져 detail 정확도는 0이다. |
+| pilot_029 | 정답은 items=[]이나 '폭염 대비 학생 및 가정 실천사항' reminder 1건과 일반 행동 요령 10개를 체크리스트로 추출해 문서 F1=0이다. |
+| pilot_030 | 작업 기간 5/7~5/10이 정확하다. 정답에서 근거에만 둔 5/8 아침활동 미운영을 별도 일정으로 추가했고, 운동장 이용 금지 안내를 체크리스트로 추가했다. |
+
+### 라벨 결정과 자동 점수의 관계
+
+- pilot_021의 검진 기간은 발행일이 검진 시작 전이라는 담당자 검수 판단으로 별도 deadline으로 둔 결정이다.
+  모델은 같은 내용을 다른 일정의 체크리스트로 흡수해 항목 recall이 낮아졌다.
+- pilot_022(안전 유의사항 제외), pilot_029(items=[]), pilot_030(5/8 미운영과 이용 금지 지도 제외)는
+  일반 권고를 할 일로 만들지 않는 서비스 관점의 검수 결정이다. 1차 pilot_008, 2차 pilot_015와 같은 과잉 추출 유형이며,
+  세 문서의 추가 행동 16개가 체크리스트 precision을 낮춘 주된 원인이다.
+- pilot_027과 pilot_028의 detail 정확도 0은 담당자 검수에서 보강한 신청서·설문 기재 조건 패턴에서 생겼다.
+- 체크리스트 자동 점수는 행동 묶음 단위와 패턴 대응 순서에 민감하다. pilot_023, pilot_024, pilot_027은
+  행동이 의미상 보존되었지만 분할 또는 대응 순서 때문에 추가 행동으로 기록됐다.
+- 점수를 맞추기 위해 정답을 모델 응답에 맞춰 변경하지 않았다. 팀원과의 수동 검수 결과는 별도로 추가한다.
+
+### 로컬 증거와 재현
+
+AI 저장소 기준 로컬 파일(Git 제외):
+
+- 연결된 입력/정답: `local-newsletter-eval/3rd-ready.json`
+- 원본 포함: `reports/3rd-documents.json`
+
+BE 저장소의 `local-newsletter-ocr/input-3rd/`에 원본 10개, `local-newsletter-ocr/results-3rd/`에 sampleId별 OCR 결과 10개가 있다.
+평가 당시 라벨 파일이 커밋 전 상태였으므로 codeCommit만으로는 사용한 라벨을 식별할 수 없다.
+아래 해시로 평가에 사용한 파일을 확인한다.
+
+- 정답 라벨 `data/newsletter-pilot/pilot-labels-3rd.json` SHA-256: `7a93c70980821590cd40f1c9092f3670324f0c260139d6b2d5af03992f6178f0`
+- 평가 입력 `local-newsletter-eval/3rd-ready.json` SHA-256:
+  `b85710253df6089a035f100c4d59cd8c427478ce858b03a6567497b4a86cd7f6`
+  (보고서의 `datasets[].sha256`은 라벨 파일이 아니라 이 연결 파일 전체의 해시다.)
+- codeCommit: `8a10647a5a77e08233ea20bb1645ad484c799102`
+  (workingTreeStatus: `AM data/newsletter-pilot/pilot-labels-3rd.json`)
+- promptSha256: `4b3fce6703da78fb2746734540e8452e7ceaaf4fdf8ef5c8d64e1ca1271892cc`
+- evaluatorSha256: `47f146457c118fcfdf2b67042f69b892ff8411e5ccb6d8b38bdbb8ea1d74d946`
