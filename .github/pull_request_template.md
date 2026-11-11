@@ -6,7 +6,7 @@
 ## 🌿 브랜치 정보
 
 - **Source**: `feat/#이슈번호-기능명`
-- **Target**: `develop` (기본) / `main` (릴리즈, 핫픽스)
+- **Target**: `develop` / `main`
 
 ## ✅ 체크리스트
 

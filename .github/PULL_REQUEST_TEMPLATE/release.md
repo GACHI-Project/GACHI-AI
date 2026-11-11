@@ -6,8 +6,8 @@
 
 ## 🌿 브랜치 정보
 
-- **Source**: `develop` (기본)
-- **Target**: `main` (릴리즈)
+- **Source**: `develop`
+- **Target**: `main`
 
 ## ✅ 체크리스트
 
@@ -18,14 +18,6 @@
 
 ## 🧪 테스트 결과
 
-- GitHub Actions `Deploy AI to EC2` 실행 확인 (`workflow_dispatch`, ref: `main`)
-  - 결과:
-  - 스크린샷: ![ssm-send-step]()
-
-- 원격 배포 순서/재기동 확인
-  - 결과:
-  - 스크린샷: ![ssm-order]()
-
-- 배포 후 컨테이너 상태 확인
-  - 결과:
-  - 스크린샷: ![compose-ps]()
+- main 머지 후 실행된 `Deploy AI to EC2` Actions 링크:
+- 배포 결과: 성공 / 실패 / 미실행
+- 추가 운영 확인(실시한 경우):
