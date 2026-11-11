@@ -9,6 +9,7 @@ name: Deploy AI to EC2
 
 permissions:
   contents: read
+  deployments: write
   id-token: write
 
 env:
@@ -16,14 +17,64 @@ env:
 
 jobs:
   deploy:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: >
+      (github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main') ||
+      (
+        github.event.workflow_run.conclusion == 'success' &&
+        github.event.workflow_run.head_branch == 'main' &&
+        (github.event.workflow_run.event == 'push' || github.event.workflow_run.event == 'workflow_dispatch')
+      )
     runs-on: ubuntu-latest
     concurrency:
       group: deploy-ai-ec2-ssm
       cancel-in-progress: false
 
     steps:
+      - name: Resolve deployment commit
+        id: deploy-commit
+        env:
+          SOURCE_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+        run: |
+          if [[ ! "$SOURCE_SHA" =~ ^[0-9a-f]{40}$ ]]; then
+            echo "::error::Invalid deployment commit: $SOURCE_SHA"
+            exit 1
+          fi
+          echo "sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
+          echo "image_tag=sha-${SOURCE_SHA:0:7}" >> "$GITHUB_OUTPUT"
+
+      - name: Check automatic deployment commit is current
+        id: freshness
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.deploy-commit.outputs.sha }}
+        run: |
+          if [ "$GITHUB_EVENT_NAME" = "workflow_run" ]; then
+            CURRENT_MAIN_SHA="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+            if [ "$SOURCE_SHA" != "$CURRENT_MAIN_SHA" ]; then
+              echo "::notice::Skipping stale CI commit $SOURCE_SHA; main is $CURRENT_MAIN_SHA."
+              echo "current=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+          echo "current=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create production deployment
+        if: ${{ steps.freshness.outputs.current == 'true' }}
+        id: deployment
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ steps.deploy-commit.outputs.sha }}
+        run: |
+          DEPLOYMENT_ID="$(jq -nc --arg ref "$SOURCE_SHA" \
+            '{ref: $ref, environment: "production", auto_merge: false, required_contexts: [], description: "Deploy GACHI-AI to EC2"}' \
+            | gh api "repos/$GITHUB_REPOSITORY/deployments" --input - --jq '.id')"
+          echo "id=$DEPLOYMENT_ID" >> "$GITHUB_OUTPUT"
+          jq -nc --arg log_url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            '{state: "in_progress", log_url: $log_url, description: "AI EC2 deployment in progress"}' \
+            | gh api "repos/$GITHUB_REPOSITORY/deployments/$DEPLOYMENT_ID/statuses" --input - >/dev/null
+
       - name: Resolve deploy path
+        if: ${{ steps.freshness.outputs.current == 'true' }}
         id: deploy-path
         env:
           EC2_DEPLOY_PATH_SECRET: ${{ secrets.EC2_DEPLOY_PATH }}
@@ -38,6 +89,7 @@ jobs:
           fi
 
       - name: Resolve AWS region
+        if: ${{ steps.freshness.outputs.current == 'true' }}
         id: aws-region
         env:
           AWS_REGION_SECRET: ${{ secrets.AWS_REGION }}
@@ -52,6 +104,7 @@ jobs:
           fi
 
       - name: Validate deploy inputs
+        if: ${{ steps.freshness.outputs.current == 'true' }}
         id: auth-check
         env:
           EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
@@ -87,7 +140,7 @@ jobs:
           fi
 
       - name: Configure AWS credentials with OIDC
-        if: ${{ steps.auth-check.outputs.auth_mode == 'oidc' }}
+        if: ${{ steps.freshness.outputs.current == 'true' && steps.auth-check.outputs.auth_mode == 'oidc' }}
         uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ steps.aws-region.outputs.value }}
@@ -95,7 +148,7 @@ jobs:
           role-session-name: gachi-ai-deploy-ssm
 
       - name: Configure AWS credentials with access key
-        if: ${{ steps.auth-check.outputs.auth_mode == 'access_key' && steps.auth-check.outputs.has_session_token != 'true' }}
+        if: ${{ steps.freshness.outputs.current == 'true' && steps.auth-check.outputs.auth_mode == 'access_key' && steps.auth-check.outputs.has_session_token != 'true' }}
         uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ steps.aws-region.outputs.value }}
@@ -103,7 +156,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
       - name: Configure AWS credentials with access key session
-        if: ${{ steps.auth-check.outputs.auth_mode == 'access_key' && steps.auth-check.outputs.has_session_token == 'true' }}
+        if: ${{ steps.freshness.outputs.current == 'true' && steps.auth-check.outputs.auth_mode == 'access_key' && steps.auth-check.outputs.has_session_token == 'true' }}
         uses: aws-actions/configure-aws-credentials@v6
         with:
           aws-region: ${{ steps.aws-region.outputs.value }}
@@ -112,25 +165,27 @@ jobs:
           aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
 
       - name: Send AI deploy command via SSM
+        if: ${{ steps.freshness.outputs.current == 'true' }}
         id: ssm-send
         env:
           AWS_REGION: ${{ steps.aws-region.outputs.value }}
           EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
           EC2_DEPLOY_PATH: ${{ steps.deploy-path.outputs.value }}
           DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          AI_IMAGE_TAG: ${{ steps.deploy-commit.outputs.image_tag }}
         run: |
           set -Eeuo pipefail
           COMMANDS="$(jq -cn \
             --arg deployPath "$EC2_DEPLOY_PATH" \
-            --arg image "$DOCKERHUB_USERNAME/gachi-ai:latest" \
+            --arg image "$DOCKERHUB_USERNAME/gachi-ai:$AI_IMAGE_TAG" \
             '{
               commands: [
                 "#!/bin/bash",
                 "set -Eeuo pipefail",
                 "cd " + ($deployPath | @sh),
                 "test -f .env",
+                "docker pull " + ($image | @sh),
                 "if grep -q ^AI_IMAGE= .env; then sed -i " + ("s|^AI_IMAGE=.*|AI_IMAGE=" + $image + "|" | @sh) + " .env; else echo " + ("AI_IMAGE=" + $image | @sh) + " >> .env; fi",
-                "docker compose --env-file .env pull ai",
                 "docker compose --env-file .env up -d --remove-orphans --force-recreate ai",
                 "AI_CID=$(docker compose --env-file .env ps -q ai)",
                 "test -n \"$AI_CID\"",
@@ -155,6 +210,7 @@ jobs:
           echo "command_id=$COMMAND_ID" >> "$GITHUB_OUTPUT"
 
       - name: Wait for SSM command completion
+        if: ${{ steps.freshness.outputs.current == 'true' }}
         env:
           AWS_REGION: ${{ steps.aws-region.outputs.value }}
           EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
@@ -202,3 +258,56 @@ jobs:
             echo "::error::SSM command failed. status=$FINAL_STATUS"
             exit 1
           fi
+
+      - name: Finalize production deployment
+        if: ${{ always() && steps.deployment.outputs.id != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          DEPLOYMENT_ID: ${{ steps.deployment.outputs.id }}
+          JOB_STATUS: ${{ job.status }}
+          AWS_REGION: ${{ steps.aws-region.outputs.value }}
+          EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
+          COMMAND_ID: ${{ steps.ssm-send.outputs.command_id }}
+        run: |
+          if [ "$JOB_STATUS" = "success" ]; then
+            STATE=success
+            DESCRIPTION="AI deployment, health check, and nginx recreation succeeded"
+          elif [ "$JOB_STATUS" = "cancelled" ]; then
+            SSM_STATUS=""
+            if [ -n "$COMMAND_ID" ]; then
+              for attempt in $(seq 1 24); do
+                SSM_STATUS="$(aws ssm get-command-invocation \
+                  --region "$AWS_REGION" \
+                  --command-id "$COMMAND_ID" \
+                  --instance-id "$EC2_INSTANCE_ID" \
+                  --query Status --output text 2>/dev/null || true)"
+                case "$SSM_STATUS" in
+                  Success|Failed|TimedOut|Cancelled)
+                    break
+                    ;;
+                esac
+                sleep 5
+              done
+            fi
+            case "$SSM_STATUS" in
+              Success)
+                STATE=success
+                DESCRIPTION="AI EC2 deployment completed after Actions cancellation"
+                ;;
+              Failed|TimedOut|Cancelled)
+                STATE=failure
+                DESCRIPTION="SSM command ended with $SSM_STATUS after Actions cancellation"
+                ;;
+              *)
+                STATE=error
+                DESCRIPTION="Actions cancelled; SSM outcome could not be confirmed"
+                ;;
+            esac
+          else
+            STATE=failure
+            DESCRIPTION="AI EC2 deployment failed; inspect the Actions run"
+          fi
+          jq -nc --arg state "$STATE" --arg description "$DESCRIPTION" \
+            --arg log_url "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" \
+            '{state: $state, log_url: $log_url, description: $description}' \
+            | gh api "repos/$GITHUB_REPOSITORY/deployments/$DEPLOYMENT_ID/statuses" --input - >/dev/null
