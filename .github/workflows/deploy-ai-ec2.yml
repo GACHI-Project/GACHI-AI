@@ -40,7 +40,7 @@ jobs:
             exit 1
           fi
           echo "sha=$SOURCE_SHA" >> "$GITHUB_OUTPUT"
-          echo "image_tag=sha-${SOURCE_SHA:0:7}" >> "$GITHUB_OUTPUT"
+          echo "image_tag=sha-${SOURCE_SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Check automatic deployment commit is current
         id: freshness
@@ -112,15 +112,15 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
         run: |
           set -Eeuo pipefail
           if [ -z "${EC2_INSTANCE_ID:-}" ]; then
             echo "::error::EC2_INSTANCE_ID secret is required."
             exit 1
           fi
-          if [ -z "${DOCKERHUB_USERNAME:-}" ]; then
-            echo "::error::DOCKERHUB_USERNAME secret is required."
+          if [ -z "${GHCR_USERNAME:-}" ]; then
+            echo "::error::GHCR_USERNAME secret is required."
             exit 1
           fi
           if [ -n "${AWS_OIDC_ROLE_ARN:-}" ]; then
@@ -171,26 +171,42 @@ jobs:
           AWS_REGION: ${{ steps.aws-region.outputs.value }}
           EC2_INSTANCE_ID: ${{ secrets.EC2_INSTANCE_ID }}
           EC2_DEPLOY_PATH: ${{ steps.deploy-path.outputs.value }}
-          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          GHCR_USERNAME: ${{ secrets.GHCR_USERNAME }}
+          GHCR_TOKEN_PARAMETER_NAME: ${{ secrets.GHCR_TOKEN_PARAMETER_NAME || '/gachi/prod/ghcr/ai-token' }}
           AI_IMAGE_TAG: ${{ steps.deploy-commit.outputs.image_tag }}
         run: |
           set -Eeuo pipefail
           COMMANDS="$(jq -cn \
             --arg deployPath "$EC2_DEPLOY_PATH" \
-            --arg image "$DOCKERHUB_USERNAME/gachi-ai:$AI_IMAGE_TAG" \
+            --arg image "ghcr.io/gachi-project/gachi-ai:$AI_IMAGE_TAG" \
+            --arg ghcrUsername "$GHCR_USERNAME" \
+            --arg tokenParameter "$GHCR_TOKEN_PARAMETER_NAME" \
+            --arg region "$AWS_REGION" \
             '{
               commands: [
                 "#!/bin/bash",
                 "set -Eeuo pipefail",
                 "cd " + ($deployPath | @sh),
                 "test -f .env",
-                "docker pull " + ($image | @sh),
+                "AI_IMAGE_TARGET=" + ($image | @sh),
+                "GHCR_USERNAME=" + ($ghcrUsername | @sh),
+                "GHCR_TOKEN_PARAMETER_NAME=" + ($tokenParameter | @sh),
+                "AWS_REGION=" + ($region | @sh),
+                "GHCR_TOKEN=$(aws ssm get-parameter --region \"$AWS_REGION\" --name \"$GHCR_TOKEN_PARAMETER_NAME\" --with-decryption --query Parameter.Value --output text)",
+                "test -n \"$GHCR_TOKEN\"",
+                "GHCR_DOCKER_CONFIG=$(mktemp -d)",
+                "trap '\''rm -rf -- \"$GHCR_DOCKER_CONFIG\"'\'' EXIT",
+                "printf '\''%s'\'' \"$GHCR_TOKEN\" | DOCKER_CONFIG=\"$GHCR_DOCKER_CONFIG\" docker login ghcr.io -u \"$GHCR_USERNAME\" --password-stdin",
+                "unset GHCR_TOKEN",
+                "DOCKER_CONFIG=\"$GHCR_DOCKER_CONFIG\" docker pull \"$AI_IMAGE_TARGET\"",
                 "if grep -q ^AI_IMAGE= .env; then sed -i " + ("s|^AI_IMAGE=.*|AI_IMAGE=" + $image + "|" | @sh) + " .env; else echo " + ("AI_IMAGE=" + $image | @sh) + " >> .env; fi",
                 "docker compose --env-file .env up -d --remove-orphans --force-recreate ai",
                 "AI_CID=$(docker compose --env-file .env ps -q ai)",
                 "test -n \"$AI_CID\"",
                 "for i in $(seq 1 24); do AI_HEALTH=$(docker inspect --format '\''{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}'\'' \"$AI_CID\" 2>/dev/null || echo missing); echo \"ai health: $AI_HEALTH\"; [ \"$AI_HEALTH\" = healthy ] && break; sleep 5; done",
                 "test \"$AI_HEALTH\" = healthy",
+                "RUNNING_AI_IMAGE=$(docker inspect --format '\''{{.Config.Image}}'\'' \"$AI_CID\")",
+                "test \"$RUNNING_AI_IMAGE\" = \"$AI_IMAGE_TARGET\"",
                 "docker compose --env-file .env up -d --remove-orphans --force-recreate --no-deps nginx",
                 "docker compose --env-file .env ps",
                 "docker compose --env-file .env logs --tail=80 ai nginx || true"
